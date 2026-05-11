@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0066FF;
+  --color-primary-dark: #0044BB;
+  --color-primary-light: #3388FF;
+  
+  --color-secondary: #8833FF;
+  --color-secondary-dark: #6611EE;
+  --color-secondary-light: #AA66FF;
+  
+  --color-accent: #00F0FF;
+  --color-accent-dark: #00BBDD;
+  --color-accent-light: #55FFFF;
+  
+  --color-dark: #0A0B10;
+  --color-dark-card: #15171E;
+  --color-dark-border: #252936;
+  
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --background-image-glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  
+  --animate-marquee: marquee 25s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-dark text-white font-sans antialiased selection:bg-primary/30 selection:text-primary-light;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-glass-gradient backdrop-blur-md border border-white/10 rounded-2xl shadow-glass;
+  }
+  
+  .btn-primary {
+    @apply px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-primary/50;
+  }
+  
+  .btn-secondary {
+    @apply px-6 py-3 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-secondary/50;
+  }
+  
+  .btn-outline {
+    @apply px-6 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95;
+  }
+
+  .section-title {
+    @apply text-4xl md:text-5xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white via-primary-light to-secondary-light;
+  }
+}
+
+/* Swiper custom styles */
+.swiper-pagination-bullet {
+  @apply !bg-white/50;
+}
+
+.swiper-pagination-bullet-active {
+  @apply !bg-primary;
+}

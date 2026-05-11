@@ -1,0 +1,58 @@
+export const projects = [
+  {
+    id: 1,
+    title: 'Al Barakah HRMS Platform',
+    category: 'HRMS',
+    tags: ['React', 'Node.js', 'PostgreSQL', 'UAE Compliance'],
+    description: 'Complete HR management system with payroll, leave management, and UAE WPS integration for 500+ employees.',
+    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&q=80',
+    link: '#',
+  },
+  {
+    id: 2,
+    title: 'FinTech Mobile Banking App',
+    category: 'Mobile',
+    tags: ['React Native', 'Node.js', 'Security', 'Fintech'],
+    description: 'Secure mobile banking application with biometric authentication, real-time transactions, and AI-powered insights.',
+    image: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?w=600&q=80',
+    link: '#',
+  },
+  {
+    id: 3,
+    title: 'Enterprise ERP System',
+    category: 'ERP',
+    tags: ['React', 'Python', 'PostgreSQL', 'BI Dashboard'],
+    description: 'Full-featured ERP covering finance, inventory, procurement, and real-time analytics for a manufacturing company.',
+    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&q=80',
+    link: '#',
+  },
+  {
+    id: 4,
+    title: 'Cloud Infrastructure Migration',
+    category: 'Cloud',
+    tags: ['AWS', 'Docker', 'Kubernetes', 'DevOps'],
+    description: 'Migrated a legacy monolith to a microservices architecture on AWS achieving 99.99% uptime and 60% cost reduction.',
+    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80',
+    link: '#',
+  },
+  {
+    id: 5,
+    title: 'AI Customer Service Platform',
+    category: 'AI',
+    tags: ['Python', 'NLP', 'React', 'OpenAI'],
+    description: 'Intelligent customer service chatbot platform reducing support tickets by 70% with context-aware AI responses.',
+    image: 'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80',
+    link: '#',
+  },
+  {
+    id: 6,
+    title: 'Real Estate Portal',
+    category: 'Web',
+    tags: ['Next.js', 'Node.js', 'MongoDB', 'Maps API'],
+    description: 'Premium property listing and management platform with virtual tours, advanced search, and CRM integration.',
+    image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80',
+    link: '#',
+  },
+];
+
+export const projectCategories = ['All', 'Web', 'Mobile', 'HRMS', 'ERP', 'Cloud', 'AI'];

@@ -1,0 +1,38 @@
+export const testimonials = [
+  {
+    id: 1,
+    name: 'Ahmed Al Rashidi',
+    role: 'CEO, Al Rashidi Group',
+    company: 'Dubai, UAE',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ahmed',
+    rating: 5,
+    text: 'IBM DigiTech transformed our entire digital infrastructure. Their ERP solution cut our operational costs by 40% and the team was incredibly professional throughout the project.',
+  },
+  {
+    id: 2,
+    name: 'Sarah Johnson',
+    role: 'CTO, FinTech Solutions',
+    company: 'Abu Dhabi, UAE',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=sarah',
+    rating: 5,
+    text: 'The mobile app they built for us exceeded all expectations. User engagement tripled within the first month. Their attention to detail and technical expertise is unmatched.',
+  },
+  {
+    id: 3,
+    name: 'Mohammed Al Zarooni',
+    role: 'Director, Real Estate Group',
+    company: 'Sharjah, UAE',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mohammed',
+    rating: 5,
+    text: 'We partnered with IBM DigiTech for our HRMS implementation. The system is robust, UAE-compliant and our HR team loves it. Highly recommend their services.',
+  },
+  {
+    id: 4,
+    name: 'Priya Mehta',
+    role: 'VP Technology, Retail Chain',
+    company: 'Dubai, UAE',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=priya',
+    rating: 5,
+    text: 'Their cloud migration services were seamless. Zero downtime and 60% reduction in infrastructure costs. The team is responsive, skilled and truly dedicated.',
+  },
+];
