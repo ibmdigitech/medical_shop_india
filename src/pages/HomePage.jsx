@@ -4,7 +4,8 @@ import { Link } from 'react-router-dom';
 import { 
   ArrowRight, Play, Globe, Smartphone, Brain, Cloud, Shield, 
   BarChart3, CheckCircle, Zap, Users, Award, Code2, 
-  Upload, Search, ShoppingCart, Activity, Pill, FlaskConical, Stethoscope 
+  Upload, Search, ShoppingCart, Activity, Pill, FlaskConical, Stethoscope,
+  MessageCircle, ShieldCheck
 } from 'lucide-react';
 import CountUp from 'react-countup';
 import { Helmet } from 'react-helmet-async';

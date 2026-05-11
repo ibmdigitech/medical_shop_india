@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Trash2, Plus, Minus, ArrowLeft, MessageCircle, 
@@ -57,7 +57,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen pt-32 pb-20 bg-dark">
       <Helmet>
-        <title>Shopping Cart ({cartItems.length}) | Amster Med Care</title>
+        <title>{`Shopping Cart (${cartItems.length}) | Amster Med Care`}</title>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
