@@ -1,35 +1,36 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #0056B3;
-  --color-primary-dark: #003D80;
-  --color-primary-light: #3385D6;
+  /* Medical Trust Colors - Clean & Professional */
+  --color-primary: #0891B2;      /* Medical Cyan - Trust & Healthcare */
+  --color-primary-dark: #0E7490; /* Darker Cyan */
+  --color-primary-light: #22D3EE;/* Light Cyan */
   
-  --color-secondary: #00A352;
-  --color-secondary-dark: #007A3D;
-  --color-secondary-light: #33C27D;
+  --color-secondary: #059669;    /* Medical Green - Health & Wellness */
+  --color-secondary-dark: #047857;
+  --color-secondary-light: #34D399;
   
-  --color-accent: #E60000;
-  --color-accent-dark: #B30000;
-  --color-accent-light: #FF3333;
-  
+  --color-accent: #DC2626;       /* urgent Red - Offers & Alerts */
+  --color-accent-dark: #B91C1C;
+  --color-accent-light: #F87171;
+
   /* Semantic Backgrounds */
   --color-app-bg: var(--bg-color);
   --color-app-text: var(--text-color);
   --color-app-card: var(--card-bg);
   --color-app-border: var(--border-color);
-  
-  /* Legacy/Static Darks */
+
+  /* Dark Theme */
   --color-dark: #0A0B10;
   --color-dark-card: #15171E;
   --color-dark-border: #252936;
-  
+
   --font-sans: "Inter", system-ui, sans-serif;
-  
+
   --background-image-glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-  
+
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  
+
   --animate-marquee: marquee 25s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
 
@@ -45,24 +46,23 @@
 
 :root {
   --bg-color: #FFFFFF;
-  --text-color: #1F2937;
-  --card-bg: #F9FAFB;
-  --border-color: #E5E7EB;
+  --text-color: #111827;
+  --card-bg: #F8FAFC;
+  --border-color: #E2E8F0;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --bg-color: #0A0B10;
-    --text-color: #F3F4F6;
+    --text-color: #F1F5F9;
     --card-bg: #15171E;
     --border-color: #252936;
   }
 }
 
-/* Explicit .dark class support */
 .dark {
   --bg-color: #0A0B10;
-  --text-color: #F3F4F6;
+  --text-color: #F1F5F9;
   --card-bg: #15171E;
   --border-color: #252936;
 }
@@ -86,12 +86,20 @@
     @apply px-6 py-3 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-secondary/50;
   }
   
+  .btn-offer {
+    @apply px-6 py-3 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg animate-pulse;
+  }
+  
   .btn-outline {
     @apply px-6 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95;
   }
 
   .section-title {
     @apply text-4xl md:text-5xl font-bold mb-6 text-app-text;
+  }
+
+  .badge-offer {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent text-white;
   }
 }
 

@@ -22,29 +22,65 @@ export default function MedicinesPage() {
   return (
     <>
       <Helmet>
-        <title>Medicines - Amster Med Care</title>
-        <meta name="description" content="Shop generic and branded medicines online. High-quality healthcare products with fast delivery in UAE and India." />
+        <title>Buy Medicines Online with Free Home Delivery | Amster Med Care - Kerala</title>
+        <meta name="description" content="Shop medicines online with free home delivery across Kerala. Get FLAT 25% OFF using code MED25. 24-48 hour delivery. Genuine medicines, affordable prices." />
+        <meta name="keywords" content="buy medicines online, online pharmacy Kerala, generic medicines, free delivery, discount medicines, branded drugs, healthcare products" />
       </Helmet>
 
+      {/* Promo Banner */}
+      <div className="bg-gradient-to-r from-accent to-red-600 text-white py-3 text-center font-bold text-sm">
+        🔥 FLAT 25% OFF on All Medicines - Use Code: <span className="bg-white/20 px-2 py-0.5 rounded ml-1">MED25</span> | 🚚 Free Home Delivery
+      </div>
+
       {/* Hero */}
-      <section className="relative pt-36 pb-20 px-4 bg-dark overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 rounded-full blur-3xl" />
+      <section className="relative pt-32 pb-20 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark dark:to-dark-card overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
+        
         <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-4xl md:text-6xl font-black text-white mb-4">
-            Shop <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Healthcare</span>
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            <span className="inline-block px-4 py-1.5 bg-primary/10 border border-primary/30 rounded-full text-primary text-xs font-bold mb-4 tracking-wider">
+              🛒 ORDER NOW & GET FREE DELIVERY
+            </span>
+          </motion.div>
+          
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-4xl md:text-6xl font-black text-gray-900 dark:text-white mb-4">
+            Buy <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">Medicines Online</span>
           </motion.h1>
           
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-gray-600 dark:text-gray-400 text-lg mb-8 max-w-2xl mx-auto"
+          >
+            Get FLAT 25% OFF + FREE home delivery on all medicines. Order before 6 PM for same-day delivery in Omassery, Kerala.
+          </motion.p>
+
           {/* Search Box */}
-          <div className="relative max-w-2xl mx-auto mt-8">
-            <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" />
+          <div className="relative max-w-2xl mx-auto">
+            <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search by medicine name, brand or molecule..."
-              className="w-full pl-12 pr-4 py-4 bg-white/5 border border-white/15 rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-primary/50 focus:bg-white/10 transition-all shadow-xl"
+              placeholder="Search by medicine name, brand, or active ingredient..."
+              className="w-full pl-12 pr-4 py-4 bg-white border-2 border-gray-200 rounded-2xl text-gray-900 placeholder-gray-500 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/20 transition-all shadow-lg"
             />
           </div>
+
+          {/* Quick Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="flex items-center justify-center gap-6 mt-6 text-sm text-gray-500"
+          >
+            <span>✓ Genuine Medicines Only</span>
+            <span className="hidden sm:inline">|</span>
+            <span>✓ Certified Pharmacists</span>
+            <span className="hidden sm:inline">|</span>
+            <span>✓ Same Day Delivery</span>
+          </motion.div>
         </div>
       </section>
 
@@ -108,42 +144,47 @@ export default function MedicinesPage() {
                       transition={{ delay: (i % 6) * 0.05 }}
                       className="bg-dark-card border border-white/10 rounded-3xl overflow-hidden hover:border-primary/40 transition-all group flex flex-col"
                     >
-                      <div className="h-56 relative overflow-hidden bg-white/5">
-                        <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <span className="absolute top-4 left-4 px-2.5 py-1 bg-secondary text-white text-[10px] font-bold rounded-lg shadow-lg">
-                          {p.discount}
-                        </span>
-                        {p.type === 'Generic' && (
-                          <span className="absolute top-4 right-4 px-2.5 py-1 bg-green-500/80 backdrop-blur text-white text-[10px] font-bold rounded-lg shadow-lg flex items-center gap-1">
-                            <Zap size={10} fill="currentColor" /> GENERIC
-                          </span>
-                        )}
-                      </div>
-                      <div className="p-6 flex-1 flex flex-col">
-                        <div className="flex items-center justify-between mb-1">
-                          <p className="text-primary-light text-[10px] uppercase font-bold tracking-widest">{p.brand}</p>
-                          <Info size={14} className="text-gray-500 cursor-help" />
-                        </div>
-                        <h3 className="text-white font-bold text-lg mb-4 group-hover:text-primary-light transition-colors line-clamp-2 leading-tight">
-                          {p.title}
-                        </h3>
-                        
-                        <div className="mt-auto flex items-end justify-between">
-                          <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                              <span className="text-white font-black text-2xl">₹ {p.price}</span>
-                              <span className="text-gray-500 text-sm line-through">MRP ₹ {p.mrp}</span>
-                            </div>
-                            <p className="text-green-400 text-[10px] font-bold mt-1">Inclusive of all taxes</p>
-                          </div>
-                          <button 
-                            onClick={() => addToCart({ ...p, name: p.title })}
-                            className="px-5 py-2.5 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-sm active:scale-95"
-                          >
-                            <ShoppingCart size={16} /> Add
-                          </button>
-                        </div>
-                      </div>
+                       <div className="h-56 relative overflow-hidden bg-white">
+                         <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                         {/* Discount Badge */}
+                         <span className="absolute top-4 left-4 px-3 py-1.5 bg-accent text-white text-xs font-bold rounded-lg shadow-lg">
+                           {p.discount} OFF
+                         </span>
+                         {p.type === 'Generic' && (
+                           <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-primary to-primary-dark text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
+                             <Zap size={12} fill="currentColor" /> GENERIC
+                           </span>
+                         )}
+                       </div>
+                       <div className="p-5 flex-1 flex flex-col bg-white dark:bg-dark-card border-t border-gray-100 dark:border-dark-border">
+                         <div className="flex items-center justify-between mb-2">
+                           <p className="text-primary text-[10px] uppercase font-bold tracking-wider">{p.brand}</p>
+                           {p.type === 'Generic' && (
+                             <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
+                               Budget Friendly
+                             </span>
+                           )}
+                         </div>
+                         <h3 className="text-gray-900 dark:text-white font-bold text-lg mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                           {p.title}
+                         </h3>
+                         
+                         <div className="mt-auto flex items-end justify-between">
+                           <div className="flex flex-col">
+                             <div className="flex items-center gap-2">
+                               <span className="text-accent font-black text-2xl">₹ {p.price}</span>
+                               <span className="text-gray-400 text-sm line-through">MRP ₹ {p.mrp}</span>
+                             </div>
+                             <p className="text-green-600 dark:text-green-400 text-[10px] font-bold mt-1">✓ Inclusive of all taxes</p>
+                           </div>
+                           <button 
+                             onClick={() => addToCart({ ...p, name: p.title })}
+                             className="px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-sm active:scale-95"
+                           >
+                             <ShoppingCart size={16} /> Add
+                           </button>
+                         </div>
+                       </div>
                     </motion.div>
                   ))}
                 </div>

@@ -12,7 +12,7 @@ export default function MainLayout() {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-dark text-white">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-dark text-gray-900 dark:text-white">
       <Navbar />
       <main className="flex-1">
         <Outlet />
@@ -24,10 +24,13 @@ export default function MainLayout() {
         href="https://wa.me/919037507643"
         target="_blank"
         rel="noopener noreferrer"
-        aria-label="Chat on WhatsApp"
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30 hover:scale-110 active:scale-95 transition-all duration-300"
+        aria-label="Chat on WhatsApp for medicine orders"
+        className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-green-500 rounded-full flex items-center justify-center shadow-xl shadow-green-500/30 hover:scale-110 active:scale-95 transition-all duration-300 hover:bg-green-600 group"
       >
-        <MessageCircle size={26} className="text-white" />
+        <MessageCircle size={30} className="text-white" />
+        <span className="absolute -top-10 right-0 bg-gray-900 dark:bg-white text-white dark:text-gray-900 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+          Order via WhatsApp
+        </span>
       </a>
     </div>
   );

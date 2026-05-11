@@ -28,12 +28,7 @@ const floatingIcons = [
   { icon: Activity, x: '85%', y: '15%', delay: 0.5 },
   { icon: FlaskConical, x: '5%', y: '70%', delay: 1 },
   { icon: Stethoscope, x: '90%', y: '65%', delay: 1.5 },
-  { icon: HeartPulse, x: '15%', y: '85%', delay: 2 },
-  { icon: ShieldCheck, x: '80%', y: '85%', delay: 2.5 },
 ];
-
-function HeartPulse(props) { return <Activity {...props} />; } // Fallback
-function ShieldCheck(props) { return <Shield {...props} />; } // Fallback
 
 const clients = [
   'Cipla', 'Abbott', 'Sun Pharma', 'Lupin',
@@ -98,75 +93,132 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Amster Med Care - Premium Pharmacy & Generic Medicines</title>
-        <meta name="description" content="Buy affordable generic medicines online from Amster Med Care. Trusted pharmacy with up to 85% savings on medicines and lab tests." />
+        <title>Amster Med Care - Buy Medicines Online with Free Home Delivery | Kerala's Trusted Pharmacy</title>
+        <meta name="description" content="Order medicines online in Kerala with FREE home delivery. Get FLAT 25% OFF on all medicines. Fast delivery, genuine products, expert pharmacists. Trusted by 10,000+ customers in Omassery & across Kerala." />
+        <meta name="keywords" content="online pharmacy Kerala, buy medicines online, home delivery pharmacy, medical shop Omassery, discount medicines, generic drugs, healthcare products, pharmacy delivery, free delivery Kerala, Amster Med Care" />
       </Helmet>
 
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-dark">
-        <div className="absolute inset-0 bg-gradient-radial from-primary/10 via-transparent to-transparent" />
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-secondary/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-3xl" />
-
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-dark dark:to-gray-900">
+        {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '60px 60px' }}
+          style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, #0891B2 2px, transparent 2px), radial-gradient(circle at 75% 75%, #059669 2px, transparent 2px)', backgroundSize: '60px 60px' }}
         />
 
-        {floatingIcons.map(({ icon: Icon, x, y, delay }, i) => (
-          <motion.div
-            key={i}
-            className="absolute hidden lg:flex w-12 h-12 rounded-xl bg-white/5 border border-white/10 items-center justify-center text-primary-light"
-            style={{ left: x, top: y }}
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4 + i, repeat: Infinity, delay, ease: 'easeInOut' }}
-          >
-            <Icon size={20} />
-          </motion.div>
-        ))}
+        {/* Animated gradient orbs */}
+        <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-20 left-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
 
-        <div className="relative z-10 max-w-5xl mx-auto px-4 text-center pt-24 pb-16">
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-            <span className="inline-block px-4 py-1.5 bg-primary/15 border border-primary/30 rounded-full text-primary-light text-xs font-semibold mb-6 tracking-widest uppercase">
-              💊 Save Up to 85% on Medicines
-            </span>
+        <div className="relative z-10 max-w-6xl mx-auto px-4 text-center pt-24 pb-16">
+          {/* Offer Badge */}
+          <motion.div initial={{ opacity: 0, y: -20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}>
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-red-600 text-white rounded-full font-bold text-sm mb-8 shadow-lg shadow-accent/30 animate-pulse">
+              <span>🔥 FLAT 25% OFF</span>
+              <span className="hidden sm:inline mx-2">|</span>
+              <span className="hidden sm:inline">🚚 FREE Home Delivery</span>
+            </div>
           </motion.div>
 
+          {/* Main Heading */}
           <motion.h1
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-6xl md:text-7xl font-black text-white leading-tight mb-4"
+            className="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 dark:text-white leading-tight mb-6"
           >
             Your Trusted{' '}
-            <span className="block mt-1">
-              <TypingText />
+            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
+              Online Pharmacy
             </span>
           </motion.h1>
 
+          {/* Subheading */}
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10"
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10"
           >
-            Delivering high-quality generic and branded medicines, lab tests, and wellness products across India and UAE.
+            Get medicines, wellness products & healthcare essentials delivered to your doorstep across Kerala. 
+            Order before 6 PM for <b className="text-primary">same-day delivery</b>!
           </motion.p>
 
+          {/* Primary CTAs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
           >
-            <Link to="/upload-prescription" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2">
-              <Upload size={18} /> Upload Prescription
+            <Link
+              to="/medicines"
+              className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white font-bold text-lg rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+            >
+              <ShoppingCart size={24} />
+              Order Medicines Now
+              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
             </Link>
-            <Link to="/medicines" className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/15 text-white font-semibold rounded-xl hover:bg-white/10 hover:scale-105 transition-all duration-300 backdrop-blur-sm flex items-center justify-center gap-2">
-              <Search size={16} /> Search Medicines
+            <Link
+              to="/wellness"
+              className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-dark-card border-2 border-primary text-primary font-semibold text-lg rounded-2xl hover:bg-primary hover:text-white transition-all duration-300"
+            >
+              Explore Wellness Products
             </Link>
           </motion.div>
+
+          {/* Trust Indicators */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+            className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400"
+          >
+            <span className="flex items-center gap-1">
+              <ShieldCheck size={18} className="text-green-600" />
+              100% Genuine Medicines
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="flex items-center gap-1">
+              <Zap size={18} className="text-amber-500" />
+              Same Day Delivery
+            </span>
+            <span className="hidden sm:inline">•</span>
+            <span className="flex items-center gap-1">
+              <Users size={18} className="text-primary" />
+              10,000+ Happy Customers
+            </span>
+          </motion.div>
         </div>
-      </section>
+
+        {/* Floating Floating Icons */}
+        {floatingIcons.map(({ icon: Icon, x, y, delay }, i) => (
+          <motion.div
+            key={i}
+            className="absolute hidden lg:flex w-16 h-16 rounded-2xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border items-center justify-center text-primary shadow-lg"
+            style={{ left: x, top: y }}
+            animate={{ y: [0, -20, 0] }}
+            transition={{ duration: 4 + i, repeat: Infinity, delay, ease: 'easeInOut' }}
+          >
+            <Icon size={28} />
+          </motion.div>
+        ))}
+
+        {/* CTA Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="flex flex-col sm:flex-row items-center justify-center gap-4"
+        >
+          <Link to="/upload-prescription" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2">
+            <Upload size={18} /> Upload Prescription
+          </Link>
+          <Link to="/medicines" className="w-full sm:w-auto px-8 py-4 bg-primary/10 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
+            <Search size={16} /> Search Medicines
+          </Link>
+        </motion.div>
+      </div>
+    </section>
 
       {/* Stats */}
       <StatsSection />
@@ -208,6 +260,113 @@ export default function HomePage() {
           animation: marquee 20s linear infinite;
         }
       `}} />
+
+      {/* Special Offers & Delivery Highlights Section */}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark-card dark:to-dark">
+        <div className="max-w-7xl mx-auto">
+          {/* Section Header */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <span className="inline-block px-4 py-1.5 bg-accent/10 border border-accent/30 rounded-full text-accent text-sm font-bold mb-4">
+              🚀 LIMITED TIME OFFERS
+            </span>
+            <h2 className="text-4xl md:text-5xl font-black text-app-text mb-4">
+              Mega Savings + <span className="text-primary">Free Delivery</span>
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
+              Get the best deals on medicines and healthcare products with our fast, reliable delivery across Kerala.
+            </p>
+          </motion.div>
+
+          {/* Offer Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+            {[
+              {
+                title: "FLAT 25% OFF",
+                desc: "On all medicines - Use code MED25",
+                icon: "💊",
+                color: "from-red-500 to-red-600",
+              },
+              {
+                title: "FREE DELIVERY",
+                desc: "On orders above ₹499 in Omassery",
+                icon: "🚚",
+                color: "from-primary to-primary-dark",
+              },
+              {
+                title: "SAME DAY DELIVERY",
+                desc: "Order before 6 PM & get today",
+                icon: "⚡",
+                color: "from-secondary to-secondary-dark",
+              },
+              {
+                title: "REFER & EARN",
+                desc: "Get ₹200 for every friend",
+                icon: "💰",
+                color: "from-amber-500 to-amber-600",
+              }
+            ].map((offer, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-dark-card dark:to-dark border border-gray-200 dark:border-dark-border p-6 hover:shadow-xl transition-all hover:-translate-y-1 group"
+              >
+                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${offer.color} opacity-10 rounded-bl-full -mr-12 -mt-12 group-hover:opacity-20 transition-opacity`} />
+                <div className="relative z-10">
+                  <span className="text-4xl mb-4 block">{offer.icon}</span>
+                  <h3 className="text-xl font-bold text-app-text mb-2">{offer.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm">{offer.desc}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          {/* Delivery Areas Card */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-3xl p-8 md:p-12 border border-primary/10"
+          >
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              <div className="flex-1 text-center lg:text-left">
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/15 rounded-full mb-4">
+                  <MapPin size={18} className="text-primary" />
+                  <span className="font-bold text-primary">Fast Delivery Areas</span>
+                </div>
+                <h3 className="text-2xl md:text-3xl font-bold text-app-text mb-4">
+                  We Deliver Across Kerala
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">
+                  Free home delivery within 5km radius of Omassery. Pan-Kerala delivery available for all orders. Get your medicines delivered within 24-48 hours.
+                </p>
+                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
+                  {['Omassery', 'Kozhikode', 'Malappuram', 'Kannur', 'Thrissur', 'Ernakulam'].map(city => (
+                    <span key={city} className="px-3 py-1 bg-white dark:bg-dark-card rounded-full text-sm font-medium border border-gray-200 dark:border-dark-border shadow-sm">
+                      {city}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <div className="w-40 h-40 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-2xl animate-float">
+                  <div className="text-center text-white">
+                    <div className="text-3xl font-bold">24-48</div>
+                    <div className="text-sm">Hours Delivery</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* Choose Smart, Choose Generic (Medkart USP) */}
       <section className="py-20 px-4 bg-gradient-to-b from-dark to-dark-card overflow-hidden">
