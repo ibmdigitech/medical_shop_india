@@ -54,7 +54,7 @@ function StatsSection() {
             className="text-center"
           >
             <div className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light mb-1">
-              {isInView ? <CountUp end={stat.value} duration={2.5} /> : '0'}{stat.suffix}
+              {isInView ? <span>{stat.value}</span> : '0'}{stat.suffix}
             </div>
             <p className="text-gray-400 text-sm">{stat.label}</p>
           </motion.div>

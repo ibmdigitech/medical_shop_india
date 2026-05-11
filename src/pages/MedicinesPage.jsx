@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import { Search, Filter, ShoppingCart, Info, ArrowRight, Pill, Activity, FlaskConical } from 'lucide-react';
+import { Search, Filter, ShoppingCart, Info, ArrowRight, Pill, Activity, FlaskConical, Zap } from 'lucide-react';
 import { products } from '../data/products';
 import CTASection from '../components/CTASection';
 import { useCart } from '../context/CartContext';
