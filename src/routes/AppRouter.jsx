@@ -3,18 +3,17 @@ import { Suspense, lazy } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-const HomePage = lazy(() => import('../pages/HomePage'));
-const MedicinesPage = lazy(() => import('../pages/MedicinesPage'));
-const AboutPage = lazy(() => import('../pages/AboutPage'));
-const ContactPage = lazy(() => import('../pages/ContactPage'));
-const BlogPage = lazy(() => import('../pages/BlogPage'));
+import HomePage from '../pages/HomePage';
+import MedicinesPage from '../pages/MedicinesPage';
+import CartPage from '../pages/CartPage';
+import UploadPrescriptionPage from '../pages/UploadPrescriptionPage';
+import AboutPage from '../pages/AboutPage';
+import ContactPage from '../pages/ContactPage';
+import BlogPage from '../pages/BlogPage';
 
-// Placeholder components for medical specific pages
 const LabTestsPage = () => <div className="pt-32 text-center text-white">Lab Tests Page (Coming Soon)</div>;
 const WellnessPage = () => <div className="pt-32 text-center text-white">Wellness Page (Coming Soon)</div>;
 const StoreLocatorPage = () => <div className="pt-32 text-center text-white">Store Locator Page (Coming Soon)</div>;
-const UploadPrescriptionPage = lazy(() => import('../pages/UploadPrescriptionPage'));
-const CartPage = lazy(() => import('../pages/CartPage'));
 
 function NotFound() {
   return (

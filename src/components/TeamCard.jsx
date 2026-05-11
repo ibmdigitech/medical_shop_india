@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Linkedin } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 
 export default function TeamCard({ member, index }) {
   return (
@@ -19,7 +19,7 @@ export default function TeamCard({ member, index }) {
       <p className="text-primary-light text-xs font-semibold mb-2">{member.role}</p>
       <p className="text-gray-500 text-xs leading-relaxed mb-4">{member.bio}</p>
       <a href={member.linkedin} className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-primary-light transition-colors">
-        <Linkedin size={14} /> Connect
+        <ExternalLink size={14} /> Connect
       </a>
     </motion.div>
   );
