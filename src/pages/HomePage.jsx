@@ -170,6 +170,79 @@ export default function HomePage() {
       {/* Stats */}
       <StatsSection />
 
+      {/* Choose Smart, Choose Generic (Medkart USP) */}
+      <section className="py-20 px-4 bg-gradient-to-b from-dark to-dark-card overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-16">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="lg:w-1/2"
+            >
+              <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
+                Choose Smart, <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Choose Generic!</span>
+              </h2>
+              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
+                Wondering how generic medicines are better? They contain the same active ingredients, are WHO-GMP certified, and save you up to 85% compared to expensive branded medicines.
+              </p>
+              
+              <div className="space-y-6">
+                {[
+                  { icon: Zap, title: 'Same Effectiveness', desc: 'Identical active ingredients and therapeutic effects.' },
+                  { icon: Shield, title: 'NABL Quality Checked', desc: 'Tested under strict standards for safety and purity.' },
+                  { icon: Award, title: 'Doctor Recommended', desc: 'Trusted by healthcare professionals globally.' },
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/30 transition-colors">
+                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary-light shrink-0">
+                      <item.icon size={24} />
+                    </div>
+                    <div>
+                      <h4 className="text-white font-bold mb-1">{item.title}</h4>
+                      <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="lg:w-1/2 relative"
+            >
+              <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
+              <div className="relative bg-dark-card border border-white/10 rounded-[40px] p-8 md:p-12 shadow-2xl overflow-hidden group">
+                <div className="flex flex-col gap-6 relative z-10">
+                  <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
+                    <div>
+                      <p className="text-gray-500 text-xs font-bold uppercase mb-1">Branded Medicine</p>
+                      <h4 className="text-white font-bold text-lg">Branded X</h4>
+                    </div>
+                    <span className="text-red-400 font-bold text-xl line-through opacity-50">AED 185</span>
+                  </div>
+                  <div className="flex justify-center">
+                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold">VS</div>
+                  </div>
+                  <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between scale-110 shadow-xl shadow-primary/20">
+                    <div>
+                      <p className="text-primary-light text-xs font-bold uppercase mb-1">Generic Alternative</p>
+                      <h4 className="text-white font-bold text-lg">Generic Y</h4>
+                    </div>
+                    <div className="text-right">
+                      <span className="text-white font-black text-2xl">AED 34</span>
+                      <p className="text-primary-light text-[10px] font-bold">82% SAVINGS</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       {/* Browse by Category (Medkart Style) */}
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">

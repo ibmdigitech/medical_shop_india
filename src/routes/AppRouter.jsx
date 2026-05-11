@@ -10,10 +10,10 @@ import UploadPrescriptionPage from '../pages/UploadPrescriptionPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
 import BlogPage from '../pages/BlogPage';
-
-const LabTestsPage = () => <div className="pt-32 text-center text-white">Lab Tests Page (Coming Soon)</div>;
+import LabTestsPage from '../pages/LabTestsPage';
+import CompareMedicinesPage from '../pages/CompareMedicinesPage';
+import StoreLocatorPage from '../pages/StoreLocatorPage';
 const WellnessPage = () => <div className="pt-32 text-center text-white">Wellness Page (Coming Soon)</div>;
-const StoreLocatorPage = () => <div className="pt-32 text-center text-white">Store Locator Page (Coming Soon)</div>;
 
 function NotFound() {
   return (
@@ -38,6 +38,7 @@ export default function AppRouter() {
           <Route path="/" element={<HomePage />} />
           <Route path="/medicines" element={<MedicinesPage />} />
           <Route path="/lab-tests" element={<LabTestsPage />} />
+          <Route path="/compare-medicines" element={<CompareMedicinesPage />} />
           <Route path="/wellness" element={<WellnessPage />} />
           <Route path="/stores" element={<StoreLocatorPage />} />
           <Route path="/upload-prescription" element={<UploadPrescriptionPage />} />

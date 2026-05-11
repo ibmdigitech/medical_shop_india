@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 const navLinks = [
   { name: 'Home', path: '/' },
   { name: 'Medicines', path: '/medicines' },
+  { name: 'Compare Medicines', path: '/compare-medicines' },
   { name: 'Lab Tests', path: '/lab-tests' },
   { name: 'Wellness', path: '/wellness' },
   { name: 'Store Locator', path: '/stores' },

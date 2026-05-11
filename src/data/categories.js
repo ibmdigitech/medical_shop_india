@@ -1,75 +1,58 @@
 export const categories = [
   {
     id: 1,
-    icon: 'Thermometer',
-    title: 'Medicines',
-    description: 'Order from a wide range of generic and branded medicines with up to 85% savings.',
-    color: 'from-blue-500 to-cyan-500',
-    slug: 'order-medicine',
+    title: 'Nutritional Supplements',
+    slug: 'nutritional-supplements',
+    description: 'Boost your health with essential vitamins and minerals.',
+    color: 'from-blue-500 to-blue-600'
   },
   {
     id: 2,
-    icon: 'TestTube',
-    title: 'Lab Tests',
-    description: 'Book diagnostic tests and full body checkups with free home collection across UAE/India.',
-    color: 'from-purple-500 to-pink-500',
-    slug: 'lab-test',
+    title: 'Ayurvedic Products',
+    slug: 'ayurvedic-products',
+    description: 'Natural healing with trusted ayurvedic remedies.',
+    color: 'from-green-500 to-green-600'
   },
   {
     id: 3,
-    icon: 'Sprout',
-    title: 'Ayurvedic & Herbal',
-    description: 'Natural wellness products and traditional ayurvedic remedies for holistic health.',
-    color: 'from-green-500 to-emerald-500',
-    slug: 'ayurvedic',
+    title: 'Diabetes Care',
+    slug: 'diabetes-care',
+    description: 'Comprehensive solutions for blood sugar management.',
+    color: 'from-red-500 to-red-600'
   },
   {
     id: 4,
-    icon: 'HeartPulse',
     title: 'Personal Care',
-    description: 'Premium skin care, hair care, and hygiene products from top global brands.',
-    color: 'from-rose-500 to-pink-500',
     slug: 'personal-care',
+    description: 'Premium products for your daily hygiene and beauty.',
+    color: 'from-purple-500 to-purple-600'
   },
   {
     id: 5,
-    icon: 'Activity',
-    title: 'Health Devices',
-    description: 'BP monitors, nebulizers, thermometers, and other essential home healthcare devices.',
-    color: 'from-orange-500 to-yellow-500',
-    slug: 'health-devices',
+    title: 'Eye Care Products',
+    slug: 'eye-care',
+    description: 'Protect your vision with specialized eye drops and supplements.',
+    color: 'from-cyan-500 to-cyan-600'
   },
   {
     id: 6,
-    icon: 'Baby',
-    title: 'Baby & Mother',
-    description: 'Comprehensive care products for infants and maternal health needs.',
-    color: 'from-sky-500 to-blue-500',
-    slug: 'baby-mother',
+    title: 'Cough & Cold',
+    slug: 'cough-cold',
+    description: 'Relief from seasonal allergies and common cold.',
+    color: 'from-orange-500 to-orange-600'
   },
   {
     id: 7,
-    icon: 'ShieldCheck',
-    title: 'Wellness & Nutrition',
-    description: 'Vitamins, supplements, and nutritional products to boost your immunity.',
-    color: 'from-teal-500 to-green-500',
-    slug: 'wellness',
+    title: 'Health Care Devices',
+    slug: 'health-care-devices',
+    description: 'Modern devices to track your health at home.',
+    color: 'from-indigo-500 to-indigo-600'
   },
   {
     id: 8,
-    icon: 'Stethoscope',
-    title: 'Doctor Consultation',
-    description: 'Consult with expert doctors online for immediate medical advice.',
-    color: 'from-indigo-500 to-violet-500',
-    slug: 'consultation',
-  },
-];
-
-export const medicineTypes = [
-  'Generic Medicines',
-  'Branded Medicines',
-  'Chronic Care',
-  'First Aid',
-  'Vitamins & Supplements',
-  'Herbal Products',
+    title: 'New Generic Medicines',
+    slug: 'new-generic-medicines',
+    description: 'Save big on newly launched high-quality generic drugs.',
+    color: 'from-pink-500 to-pink-600'
+  }
 ];
