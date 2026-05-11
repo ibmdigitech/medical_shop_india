@@ -170,6 +170,44 @@ export default function HomePage() {
       {/* Stats */}
       <StatsSection />
 
+      {/* Moving Offers Marquee */}
+      <div className="bg-primary py-4 overflow-hidden border-y border-white/10 relative z-20">
+        <div className="flex whitespace-nowrap animate-marquee">
+          {[1, 2, 3, 4].map((n) => (
+            <div key={n} className="flex items-center gap-12 px-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <MessageCircle className="text-white" size={20} />
+                </div>
+                <span className="text-white font-bold tracking-tight">Order via WhatsApp: +91 90375 07643</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <Zap className="text-white" size={20} />
+                </div>
+                <span className="text-white font-bold tracking-tight">Free Home Delivery in Omassery</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                  <ShieldCheck className="text-white" size={20} />
+                </div>
+                <span className="text-white font-bold tracking-tight">100% Genuine Medicines</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-marquee {
+          animation: marquee 20s linear infinite;
+        }
+      `}} />
+
       {/* Choose Smart, Choose Generic (Medkart USP) */}
       <section className="py-20 px-4 bg-gradient-to-b from-dark to-dark-card overflow-hidden">
         <div className="max-w-7xl mx-auto">
@@ -185,7 +223,7 @@ export default function HomePage() {
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Choose Generic!</span>
               </h2>
               <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                Wondering how generic medicines are better? They contain the same active ingredients, are WHO-GMP certified, and save you up to 85% compared to expensive branded medicines.
+                Wondering how generic medicines are better₹ They contain the same active ingredients, are WHO-GMP certified, and save you up to 85% compared to expensive branded medicines.
               </p>
               
               <div className="space-y-6">
@@ -221,7 +259,7 @@ export default function HomePage() {
                       <p className="text-gray-500 text-xs font-bold uppercase mb-1">Branded Medicine</p>
                       <h4 className="text-white font-bold text-lg">Branded X</h4>
                     </div>
-                    <span className="text-red-400 font-bold text-xl line-through opacity-50">? 185</span>
+                    <span className="text-red-400 font-bold text-xl line-through opacity-50">₹ 185</span>
                   </div>
                   <div className="flex justify-center">
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold">VS</div>
@@ -232,7 +270,7 @@ export default function HomePage() {
                       <h4 className="text-white font-bold text-lg">Generic Y</h4>
                     </div>
                     <div className="text-right">
-                      <span className="text-white font-black text-2xl">? 34</span>
+                      <span className="text-white font-black text-2xl">₹ 34</span>
                       <p className="text-primary-light text-[10px] font-bold">82% SAVINGS</p>
                     </div>
                   </div>
@@ -311,8 +349,8 @@ export default function HomePage() {
                   <h3 className="text-white font-bold text-sm mb-3 group-hover:text-primary transition-colors line-clamp-1">{p.title}</h3>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex flex-col">
-                      <span className="text-white font-bold text-lg">? {p.price}</span>
-                      <span className="text-gray-500 text-xs line-through">MRP ? {p.mrp}</span>
+                      <span className="text-white font-bold text-lg">₹ {p.price}</span>
+                      <span className="text-gray-500 text-xs line-through">MRP ₹ {p.mrp}</span>
                     </div>
                     <button 
                       onClick={() => addToCart({ ...p, name: p.title })}

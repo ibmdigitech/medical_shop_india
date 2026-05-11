@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Smartphone, Apple, Play, CheckCircle } from 'lucide-react';
 
 export default function CTASection() {

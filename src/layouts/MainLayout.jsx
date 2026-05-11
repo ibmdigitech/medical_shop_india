@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from 'react-router-dom';
+﻿import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';

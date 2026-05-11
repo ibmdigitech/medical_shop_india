@@ -1,4 +1,4 @@
-export const jobs = [
+﻿export const jobs = [
   {
     id: 1,
     title: 'Senior React Developer',

@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Star } from 'lucide-react';
 
 export default function TestimonialCard({ testimonial, index }) {

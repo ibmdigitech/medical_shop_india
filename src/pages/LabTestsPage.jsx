@@ -94,8 +94,8 @@ export default function LabTestsPage() {
 
                 <div className="flex items-center justify-between mb-6">
                   <div className="flex flex-col">
-                    <span className="text-white font-black text-2xl">? {test.price}</span>
-                    <span className="text-gray-500 text-xs line-through">MRP ? {test.mrp}</span>
+                    <span className="text-white font-black text-2xl">₹ {test.price}</span>
+                    <span className="text-gray-500 text-xs line-through">MRP ₹ {test.mrp}</span>
                   </div>
                   <span className="px-2 py-1 bg-secondary/20 text-secondary-light text-[10px] font-bold rounded">
                     {test.discount}

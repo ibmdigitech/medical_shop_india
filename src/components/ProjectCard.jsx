@@ -1,4 +1,4 @@
-import { motion, useInView } from 'framer-motion';
+﻿import { motion, useInView } from 'framer-motion';
 import { useRef, useState } from 'react';
 import { ExternalLink, Tag } from 'lucide-react';
 

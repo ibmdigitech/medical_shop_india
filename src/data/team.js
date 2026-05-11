@@ -1,4 +1,4 @@
-export const team = [
+﻿export const team = [
   {
     id: 1,
     name: 'Khalid Al Mansoori',

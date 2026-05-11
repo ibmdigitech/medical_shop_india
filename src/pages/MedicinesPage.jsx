@@ -131,8 +131,8 @@ export default function MedicinesPage() {
                         <div className="mt-auto flex items-end justify-between">
                           <div className="flex flex-col">
                             <div className="flex items-center gap-2">
-                              <span className="text-white font-black text-2xl">? {p.price}</span>
-                              <span className="text-gray-500 text-sm line-through">MRP ? {p.mrp}</span>
+                              <span className="text-white font-black text-2xl">₹ {p.price}</span>
+                              <span className="text-gray-500 text-sm line-through">MRP ₹ {p.mrp}</span>
                             </div>
                             <p className="text-green-400 text-[10px] font-bold mt-1">Inclusive of all taxes</p>
                           </div>

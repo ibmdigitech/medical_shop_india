@@ -1,4 +1,4 @@
-export const medicineComparison = [
+﻿export const medicineComparison = [
   {
     id: 1,
     brandedName: 'PANTOCID 40MG',

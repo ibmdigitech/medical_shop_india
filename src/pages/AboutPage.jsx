@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+﻿import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import CTASection from '../components/CTASection';
 import { Target, Eye, ShieldCheck } from 'lucide-react';
@@ -31,6 +31,45 @@ export default function AboutPage() {
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
             Since our inception, Amster Med Care has been more than just a pharmacy. We are your neighbors, your friends, and your trusted partners in health. Located in the heart of Omassery, we serve with a smile.
           </motion.p>
+        </div>
+      </section>
+
+      {/* Brand Identity */}
+      <section className="py-20 px-4 bg-dark">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-12 bg-white/5 border border-white/10 rounded-[40px] p-8 md:p-16 overflow-hidden relative">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-[80px]" />
+            <div className="lg:w-1/2 relative z-10">
+              <h2 className="text-3xl md:text-5xl font-black text-white mb-6">Our <span className="text-primary">Identity</span></h2>
+              <p className="text-gray-400 mb-10 leading-relaxed">
+                The Amster Med Care logo represents our deep-rooted commitment to professional healthcare and community wellness. Our colors are carefully chosen to reflect our values.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {[
+                  { color: 'bg-[#0056B3]', name: 'Amster Blue', desc: 'Trust, Professionalism, and Medical Excellence.' },
+                  { color: 'bg-[#00A352]', name: 'Healthy Green', desc: 'Growth, Vitality, and Natural Wellness.' },
+                  { color: 'bg-[#E60000]', name: 'Caring Red', desc: 'Urgency, Support, and Lifesaving Care.' },
+                  { color: 'bg-white', name: 'Purity White', desc: 'Hygiene, Safety, and Transparent Pricing.' },
+                ].map((c, i) => (
+                  <div key={i} className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl ${c.color} border border-white/20 shadow-lg shrink-0`} />
+                    <div>
+                      <h4 className="text-white font-bold text-sm">{c.name}</h4>
+                      <p className="text-gray-500 text-[10px] leading-tight">{c.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="lg:w-1/2 flex justify-center">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-primary/20 blur-[50px] group-hover:blur-[80px] transition-all rounded-full" />
+                <div className="w-64 h-64 md:w-80 md:h-80 rounded-full bg-white p-4 shadow-2xl relative z-10 flex items-center justify-center transform group-hover:rotate-12 transition-transform duration-700">
+                  <img src="/logo.png" alt="Amster Med Care Official Logo" className="w-full h-full object-contain" />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

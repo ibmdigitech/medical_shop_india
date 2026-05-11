@@ -32,16 +32,20 @@ export default function Navbar() {
   }, [location.pathname]);
 
   return (
-    <>
+    <nav className="relative">
+      <div className="bg-primary text-white text-[10px] font-bold py-1.5 text-center uppercase tracking-[0.2em]">
+        🚀 Free Home Delivery on all orders in Omassery!
+      </div>
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-dark/95 backdrop-blur-xl border-b border-white/10 shadow-lg'
+            ? 'bg-app-bg/95 backdrop-blur-xl border-b border-app-border shadow-lg'
             : 'bg-transparent'
         }`}
+        style={{ top: scrolled ? '0' : '30px' }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20 gap-4">
@@ -51,7 +55,7 @@ export default function Navbar() {
                 <img src="/logo.png" alt="Amster Med Care" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-xl font-bold text-white tracking-tight italic">AMSTER</span>
+                <span className="text-xl font-bold text-app-text tracking-tight italic">AMSTER</span>
                 <span className="text-xs font-semibold text-primary-light tracking-widest uppercase">Med Care</span>
               </div>
             </Link>
@@ -199,6 +203,6 @@ export default function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </nav>
   );
 }

@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+﻿import { Link } from 'react-router-dom';
 import { 
   Zap, Mail, Phone, MapPin, Globe, Share2, 
   MessageCircle, Video, Users, ExternalLink 

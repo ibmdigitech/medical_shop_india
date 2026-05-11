@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+﻿import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { Search, ArrowRight, Zap, Info, ShieldCheck } from 'lucide-react';
 import { medicineComparison } from '../data/medicineComparison';
@@ -65,7 +65,7 @@ export default function CompareMedicinesPage() {
                     <div className="p-5 rounded-2xl bg-white/5 border border-white/5">
                       <p className="text-[10px] font-bold text-gray-500 uppercase mb-1">Branded Medicine</p>
                       <h4 className="text-white font-bold text-lg mb-2">{item.brandedName}</h4>
-                      <p className="text-2xl font-black text-white/50 line-through">? {item.brandedPrice}</p>
+                      <p className="text-2xl font-black text-white/50 line-through">₹ {item.brandedPrice}</p>
                     </div>
 
                     {/* Generic */}
@@ -76,7 +76,7 @@ export default function CompareMedicinesPage() {
                       <p className="text-[10px] font-bold text-primary-light uppercase mb-1">Generic Substitute</p>
                       <h4 className="text-white font-bold text-lg mb-2">{item.genericName}</h4>
                       <div className="flex items-end justify-between">
-                        <p className="text-3xl font-black text-white">? {item.genericPrice}</p>
+                        <p className="text-3xl font-black text-white">₹ {item.genericPrice}</p>
                         <div className="text-right">
                           <span className="text-green-400 font-bold text-sm">{item.savingPercentage}% OFF</span>
                         </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { motion } from 'framer-motion';
 import { 
   Trash2, Plus, Minus, ArrowLeft, MessageCircle, 
@@ -87,7 +87,7 @@ export default function CartPage() {
                     <h3 className="text-white font-semibold">{item.name}</h3>
                     <p className="text-gray-400 text-xs">{item.category}</p>
                     <div className="mt-2 flex items-center justify-between">
-                      <span className="text-primary-light font-bold">? {item.price}</span>
+                      <span className="text-primary-light font-bold">₹ {item.price}</span>
                       <div className="flex items-center gap-3 bg-black/20 rounded-lg p-1">
                         <button 
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -131,7 +131,7 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-400 text-sm">
                   <span>Subtotal</span>
-                  <span>? {cartTotal}</span>
+                  <span>₹ {cartTotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-400 text-sm">
                   <span>Delivery</span>
@@ -139,7 +139,7 @@ export default function CartPage() {
                 </div>
                 <div className="pt-4 border-t border-white/10 flex justify-between">
                   <span className="text-white font-bold">Total</span>
-                  <span className="text-2xl font-black text-primary-light">? {cartTotal}</span>
+                  <span className="text-2xl font-black text-primary-light">₹ {cartTotal}</span>
                 </div>
               </div>
 
