@@ -217,8 +217,7 @@ export default function HomePage() {
             <Search size={16} /> Search Medicines
           </Link>
         </motion.div>
-      </div>
-    </section>
+      </section>
 
       {/* Stats */}
       <StatsSection />
