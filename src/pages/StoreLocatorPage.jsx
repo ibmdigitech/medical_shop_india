@@ -6,27 +6,11 @@ import CTASection from '../components/CTASection';
 const stores = [
   {
     id: 1,
-    name: 'Medical Shope - Dubai Healthcare City',
-    address: 'Building 64, Al Razi, Dubai Healthcare City, Dubai, UAE',
-    phone: '+971 4 123 4567',
+    name: 'Amster Med Care - Omassery HQ',
+    address: 'Shop No. 13, Opposite Federal Bank, Near Metro Park, Omassery, Kerala 673582',
+    phone: '+91 90375 07643',
     hours: '08:00 AM - 10:00 PM',
-    distance: '2.5 km'
-  },
-  {
-    id: 2,
-    name: 'Medical Shope - Ahmedabad HQ',
-    address: 'Shop No. 4, Ground Floor, Corporate House, Ahmedabad, Gujarat, India',
-    phone: '+91 79 4913 7600',
-    hours: '09:00 AM - 09:00 PM',
-    distance: '5.2 km'
-  },
-  {
-    id: 3,
-    name: 'Medical Shope - Jaipur Branch',
-    address: 'C-Scheme, Near Statue Circle, Jaipur, Rajasthan, India',
-    phone: '+91 141 234 5678',
-    hours: '10:00 AM - 08:00 PM',
-    distance: '12 km'
+    distance: 'Main Store'
   }
 ];
 
@@ -34,8 +18,8 @@ export default function StoreLocatorPage() {
   return (
     <>
       <Helmet>
-        <title>Store Locator - Medical Shope India</title>
-        <meta name="description" content="Find the nearest Medical Shope India pharmacy. Over 100+ authentic generic medical stores." />
+        <title>Store Locator - Amster Med Care</title>
+        <meta name="description" content="Find the nearest Amster Med Care pharmacy. Over 100+ authentic generic medical stores." />
       </Helmet>
 
       {/* Hero */}

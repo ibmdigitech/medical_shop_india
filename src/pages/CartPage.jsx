@@ -12,18 +12,18 @@ export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
 
   const generateWhatsAppLink = () => {
-    const phone = "917861804725"; // User's number
-    let message = "Hello! I'd like to order the following medicines from Medical Shope India:\n\n";
+    const phone = "919037507643"; // Amster Med Care WhatsApp
+    let message = "Hello! I'd like to order the following medicines from Amster Med Care:\n\n";
     cartItems.forEach(item => {
-      message += `- ${item.name} (${item.quantity}x) - AED ${item.price * item.quantity}\n`;
+      message += `- ${item.name} (${item.quantity}x) - ? ${item.price * item.quantity}\n`;
     });
-    message += `\n*Total Amount: AED ${cartTotal}*`;
+    message += `\n*Total Amount: ? ${cartTotal}*`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   };
 
   const generateUPILink = () => {
     const upiId = "yourname@upi"; // Placeholder
-    const name = "Medical Shope India";
+    const name = "Amster Med Care";
     return `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${cartTotal}&cu=INR&tn=Medicine Order`;
   };
 
@@ -31,7 +31,7 @@ export default function CartPage() {
     return (
       <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center px-4">
         <Helmet>
-          <title>Your Cart | Medical Shope India</title>
+          <title>Your Cart | Amster Med Care</title>
         </Helmet>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -57,7 +57,7 @@ export default function CartPage() {
   return (
     <div className="min-h-screen pt-32 pb-20 bg-dark">
       <Helmet>
-        <title>Shopping Cart ({cartItems.length}) | Medical Shope India</title>
+        <title>Shopping Cart ({cartItems.length}) | Amster Med Care</title>
       </Helmet>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -87,7 +87,7 @@ export default function CartPage() {
                     <h3 className="text-white font-semibold">{item.name}</h3>
                     <p className="text-gray-400 text-xs">{item.category}</p>
                     <div className="mt-2 flex items-center justify-between">
-                      <span className="text-primary-light font-bold">AED {item.price}</span>
+                      <span className="text-primary-light font-bold">? {item.price}</span>
                       <div className="flex items-center gap-3 bg-black/20 rounded-lg p-1">
                         <button 
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -131,7 +131,7 @@ export default function CartPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between text-gray-400 text-sm">
                   <span>Subtotal</span>
-                  <span>AED {cartTotal}</span>
+                  <span>? {cartTotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-400 text-sm">
                   <span>Delivery</span>
@@ -139,7 +139,7 @@ export default function CartPage() {
                 </div>
                 <div className="pt-4 border-t border-white/10 flex justify-between">
                   <span className="text-white font-bold">Total</span>
-                  <span className="text-2xl font-black text-primary-light">AED {cartTotal}</span>
+                  <span className="text-2xl font-black text-primary-light">? {cartTotal}</span>
                 </div>
               </div>
 

@@ -21,7 +21,7 @@ export default function MainLayout() {
 
       {/* WhatsApp Floating Button (global) */}
       <a
-        href="https://wa.me/971501234567"
+        href="https://wa.me/919037507643"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

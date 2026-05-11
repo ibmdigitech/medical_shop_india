@@ -97,8 +97,8 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Medical Shope India - Premium Pharmacy & Generic Medicines</title>
-        <meta name="description" content="Buy affordable generic medicines online from Medical Shope India. Trusted pharmacy with up to 85% savings on medicines and lab tests." />
+        <title>Amster Med Care - Premium Pharmacy & Generic Medicines</title>
+        <meta name="description" content="Buy affordable generic medicines online from Amster Med Care. Trusted pharmacy with up to 85% savings on medicines and lab tests." />
       </Helmet>
 
       {/* Hero */}
@@ -221,7 +221,7 @@ export default function HomePage() {
                       <p className="text-gray-500 text-xs font-bold uppercase mb-1">Branded Medicine</p>
                       <h4 className="text-white font-bold text-lg">Branded X</h4>
                     </div>
-                    <span className="text-red-400 font-bold text-xl line-through opacity-50">AED 185</span>
+                    <span className="text-red-400 font-bold text-xl line-through opacity-50">? 185</span>
                   </div>
                   <div className="flex justify-center">
                     <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold">VS</div>
@@ -232,7 +232,7 @@ export default function HomePage() {
                       <h4 className="text-white font-bold text-lg">Generic Y</h4>
                     </div>
                     <div className="text-right">
-                      <span className="text-white font-black text-2xl">AED 34</span>
+                      <span className="text-white font-black text-2xl">? 34</span>
                       <p className="text-primary-light text-[10px] font-bold">82% SAVINGS</p>
                     </div>
                   </div>
@@ -311,8 +311,8 @@ export default function HomePage() {
                   <h3 className="text-white font-bold text-sm mb-3 group-hover:text-primary transition-colors line-clamp-1">{p.title}</h3>
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex flex-col">
-                      <span className="text-white font-bold text-lg">AED {p.price}</span>
-                      <span className="text-gray-500 text-xs line-through">MRP AED {p.mrp}</span>
+                      <span className="text-white font-bold text-lg">? {p.price}</span>
+                      <span className="text-gray-500 text-xs line-through">MRP ? {p.mrp}</span>
                     </div>
                     <button 
                       onClick={() => addToCart({ ...p, name: p.title })}

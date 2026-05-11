@@ -71,8 +71,8 @@ export default function CareersPage() {
   return (
     <>
       <Helmet>
-        <title>Careers - IBM DigiTech UAE</title>
-        <meta name="description" content="Join IBM DigiTech — UAE's leading IT company. Explore exciting career opportunities in tech, cloud, AI, and more." />
+        <title>Careers - Amster Med Care UAE</title>
+        <meta name="description" content="Join Amster Med Care — UAE's leading IT company. Explore exciting career opportunities in tech, cloud, AI, and more." />
       </Helmet>
 
       {/* Hero */}
@@ -92,7 +92,7 @@ export default function CareersPage() {
       {/* Benefits */}
       <section className="py-16 px-4 bg-dark-card">
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-2xl font-bold text-white text-center mb-8">Why Work at IBM DigiTech?</h2>
+          <h2 className="text-2xl font-bold text-white text-center mb-8">Why Work at Amster Med Care?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {benefits.map((b, i) => (
               <motion.div key={b.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}

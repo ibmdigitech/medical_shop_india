@@ -47,19 +47,19 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-20 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group shrink-0">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
-                <Zap size={22} className="text-white" />
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <img src="/logo.png" alt="Amster Med Care" className="w-full h-full object-contain" />
               </div>
-              <div className="hidden sm:flex flex-col leading-none">
-                <span className="text-xl font-bold text-white tracking-tight">IBM</span>
-                <span className="text-xs font-semibold text-primary-light tracking-widest uppercase">DigiTech</span>
+              <div className="flex flex-col leading-none">
+                <span className="text-xl font-bold text-white tracking-tight italic">AMSTER</span>
+                <span className="text-xs font-semibold text-primary-light tracking-widest uppercase">Med Care</span>
               </div>
             </Link>
 
             {/* Location Selector (Medkart Reference) */}
             <div className="hidden xl:flex items-center gap-2 text-gray-400 text-xs px-3 py-1.5 bg-white/5 border border-white/10 rounded-lg hover:border-primary/50 transition-all cursor-pointer">
               <MapPin size={14} className="text-primary" />
-              <span className="whitespace-nowrap">Deliver to: <b className="text-white">Dubai, UAE</b></span>
+              <span className="whitespace-nowrap">Deliver to: <b className="text-white">Omassery, Kerala</b></span>
               <ChevronDown size={12} />
             </div>
 

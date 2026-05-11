@@ -23,7 +23,7 @@ export default function UploadPrescriptionPage() {
   return (
     <div className="min-h-screen pt-32 pb-20 bg-dark">
       <Helmet>
-        <title>Upload Prescription | Medical Shope India</title>
+        <title>Upload Prescription | Amster Med Care</title>
       </Helmet>
 
       <div className="max-w-3xl mx-auto px-4">

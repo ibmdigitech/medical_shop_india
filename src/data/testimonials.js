@@ -6,7 +6,7 @@ export const testimonials = [
     company: 'Dubai, UAE',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ahmed',
     rating: 5,
-    text: 'IBM DigiTech transformed our entire digital infrastructure. Their ERP solution cut our operational costs by 40% and the team was incredibly professional throughout the project.',
+    text: 'Amster Med Care transformed our entire digital infrastructure. Their ERP solution cut our operational costs by 40% and the team was incredibly professional throughout the project.',
   },
   {
     id: 2,
@@ -24,7 +24,7 @@ export const testimonials = [
     company: 'Sharjah, UAE',
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=mohammed',
     rating: 5,
-    text: 'We partnered with IBM DigiTech for our HRMS implementation. The system is robust, UAE-compliant and our HR team loves it. Highly recommend their services.',
+    text: 'We partnered with Amster Med Care for our HRMS implementation. The system is robust, UAE-compliant and our HR team loves it. Highly recommend their services.',
   },
   {
     id: 4,

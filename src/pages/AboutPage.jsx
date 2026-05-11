@@ -1,119 +1,90 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
-import TeamCard from '../components/TeamCard';
 import CTASection from '../components/CTASection';
-import { team } from '../data/team';
-import { Target, Eye, Rocket } from 'lucide-react';
+import { Target, Eye, ShieldCheck } from 'lucide-react';
 
 const timeline = [
-  { year: '2016', title: 'Company Founded', desc: 'IBM DigiTech established in Dubai with a vision to transform UAE businesses through technology.' },
-  { year: '2018', title: 'First Major ERP', desc: 'Delivered our first enterprise ERP to a 500-employee manufacturing company in Abu Dhabi.' },
-  { year: '2020', title: 'AI & Cloud Expansion', desc: 'Launched dedicated AI and Cloud practices to meet growing enterprise demand.' },
-  { year: '2022', title: 'HRMS Excellence', desc: 'Released our award-winning UAE-compliant HRMS platform serving 10,000+ employees.' },
-  { year: '2024', title: '250+ Projects', desc: 'Crossed the milestone of 250 successful project deliveries across the GCC region.' },
-];
-
-const techStack = [
-  'React', 'Next.js', 'Node.js', 'Python', 'Flutter', 'React Native',
-  'AWS', 'Azure', 'GCP', 'Docker', 'Kubernetes', 'PostgreSQL',
-  'MongoDB', 'Redis', 'TensorFlow', 'OpenAI', 'Figma', 'TypeScript',
+  { year: '2015', title: 'Founding', desc: 'Amster Med Care was founded with a mission to bring quality healthcare closer to the residents of Omassery.' },
+  { year: '2017', title: 'Expanding Services', desc: 'Introduced home delivery services and expanded our range to include specialized medications.' },
+  { year: '2019', title: 'Community Trust', desc: 'Recognized as one of the most trusted pharmacies in the region with over 5,000 regular customers.' },
+  { year: '2021', title: 'Healthcare Excellence', desc: 'Implemented state-of-the-art inventory management for accurate and fast medicine dispensing.' },
+  { year: '2024', title: 'Digital Transformation', desc: 'Launched our digital platform to make ordering medicines and booking lab tests easier than ever.' },
 ];
 
 export default function AboutPage() {
   return (
     <>
       <Helmet>
-        <title>About Us - IBM DigiTech UAE</title>
-        <meta name="description" content="Learn about IBM DigiTech, UAE's premier IT solutions company. Discover our story, mission, vision, and the expert team behind our success." />
+        <title>About Us - Amster Med Care Omassery</title>
+        <meta name="description" content="Discover the story of Amster Med Care, your trusted pharmacy in Omassery. Our mission is to provide affordable and authentic healthcare to the community." />
       </Helmet>
 
       {/* Hero */}
-      <section className="relative pt-36 pb-20 px-4 bg-dark overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl" />
-        <div className="max-w-4xl mx-auto text-center relative z-10">
-          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-block px-4 py-1.5 bg-accent/10 border border-accent/20 rounded-full text-accent text-xs font-semibold mb-6 tracking-widest uppercase">About Us</motion.span>
-          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl md:text-6xl font-black text-white mb-4">
-            Powering UAE's <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Digital Future</span>
+      <section className="relative pt-36 pb-20 px-4 bg-dark overflow-hidden text-center">
+        <div className="absolute inset-0 bg-primary/5 blur-[120px] rounded-full -translate-y-1/2" />
+        <div className="max-w-4xl mx-auto relative z-10">
+          <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="inline-block px-4 py-1.5 bg-primary/15 border border-primary/30 rounded-full text-primary-light text-xs font-semibold mb-6 tracking-widest uppercase tracking-tight">Caring for the Community</motion.span>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-4xl md:text-7xl font-black text-white mb-6 leading-tight">
+            Our Story, <br />
+            <span className="text-primary italic">Our Commitment</span>
           </motion.h1>
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-gray-400 text-lg max-w-2xl mx-auto">
-            Since 2016, IBM DigiTech has been at the forefront of digital transformation, helping UAE enterprises build smarter, faster, and more resilient technology solutions.
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
+            Since our inception, Amster Med Care has been more than just a pharmacy. We are your neighbors, your friends, and your trusted partners in health. Located in the heart of Omassery, we serve with a smile.
           </motion.p>
         </div>
       </section>
 
       {/* Vision & Mission */}
-      <section className="py-16 px-4 bg-dark-card">
-        <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
+      <section className="py-20 px-4 bg-dark-card">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { icon: Eye, title: 'Our Vision', color: 'from-primary to-cyan-500', desc: 'To be the most trusted technology partner for enterprises across the UAE and GCC, recognized for innovation, reliability, and transformative impact.' },
-            { icon: Target, title: 'Our Mission', color: 'from-secondary to-pink-500', desc: 'To deliver exceptional IT solutions that solve real business challenges — combining cutting-edge technology with deep industry expertise.' },
-            { icon: Rocket, title: 'Our Values', color: 'from-accent to-blue-500', desc: 'Integrity, Excellence, Innovation, and Customer-First. We build long-term partnerships built on trust, transparency, and measurable results.' },
+            { icon: Eye, title: 'Our Vision', desc: 'To be the first choice for every family in Omassery when it comes to health, wellness, and pharmaceutical care.' },
+            { icon: Target, title: 'Our Mission', desc: 'To provide authentic medicines at fair prices, combined with expert advice and a compassionate approach to patient care.' },
+            { icon: ShieldCheck, title: 'Our Values', desc: 'Authenticity, Compassion, Integrity, and Excellence. We believe that everyone deserves the highest standard of medical care.' },
           ].map((item, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
-              className="bg-dark border border-white/10 rounded-2xl p-6 text-center hover:border-primary/30 transition-all">
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${item.color} flex items-center justify-center mx-auto mb-4`}>
-                <item.icon size={26} className="text-white" />
+              className="bg-dark border border-white/5 rounded-3xl p-8 text-center hover:border-primary/40 transition-all group">
+              <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                <item.icon size={32} className="text-primary-light" />
               </div>
-              <h3 className="text-white font-bold text-lg mb-2">{item.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+              <h3 className="text-white font-bold text-xl mb-4">{item.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
             </motion.div>
           ))}
         </div>
       </section>
 
       {/* Timeline */}
-      <section className="py-20 px-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Journey</span></h2>
-            <p className="text-gray-400">8 years of innovation, growth, and client success.</p>
+      <section className="py-24 px-4 overflow-hidden">
+        <div className="max-w-4xl mx-auto relative">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black text-white mb-4">The <span className="text-primary">Journey</span></h2>
+            <p className="text-gray-500">Over a decade of serving the community of Kerala.</p>
           </div>
-          <div className="relative">
-            <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary via-secondary to-accent hidden md:block" />
+          
+          <div className="absolute left-1/2 -translate-x-1/2 top-32 bottom-0 w-px bg-white/10 hidden md:block" />
+          
+          <div className="space-y-12 relative">
             {timeline.map((item, i) => (
-              <motion.div key={item.year} initial={{ opacity: 0, x: i % 2 === 0 ? -40 : 40 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                className={`flex items-center gap-6 mb-10 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
-                <div className={`flex-1 ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
-                  <div className="bg-dark-card border border-white/10 rounded-xl p-5 hover:border-primary/30 transition-all">
-                    <span className="text-primary-light text-xs font-bold tracking-widest">{item.year}</span>
-                    <h3 className="text-white font-semibold mt-1 mb-1">{item.title}</h3>
-                    <p className="text-gray-400 text-sm">{item.desc}</p>
-                  </div>
+              <motion.div
+                key={item.year}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -50 : 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className={`flex flex-col md:flex-row items-center gap-8 ${i % 2 === 0 ? 'md:text-right' : 'md:flex-row-reverse md:text-left'}`}
+              >
+                <div className="flex-1">
+                  <span className="text-primary font-black text-xl mb-2 block">{item.year}</span>
+                  <h3 className="text-white font-bold text-2xl mb-2">{item.title}</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
                 </div>
-                <div className="hidden md:flex w-10 h-10 rounded-full bg-gradient-to-br from-primary to-secondary items-center justify-center shrink-0 z-10 font-bold text-white text-xs">
+                <div className="w-10 h-10 rounded-full bg-dark border-4 border-primary z-10 flex items-center justify-center text-white text-[10px] font-bold hidden md:flex">
                   {i + 1}
                 </div>
                 <div className="flex-1 hidden md:block" />
               </motion.div>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Tech Stack */}
-      <section className="py-16 px-4 bg-dark-card">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-2xl font-bold text-white mb-3">Technology Stack</h2>
-          <p className="text-gray-400 text-sm mb-8">We work with the world's best tools and frameworks.</p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {techStack.map((tech, i) => (
-              <motion.span key={tech} initial={{ opacity: 0, scale: 0.8 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}
-                className="px-4 py-2 bg-dark border border-white/10 rounded-lg text-gray-300 text-sm font-medium hover:border-primary/40 hover:text-white hover:bg-primary/10 transition-all duration-200 cursor-default">
-                {tech}
-              </motion.span>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-3">Meet the <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Leadership Team</span></h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {team.map((m, i) => <TeamCard key={m.id} member={m} index={i} />)}
           </div>
         </div>
       </section>

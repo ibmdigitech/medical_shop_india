@@ -65,8 +65,8 @@ export default function BlogPage() {
   return (
     <>
       <Helmet>
-        <title>Blog - IBM DigiTech UAE</title>
-        <meta name="description" content="Stay informed with IBM DigiTech's blog — expert insights on IT trends, UAE digital transformation, cloud, AI, HRMS, and more." />
+        <title>Blog - Amster Med Care UAE</title>
+        <meta name="description" content="Stay informed with Amster Med Care's blog — expert insights on IT trends, UAE digital transformation, cloud, AI, HRMS, and more." />
       </Helmet>
 
       {/* Hero */}

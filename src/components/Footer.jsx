@@ -37,16 +37,16 @@ export default function Footer() {
           {/* Brand Column */}
           <div className="space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform duration-300">
-                <Zap size={22} className="text-white" />
+              <div className="w-12 h-12 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <img src="/logo.png" alt="Amster Med Care" className="w-full h-full object-contain" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-xl font-bold text-white tracking-tight">IBM</span>
-                <span className="text-xs font-semibold text-primary-light tracking-widest uppercase">DigiTech</span>
+                <span className="text-xl font-bold text-white tracking-tight italic">AMSTER</span>
+                <span className="text-xs font-semibold text-primary-light tracking-widest uppercase">Med Care</span>
               </div>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Medical Shope India is your trusted partner for affordable, high-quality generic medicines and reliable lab tests across India and the UAE.
+              Amster Med Care is your trusted neighborhood pharmacy in Omassery, committed to providing high-quality medicines and expert healthcare advice.
             </p>
             <div className="flex items-center gap-4">
               {[Globe, Share2, MessageCircle, Video, Users].map((Icon, i) => (
@@ -95,21 +95,21 @@ export default function Footer() {
                   <MapPin size={16} className="text-primary-light" />
                 </div>
                 <p className="text-gray-400 text-sm">
-                  123 Business Bay, Dubai, UAE <br />
-                  Ahmedabad, Gujarat, India
+                  Shop No. 13, Opposite Federal Bank, <br />
+                  Near Metro Park, Omassery, Kerala 673582
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                   <Phone size={16} className="text-primary-light" />
                 </div>
-                <p className="text-gray-400 text-sm">+91 78618 04725</p>
+                <p className="text-gray-400 text-sm">+91 90375 07643</p>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center shrink-0">
                   <Mail size={16} className="text-primary-light" />
                 </div>
-                <p className="text-gray-400 text-sm">info@ibmdigitech.com</p>
+                <p className="text-gray-400 text-sm">info@amstermedcare.com</p>
               </div>
             </div>
           </div>
@@ -125,9 +125,9 @@ export default function Footer() {
             ))}
           </div>
           <p className="text-gray-600 text-xs text-center md:text-right">
-            © {new Date().getFullYear()} Medical Shope India (IBM DigiTech). All Rights Reserved. <br className="md:hidden" />
+            © {new Date().getFullYear()} Amster Med Care. All Rights Reserved. <br className="md:hidden" />
             <span className="hidden md:inline mx-2">|</span> 
-            Crafted for UAE & GCC Markets.
+            Serving the community of Omassery, Kerala.
           </p>
         </div>
       </div>

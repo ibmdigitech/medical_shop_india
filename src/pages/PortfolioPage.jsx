@@ -12,8 +12,8 @@ export default function PortfolioPage() {
   return (
     <>
       <Helmet>
-        <title>Portfolio - IBM DigiTech UAE</title>
-        <meta name="description" content="Explore IBM DigiTech's portfolio of successful projects across Web, Mobile, HRMS, ERP, Cloud, and AI for UAE clients." />
+        <title>Portfolio - Amster Med Care UAE</title>
+        <meta name="description" content="Explore Amster Med Care's portfolio of successful projects across Web, Mobile, HRMS, ERP, Cloud, and AI for UAE clients." />
       </Helmet>
 
       <section className="relative pt-36 pb-20 px-4 bg-dark overflow-hidden">

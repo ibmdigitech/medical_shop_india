@@ -11,7 +11,7 @@ export const team = [
     id: 2,
     name: 'Ravi Sharma',
     role: 'CTO',
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ravi&backgroundColor=c0aede',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ravi&backgroundColor=c0?e',
     linkedin: '#',
     bio: 'Expert in cloud architecture, AI/ML, and enterprise software engineering.',
   },
