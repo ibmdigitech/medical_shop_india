@@ -1,58 +1,66 @@
-﻿export const categories = [
+export const categories = [
   {
     id: 1,
-    title: 'Nutritional Supplements',
-    slug: 'nutritional-supplements',
-    description: 'Boost your health with essential vitamins and minerals.',
-    color: 'from-blue-500 to-blue-600'
+    title: 'Medicines',
+    slug: 'medicines',
+    description: 'Wide range of genuine prescription and OTC medicines.',
+    color: 'from-primary to-primary-dark',
+    icon: 'Pill'
   },
   {
     id: 2,
-    title: 'Ayurvedic Products',
-    slug: 'ayurvedic-products',
-    description: 'Natural healing with trusted ayurvedic remedies.',
-    color: 'from-green-500 to-green-600'
+    title: 'Veterinary',
+    slug: 'veterinary',
+    description: 'Essential healthcare products for your beloved pets and livestock.',
+    color: 'from-amber-500 to-amber-600',
+    icon: 'PawPrint'
   },
   {
     id: 3,
-    title: 'Diabetes Care',
-    slug: 'diabetes-care',
-    description: 'Comprehensive solutions for blood sugar management.',
-    color: 'from-red-500 to-red-600'
+    title: 'Baby Products',
+    slug: 'baby-products',
+    description: 'Gentle and safe care products for your little ones.',
+    color: 'from-blue-400 to-blue-500',
+    icon: 'Baby'
   },
   {
     id: 4,
-    title: 'Personal Care',
-    slug: 'personal-care',
-    description: 'Premium products for your daily hygiene and beauty.',
-    color: 'from-purple-500 to-purple-600'
+    title: 'Cosmetics',
+    slug: 'cosmetics',
+    description: 'Premium beauty and skincare products from trusted brands.',
+    color: 'from-pink-400 to-pink-500',
+    icon: 'Sparkles'
   },
   {
     id: 5,
-    title: 'Eye Care Products',
-    slug: 'eye-care',
-    description: 'Protect your vision with specialized eye drops and supplements.',
-    color: 'from-cyan-500 to-cyan-600'
+    title: 'Surgicals',
+    slug: 'surgicals',
+    description: 'High-quality surgical instruments and healthcare equipment.',
+    color: 'from-slate-500 to-slate-600',
+    icon: 'Stethoscope'
   },
   {
     id: 6,
-    title: 'Cough & Cold',
-    slug: 'cough-cold',
-    description: 'Relief from seasonal allergies and common cold.',
-    color: 'from-orange-500 to-orange-600'
+    title: 'Covid-19 Supplies',
+    slug: 'covid-19',
+    description: 'Stay safe with masks, sanitizers, and wellness essentials.',
+    color: 'from-red-500 to-red-600',
+    icon: 'ShieldCheck'
   },
   {
     id: 7,
-    title: 'Health Care Devices',
-    slug: 'health-care-devices',
-    description: 'Modern devices to track your health at home.',
-    color: 'from-indigo-500 to-indigo-600'
+    title: 'Ayurvedic Products',
+    slug: 'ayurvedic',
+    description: 'Authentic traditional healing with natural ayurvedic remedies.',
+    color: 'from-green-500 to-green-600',
+    icon: 'Leaf'
   },
   {
     id: 8,
-    title: 'New Generic Medicines',
-    slug: 'new-generic-medicines',
-    description: 'Save big on newly launched high-quality generic drugs.',
-    color: 'from-pink-500 to-pink-600'
+    title: 'Generic Medicines',
+    slug: 'generic-medicines',
+    description: 'Quality generic alternatives at significantly lower prices.',
+    color: 'from-secondary to-secondary-dark',
+    icon: 'Zap'
   }
 ];

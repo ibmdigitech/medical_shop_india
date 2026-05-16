@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Filter, ShoppingCart, Info, ArrowRight, Pill, Activity, FlaskConical, Zap } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
 import { products } from '../data/products';
 import CTASection from '../components/CTASection';
 import { useCart } from '../context/CartContext';
@@ -27,10 +28,7 @@ export default function MedicinesPage() {
         <meta name="keywords" content="buy medicines online, online pharmacy Kerala, generic medicines, free delivery, discount medicines, branded drugs, healthcare products" />
       </Helmet>
 
-      {/* Promo Banner */}
-      <div className="bg-gradient-to-r from-accent to-red-600 text-white py-3 text-center font-bold text-sm">
-        🔥 FLAT 25% OFF on All Medicines - Use Code: <span className="bg-white/20 px-2 py-0.5 rounded ml-1">MED25</span> | 🚚 Free Home Delivery
-      </div>
+
 
       {/* Hero */}
       <section className="relative pt-32 pb-20 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark dark:to-dark-card overflow-hidden">
@@ -58,7 +56,7 @@ export default function MedicinesPage() {
 
           {/* Search Box */}
           <div className="relative max-w-2xl mx-auto">
-            <Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+            <LucideIcons.Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input 
               type="text" 
               value={search}
@@ -92,8 +90,8 @@ export default function MedicinesPage() {
             {/* Sidebar Filters */}
             <aside className="w-full lg:w-64 space-y-8">
               <div>
-                <h3 className="text-white font-bold mb-4 flex items-center gap-2">
-                  <Filter size={18} className="text-primary" /> Categories
+                <h3 className="text-slate-900 font-bold mb-4 flex items-center gap-2">
+                  <LucideIcons.Filter size={18} className="text-primary" /> Categories
                 </h3>
                 <div className="space-y-2">
                   {categories.map(cat => (
@@ -103,7 +101,7 @@ export default function MedicinesPage() {
                       className={`w-full text-left px-4 py-2.5 rounded-xl text-sm transition-all ${
                         activeCategory === cat 
                           ? 'bg-primary text-white font-bold shadow-lg shadow-primary/30' 
-                          : 'bg-white/5 text-gray-400 hover:text-white hover:bg-white/10 border border-white/5'
+                          : 'bg-slate-50 text-slate-600 hover:text-primary hover:bg-primary/5 border border-slate-100'
                       }`}
                     >
                       {cat}
@@ -112,27 +110,27 @@ export default function MedicinesPage() {
                 </div>
               </div>
 
-              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 border border-white/10 rounded-2xl p-5">
-                <h4 className="text-white font-bold text-sm mb-2">Prescription Medicine?</h4>
-                <p className="text-gray-400 text-xs mb-4 leading-relaxed">Simply upload your prescription and we will find the best substitutes for you.</p>
-                <button className="w-full py-2 bg-white text-dark font-bold text-xs rounded-lg hover:bg-primary hover:text-white transition-all">
+              <div className="bg-gradient-to-br from-primary/10 to-secondary/10 border border-primary/20 rounded-2xl p-5">
+                <h4 className="text-primary-dark font-bold text-sm mb-2">Prescription Medicine?</h4>
+                <p className="text-slate-600 text-xs mb-4 leading-relaxed">Simply upload your prescription and we will find the best substitutes for you.</p>
+                <Link to="/upload-prescription" className="block w-full text-center py-2 bg-primary text-white font-bold text-xs rounded-lg hover:bg-primary-dark transition-all">
                   Upload Now
-                </button>
+                </Link>
               </div>
             </aside>
 
             {/* Products Grid */}
             <div className="flex-1">
               <div className="flex items-center justify-between mb-8">
-                <p className="text-gray-400 text-sm">Showing <span className="text-white font-bold">{filtered.length}</span> results</p>
-                <div className="flex items-center gap-2 text-xs text-gray-500">
-                  Sort by: <span className="text-white font-semibold cursor-pointer flex items-center gap-1">Popularity <ChevronDown size={12} /></span>
+                <p className="text-slate-500 text-sm">Showing <span className="text-slate-900 font-bold">{filtered.length}</span> results</p>
+                <div className="flex items-center gap-2 text-xs text-slate-500">
+                  Sort by: <span className="text-slate-900 font-semibold cursor-pointer flex items-center gap-1">Popularity <LucideIcons.ChevronDown size={12} /></span>
                 </div>
               </div>
 
               {filtered.length === 0 ? (
-                <div className="text-center py-20 bg-dark-card border border-white/5 rounded-3xl">
-                  <p className="text-gray-500">No products found for "{search}"</p>
+                <div className="text-center py-20 bg-white border border-slate-100 rounded-3xl shadow-sm">
+                  <p className="text-slate-500">No products found for "{search}"</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -142,7 +140,7 @@ export default function MedicinesPage() {
                       initial={{ opacity: 0, y: 20 }} 
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: (i % 6) * 0.05 }}
-                      className="bg-dark-card border border-white/10 rounded-3xl overflow-hidden hover:border-primary/40 transition-all group flex flex-col"
+                      className="bg-white border border-slate-100 rounded-3xl overflow-hidden hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 transition-all group flex flex-col"
                     >
                        <div className="h-56 relative overflow-hidden bg-white">
                          <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -152,20 +150,20 @@ export default function MedicinesPage() {
                          </span>
                          {p.type === 'Generic' && (
                            <span className="absolute top-4 right-4 px-3 py-1.5 bg-gradient-to-r from-primary to-primary-dark text-white text-xs font-bold rounded-lg shadow-lg flex items-center gap-1">
-                             <Zap size={12} fill="currentColor" /> GENERIC
+                             <LucideIcons.Zap size={12} fill="currentColor" /> GENERIC
                            </span>
                          )}
                        </div>
-                       <div className="p-5 flex-1 flex flex-col bg-white dark:bg-dark-card border-t border-gray-100 dark:border-dark-border">
+                       <div className="p-5 flex-1 flex flex-col bg-white border-t border-slate-100">
                          <div className="flex items-center justify-between mb-2">
                            <p className="text-primary text-[10px] uppercase font-bold tracking-wider">{p.brand}</p>
                            {p.type === 'Generic' && (
-                             <span className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 px-2 py-0.5 rounded-full font-medium">
-                               Budget Friendly
+                             <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">
+                                Budget Friendly
                              </span>
                            )}
                          </div>
-                         <h3 className="text-gray-900 dark:text-white font-bold text-lg mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                         <h3 className="text-slate-900 font-bold text-lg mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                            {p.title}
                          </h3>
                          
@@ -181,7 +179,7 @@ export default function MedicinesPage() {
                              onClick={() => addToCart({ ...p, name: p.title })}
                              className="px-5 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all flex items-center gap-2 text-sm active:scale-95"
                            >
-                             <ShoppingCart size={16} /> Add
+                             <LucideIcons.ShoppingCart size={16} /> Add
                            </button>
                          </div>
                        </div>
@@ -199,5 +197,3 @@ export default function MedicinesPage() {
     </>
   );
 }
-
-function ChevronDown(props) { return <ArrowRight {...props} style={{ transform: 'rotate(90deg)' }} />; }

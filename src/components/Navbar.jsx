@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Zap, ShoppingCart, Search, MapPin, Upload } from 'lucide-react';
+import { Menu, X, ChevronDown, ShoppingCart, Search, MapPin, Sun, Moon, Upload } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useTheme } from '../context/ThemeContext';
+import logo from '../assets/logo.png';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -15,6 +17,7 @@ const navLinks = [
 
 export default function Navbar() {
   const { cartCount } = useCart();
+  const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -48,7 +51,7 @@ export default function Navbar() {
         transition={{ duration: 0.6, ease: 'easeOut' }}
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
-            ? 'bg-app-bg/95 backdrop-blur-xl border-b border-app-border shadow-lg'
+            ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-b border-slate-200/50 dark:border-slate-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
             : 'bg-transparent'
         }`}
         style={{ top: scrolled ? '0' : '38px' }}
@@ -57,33 +60,33 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-20 gap-4">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2 group shrink-0" aria-label="Home">
-              <div className="w-12 h-12 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <img src="/logo.png" alt="Amster Med Care Logo" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-slate-100 p-0.5">
+                <img src={logo} alt="Amster Med Care Logo" className="w-full h-full object-cover rounded-full" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-xl font-bold text-app-text tracking-tight">AMSTER</span>
-                <span className="text-xs font-bold text-primary tracking-wider uppercase">MED CARE</span>
+                <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">AMSTER</span>
+                <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">Med Care</span>
               </div>
             </Link>
 
             {/* Location Selector */}
-            <div className="hidden xl:flex items-center gap-2 text-gray-500 dark:text-gray-300 text-xs px-3 py-1.5 bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-lg hover:border-primary transition-all cursor-pointer">
+            <div className="hidden xl:flex items-center gap-2 text-slate-500 text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg hover:border-primary transition-all cursor-pointer">
               <MapPin size={14} className="text-primary" />
-              <span className="whitespace-nowrap">Deliver to: <b className="text-app-text">Omassery, Kerala</b></span>
+              <span className="whitespace-nowrap">Deliver to: <b className="text-slate-900">Omassery, Kerala</b></span>
               <ChevronDown size={12} />
             </div>
 
             {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden lg:flex items-center gap-2 lg:gap-4 flex-1 justify-center">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    `whitespace-nowrap px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? 'text-primary bg-primary/10'
-                        : 'text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-primary/5'
+                        : 'text-gray-600 hover:text-primary hover:bg-primary/5'
                     }`
                   }
                 >
@@ -93,21 +96,29 @@ export default function Navbar() {
             </div>
 
             {/* Search Bar */}
-            <div className="hidden md:flex flex-1 max-w-md relative group">
+            <div className="hidden xl:flex w-64 relative group">
               <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
               <input 
                 type="search"
-                placeholder="Search medicines, wellness products..." 
+                placeholder="Search products..." 
                 aria-label="Search medicines"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-sm text-app-text placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-app-text placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               />
             </div>
 
             {/* Icons & CTA */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Theme Toggle */}
+              <button
+                onClick={toggle}
+                className="p-2 rounded-xl text-slate-600 hover:text-primary hover:bg-primary/5 transition-all"
+                aria-label="Toggle theme"
+              >
+                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+              </button>
               <button 
                 onClick={() => setSearchOpen(!searchOpen)}
-                className="md:hidden p-2 text-gray-600 dark:text-gray-300 hover:text-primary rounded-lg hover:bg-primary/5 transition-all"
+                className="md:hidden p-2 text-slate-600 hover:text-primary rounded-lg hover:bg-primary/5 transition-all"
                 aria-label="Open search"
               >
                 <Search size={22} />

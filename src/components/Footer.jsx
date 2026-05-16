@@ -1,8 +1,6 @@
-﻿import { Link } from 'react-router-dom';
-import { 
-  Zap, Mail, Phone, MapPin, Globe, Share2, 
-  MessageCircle, Video, Users, ExternalLink 
-} from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Mail, Phone, MapPin, MessageCircle } from 'lucide-react';
+import logo from '../assets/logo.png';
 
 const footerLinks = {
   about: [
@@ -30,7 +28,7 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-b from-white to-gray-50 dark:from-dark dark:to-dark-card pt-20 pb-10 border-t border-gray-200 dark:border-dark-border" itemScope itemType="https://schema.org/Pharmacy">
+    <footer className="bg-gradient-to-b from-white to-slate-50 dark:from-slate-900 dark:to-slate-950 pt-20 pb-10 border-t border-slate-100 dark:border-slate-800" itemScope itemType="https://schema.org/Pharmacy">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Top Banner - Free Delivery */}
         <div className="bg-gradient-to-r from-primary via-primary-dark to-secondary rounded-2xl p-6 mb-12 text-white relative overflow-hidden">
@@ -38,32 +36,32 @@ export default function Footer() {
           <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -mb-12 -ml-12" />
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-              <h3 className="text-2xl font-bold mb-2">🚚 FREE Home Delivery on All Orders!</h3>
-              <p className="text-white/90">Order medicines online and get them delivered to your doorstep across Kerala - Same day delivery if ordered before 6 PM</p>
+              <h3 className="text-2xl font-bold font-heading mb-2">🚚 FREE Home Delivery on All Orders!</h3>
+              <p className="text-white/90 font-medium">Order medicines online and get them delivered to your doorstep across Kerala - Same day delivery if ordered before 6 PM</p>
             </div>
-            <Link 
-              to="/medicines" 
+            <Link
+              to="/medicines"
               className="px-8 py-3 bg-white text-primary font-bold rounded-xl hover:bg-gray-100 hover:scale-105 transition-all shadow-lg whitespace-nowrap"
             >
               Order Now
             </Link>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          
+
           {/* Brand Column */}
           <div className="space-y-5">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                <img src="/logo.png" alt="Amster Med Care Logo" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-white border-2 border-primary/20 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                <img src={logo} alt="Amster Med Care Logo" className="w-full h-full object-cover rounded-full" />
               </div>
               <div className="flex flex-col leading-none">
-                <span className="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">AMSTER</span>
+                <span className="text-2xl font-bold font-heading text-slate-900 dark:text-white tracking-tight">AMSTER</span>
                 <span className="text-sm font-bold text-primary tracking-wider uppercase">MED CARE</span>
               </div>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
               Amster Med Care is your trusted pharmacy in Omassery, Kerala. We deliver quality medicines, wellness products & healthcare essentials with free home delivery.
             </p>
             <div className="flex items-center gap-3">
@@ -79,11 +77,11 @@ export default function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-gray-900 dark:text-white font-bold mb-5 text-lg">Quick Links</h3>
+            <h3 className="text-slate-900 dark:text-white font-bold font-heading mb-5 text-lg">Quick Links</h3>
             <ul className="space-y-3">
               {footerLinks.about.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.path} className="text-gray-600 dark:text-gray-400 hover:text-primary transition-colors text-sm flex items-center gap-2 group">
+                  <Link to={link.path} className="text-slate-500 dark:text-slate-400 hover:text-primary transition-colors text-sm flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-primary group-hover:bg-primary-light transition-colors" />
                     {link.name}
                   </Link>
@@ -94,11 +92,11 @@ export default function Footer() {
 
           {/* Services */}
           <div>
-            <h3 className="text-gray-900 dark:text-white font-bold mb-5 text-lg">Our Services</h3>
+            <h3 className="text-slate-900 dark:text-white font-bold font-heading mb-5 text-lg">Our Services</h3>
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
-                  <Link to={link.path} className="text-gray-600 dark:text-gray-400 hover:text-secondary transition-colors text-sm flex items-center gap-2 group">
+                  <Link to={link.path} className="text-slate-500 dark:text-slate-400 hover:text-secondary transition-colors text-sm flex items-center gap-2 group">
                     <span className="w-1.5 h-1.5 rounded-full bg-secondary group-hover:bg-secondary-light transition-colors" />
                     {link.name}
                   </Link>
@@ -109,7 +107,7 @@ export default function Footer() {
 
           {/* Contact */}
           <div>
-            <h3 className="text-gray-900 dark:text-white font-bold mb-5 text-lg">Contact Us</h3>
+            <h3 className="text-slate-900 dark:text-white font-bold font-heading mb-5 text-lg">Contact Us</h3>
             <div className="space-y-4">
               <div className="flex items-start gap-3">
                 <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
@@ -141,22 +139,22 @@ export default function Footer() {
                 </a>
               </div>
             </div>
-            
+
             {/* Opening Hours */}
-            <div className="mt-6 p-4 bg-gray-50 dark:bg-dark-card rounded-xl border border-gray-200 dark:border-dark-border">
-              <h4 className="font-bold text-gray-900 dark:text-white text-sm mb-2">Working Hours</h4>
-              <p className="text-gray-600 dark:text-gray-400 text-xs">Mon - Sun: 8:00 AM - 10:00 PM</p>
-              <p className="text-gray-600 dark:text-gray-400 text-xs">24/7 WhatsApp Support Available</p>
+            <div className="mt-6 p-4 bg-slate-50 rounded-xl border border-slate-100 shadow-sm">
+              <h4 className="font-bold font-heading text-slate-900 text-sm mb-2">Working Hours</h4>
+              <p className="text-slate-600 text-xs font-medium">Mon - Sun: 8:00 AM - 10:00 PM</p>
+              <p className="text-primary text-xs font-bold mt-1">✓ 24/7 WhatsApp Support</p>
             </div>
           </div>
         </div>
 
         {/* Delivery Cities */}
-        <div className="py-8 border-t border-b border-gray-200 dark:border-dark-border mb-8">
-          <h4 className="text-center text-gray-500 dark:text-gray-400 text-sm font-semibold mb-4">We Deliver To</h4>
+        <div className="py-8 border-t border-b border-slate-100 dark:border-slate-800 mb-8">
+          <h4 className="text-center font-heading text-slate-500 dark:text-slate-400 text-sm font-semibold mb-4">We Deliver To</h4>
           <div className="flex flex-wrap justify-center gap-3">
             {['Omassery', 'Kozhikode', 'Malappuram', 'Kannur', 'Wayanad', 'Thrissur', 'Palakkad', 'Ernakulam', 'Kottayam', 'All Kerala'].map(city => (
-              <span key={city} className="px-4 py-2 bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-full text-sm text-gray-600 dark:text-gray-300 hover:border-primary hover:text-primary transition-colors">
+              <span key={city} className="px-4 py-2 bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm rounded-full text-sm font-medium text-slate-600 dark:text-slate-300 hover:border-primary hover:text-primary transition-colors cursor-default">
                 {city}
               </span>
             ))}
@@ -167,16 +165,16 @@ export default function Footer() {
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex flex-wrap items-center justify-center gap-6">
             {footerLinks.policies.map((link) => (
-              <Link key={link.name} to={link.path} className="text-gray-500 hover:text-primary text-xs transition-colors">
+              <Link key={link.name} to={link.path} className="text-slate-500 dark:text-slate-400 hover:text-primary text-xs transition-colors">
                 {link.name}
               </Link>
             ))}
           </div>
           <div className="text-center md:text-right">
-            <p className="text-gray-600 dark:text-gray-400 text-xs">
+            <p className="text-slate-600 dark:text-slate-400 text-xs">
               © {new Date().getFullYear()} Amster Med Care. All Rights Reserved.
             </p>
-            <p className="text-gray-500 dark:text-gray-500 text-xs mt-1">
+            <p className="text-slate-500 dark:text-slate-500 text-xs mt-1">
               Trusted pharmacy serving Omassery & all across Kerala with free home delivery.
             </p>
           </div>

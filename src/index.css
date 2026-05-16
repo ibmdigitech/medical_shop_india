@@ -1,18 +1,21 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind v4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Medical Trust Colors - Clean & Professional */
-  --color-primary: #0891B2;      /* Medical Cyan - Trust & Healthcare */
-  --color-primary-dark: #0E7490; /* Darker Cyan */
-  --color-primary-light: #22D3EE;/* Light Cyan */
+  --color-primary: #059669;      /* Medical Green - Primary */
+  --color-primary-dark: #047857;
+  --color-primary-light: #10B981;
   
-  --color-secondary: #059669;    /* Medical Green - Health & Wellness */
-  --color-secondary-dark: #047857;
-  --color-secondary-light: #34D399;
+  --color-secondary: #0891B2;    /* Medical Cyan - Secondary */
+  --color-secondary-dark: #0E7490;
+  --color-secondary-light: #22D3EE;
   
-  --color-accent: #DC2626;       /* urgent Red - Offers & Alerts */
-  --color-accent-dark: #B91C1C;
-  --color-accent-light: #F87171;
+  --color-accent: #E11D48;       /* Rose/Red for the heart in logo */
+  --color-accent-dark: #BE123C;
+  --color-accent-light: #FB7185;
 
   /* Semantic Backgrounds */
   --color-app-bg: var(--bg-color);
@@ -21,15 +24,16 @@
   --color-app-border: var(--border-color);
 
   /* Dark Theme */
-  --color-dark: #0A0B10;
-  --color-dark-card: #15171E;
-  --color-dark-border: #252936;
+  --color-dark: #0F172A;
+  --color-dark-card: #1E293B;
+  --color-dark-border: #334155;
 
-  --font-sans: "Inter", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
+  --font-heading: "Outfit", sans-serif;
 
-  --background-image-glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  --background-image-glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
 
-  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
 
   --animate-marquee: marquee 25s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -46,25 +50,16 @@
 
 :root {
   --bg-color: #FFFFFF;
-  --text-color: #111827;
+  --text-color: #0F172A;
   --card-bg: #F8FAFC;
   --border-color: #E2E8F0;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg-color: #0A0B10;
-    --text-color: #F1F5F9;
-    --card-bg: #15171E;
-    --border-color: #252936;
-  }
-}
-
 .dark {
-  --bg-color: #0A0B10;
+  --bg-color: #0F172A;
   --text-color: #F1F5F9;
-  --card-bg: #15171E;
-  --border-color: #252936;
+  --card-bg: #1E293B;
+  --border-color: #334155;
 }
 
 @layer base {
