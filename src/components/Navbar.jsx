@@ -9,6 +9,7 @@ import {
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import logo from '../assets/logo.png';
+import ThemeToggle from './ThemeToggle';
 
 const navLinks = [
   { name: 'Home', path: '/' },
@@ -120,13 +121,7 @@ export default function Navbar() {
               )}
             </Link>
 
-            <button 
-              onClick={toggle}
-              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-500 hover:text-primary transition-all active:scale-90"
-              aria-label="Toggle Theme"
-            >
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            <ThemeToggle />
 
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
@@ -177,12 +172,7 @@ export default function Navbar() {
               className="relative w-80 h-full bg-white dark:bg-dark shadow-2xl flex flex-col pt-32 px-6"
             >
               <div className="absolute top-8 left-8 right-8 flex items-center justify-between">
-                <button 
-                  onClick={toggle}
-                  className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-white/10"
-                >
-                  {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
-                </button>
+                <ThemeToggle />
                 <button onClick={() => setMobileOpen(false)} className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-white/10">
                   <X size={24} />
                 </button>
