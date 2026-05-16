@@ -6,7 +6,7 @@ const footerLinks = {
   about: [
     { name: 'About Us', path: '/about' },
     { name: 'Contact Us', path: '/contact' },
-    { name: 'Franchise', path: '/franchise' },
+    { name: 'Franchise', path: '/contact' },
     { name: 'Blog', path: '/blog' },
     { name: 'Store Locator', path: '/stores' },
   ],
@@ -14,15 +14,15 @@ const footerLinks = {
     { name: 'Order Medicines', path: '/medicines' },
     { name: 'Lab Tests', path: '/lab-tests' },
     { name: 'Wellness', path: '/wellness' },
-    { name: 'Compare Medicines', path: '/compare' },
+    { name: 'Compare Medicines', path: '/compare-medicines' },
     { name: 'Upload Prescription', path: '/upload-prescription' },
   ],
   policies: [
-    { name: 'Privacy Policy', path: '/privacy' },
-    { name: 'Terms of Service', path: '/terms' },
-    { name: 'Return & Refund', path: '/return-policy' },
-    { name: 'Shipping Policy', path: '/shipping' },
-    { name: 'Payment Terms', path: '/payments' },
+    { name: 'Privacy Policy', path: '#' },
+    { name: 'Terms of Service', path: '#' },
+    { name: 'Return & Refund', path: '#' },
+    { name: 'Shipping Policy', path: '#' },
+    { name: 'Payment Terms', path: '#' },
   ]
 };
 

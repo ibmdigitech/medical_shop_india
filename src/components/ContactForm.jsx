@@ -1,4 +1,4 @@
-﻿import { useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, User, Mail, Phone, MessageSquare, CheckCircle } from 'lucide-react';
 
@@ -8,9 +8,27 @@ export default function ContactForm() {
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setSubmitted(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(form),
+      });
+
+      if (response.ok) {
+        setSubmitted(true);
+        setForm({ name: '', email: '', phone: '', service: '', message: '' });
+      } else {
+        alert('Failed to send message. Please try again.');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Network error. Is the backend running?');
+    }
   };
 
   if (submitted) {

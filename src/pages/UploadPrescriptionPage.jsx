@@ -8,10 +8,40 @@ export default function UploadPrescriptionPage() {
   const [file, setFile] = useState(null);
   const [step, setStep] = useState(1);
 
+  const [formData, setFormData] = useState({ patient_name: '', mobile: '', notes: '' });
+
   const handleFileChange = (e) => {
     if (e.target.files[0]) { setFile(e.target.files[0]); setStep(2); }
   };
-  const handleSubmit = (e) => { e.preventDefault(); setStep(3); };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
+  const handleSubmit = async (e) => { 
+    e.preventDefault(); 
+    
+    const data = new FormData();
+    data.append('prescription', file);
+    data.append('patient_name', formData.patient_name);
+    data.append('mobile', formData.mobile);
+    data.append('notes', formData.notes);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/upload-prescription', {
+        method: 'POST',
+        body: data,
+      });
+
+      if (response.ok) {
+        setStep(3); 
+      } else {
+        alert('Upload failed. Please try again.');
+      }
+    } catch (error) {
+      console.error('Upload Error:', error);
+      alert('Network error. Is the backend running?');
+    }
+  };
 
   return (
     <div className="min-h-screen pt-32 pb-20 bg-gradient-to-br from-green-50 via-white to-blue-50">
@@ -95,15 +125,15 @@ export default function UploadPrescriptionPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <label className="text-sm text-slate-500 ml-1 font-medium">Patient Name</label>
-                  <input required type="text" placeholder="e.g. John Doe" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                  <input name="patient_name" value={formData.patient_name} onChange={handleChange} required type="text" placeholder="e.g. John Doe" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm text-slate-500 ml-1 font-medium">Mobile Number</label>
-                  <input required type="tel" placeholder="e.g. +91 98765 43210" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
+                  <input name="mobile" value={formData.mobile} onChange={handleChange} required type="tel" placeholder="e.g. +91 98765 43210" className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20" />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm text-slate-500 ml-1 font-medium">Additional Notes (Optional)</label>
-                  <textarea placeholder="Any specific requirements or instructions..." className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 h-32" />
+                  <textarea name="notes" value={formData.notes} onChange={handleChange} placeholder="Any specific requirements or instructions..." className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-slate-900 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 h-32" />
                 </div>
               </div>
               <button type="submit" className="w-full py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:scale-[1.02] transition-all duration-300">

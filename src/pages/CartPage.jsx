@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   Trash2, Plus, Minus, ArrowLeft, MessageCircle, 
@@ -10,6 +10,41 @@ import { Helmet } from 'react-helmet-async';
 
 export default function CartPage() {
   const { cartItems, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+  const [checkoutData, setCheckoutData] = useState({ name: '', phone: '' });
+  const [isOrdering, setIsOrdering] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+
+  const handleCheckout = async () => {
+    if (!checkoutData.name || !checkoutData.phone) {
+      alert('Please enter your name and phone number to place the order.');
+      return;
+    }
+
+    setIsOrdering(true);
+    try {
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name: checkoutData.name,
+          phone: checkoutData.phone,
+          total_amount: cartTotal,
+          items: cartItems.map(item => ({ id: item.id, name: item.name, qty: item.quantity, price: item.price }))
+        })
+      });
+
+      if (response.ok) {
+        setOrderSuccess(true);
+        clearCart();
+      } else {
+        alert('Failed to place order. Please try again.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert('Network error. Is the backend running?');
+    }
+    setIsOrdering(false);
+  };
 
   const generateWhatsAppLink = () => {
     const phone = "919037507643"; // Amster Med Care WhatsApp
@@ -26,6 +61,26 @@ export default function CartPage() {
     const name = "Amster Med Care";
     return `upi://pay?pa=${upiId}&pn=${encodeURIComponent(name)}&am=${cartTotal}&cu=INR&tn=Medicine Order`;
   };
+
+  if (orderSuccess) {
+    return (
+      <div className="min-h-screen pt-32 pb-20 flex flex-col items-center justify-center px-4 bg-dark">
+        <Helmet>
+          <title>Order Successful | Amster Med Care</title>
+        </Helmet>
+        <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center space-y-6 bg-white/5 p-10 rounded-3xl border border-white/10 max-w-md">
+          <div className="w-24 h-24 rounded-full bg-green-500/20 flex items-center justify-center mx-auto text-green-400">
+            <ShieldCheck size={48} />
+          </div>
+          <h1 className="text-3xl font-bold text-white">Order Placed Successfully!</h1>
+          <p className="text-gray-400 text-sm">Thank you, {checkoutData.name}. Our pharmacist will contact you shortly at {checkoutData.phone} to confirm the delivery.</p>
+          <Link to="/medicines" onClick={() => setOrderSuccess(false)} className="inline-flex items-center gap-2 px-8 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all">
+            Continue Shopping
+          </Link>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (
@@ -144,6 +199,21 @@ export default function CartPage() {
               </div>
 
               <div className="space-y-3">
+                <div className="space-y-3 p-4 bg-black/20 rounded-xl border border-white/5 mb-4">
+                  <p className="text-xs text-gray-400 font-bold uppercase tracking-wider mb-2">Delivery Details</p>
+                  <input type="text" placeholder="Full Name" value={checkoutData.name} onChange={e => setCheckoutData({...checkoutData, name: e.target.value})} className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary" />
+                  <input type="tel" placeholder="Phone Number" value={checkoutData.phone} onChange={e => setCheckoutData({...checkoutData, phone: e.target.value})} className="w-full bg-white/10 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary" />
+                  <button onClick={handleCheckout} disabled={isOrdering} className="w-full mt-2 flex items-center justify-center gap-2 py-3 bg-primary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 transition-all disabled:opacity-50">
+                    {isOrdering ? 'Processing...' : 'Place Order Now (COD)'}
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-center gap-4 py-2">
+                  <div className="h-[1px] bg-white/10 flex-1"></div>
+                  <span className="text-xs text-gray-500 font-bold uppercase">OR</span>
+                  <div className="h-[1px] bg-white/10 flex-1"></div>
+                </div>
+
                 {/* WhatsApp Ordering Button */}
                 <a 
                   href={generateWhatsAppLink()}
@@ -155,31 +225,13 @@ export default function CartPage() {
                   Order via WhatsApp
                 </a>
 
-                {/* UPI Payment Button */}
-                <a 
-                  href={generateUPILink()}
-                  className="w-full flex items-center justify-center gap-2 py-4 bg-white text-black font-bold rounded-xl hover:shadow-lg hover:shadow-white/20 transition-all active:scale-95"
-                >
-                  <CreditCard size={20} />
-                  Pay via UPI
-                </a>
-
                 <div className="pt-4 flex items-center justify-center gap-4 text-[10px] text-gray-500 uppercase tracking-widest font-bold">
                   <div className="flex items-center gap-1"><ShieldCheck size={12} /> Secure</div>
                   <div className="flex items-center gap-1">Fast Delivery</div>
                 </div>
               </div>
 
-              {/* QR Code Placeholder for Desktop */}
-              <div className="mt-8 p-4 bg-white rounded-2xl flex flex-col items-center gap-3">
-                <p className="text-[10px] text-black font-bold uppercase tracking-wider">Scan to Pay (UPI)</p>
-                <img 
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=${encodeURIComponent(generateUPILink())}`} 
-                  alt="UPI QR Code"
-                  className="w-32 h-32"
-                />
-                <p className="text-[9px] text-gray-500 text-center leading-tight">Supported Apps: <br/> GPay, PhonePe, Paytm</p>
-              </div>
+
             </div>
           </div>
         </div>
