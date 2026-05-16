@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import CTASection from '../components/CTASection';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const ayurvedicCategories = ['All', 'Herbal Medicines', 'Organic Supplements', 'Ayurvedic Oils', 'Natural Skincare', 'Wellness Teas', 'Immunity Products'];
 
@@ -78,7 +79,8 @@ export default function AyurvedicPage() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative pt-12 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+      <section className="relative pt-16 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+        <Breadcrumbs currentPage="Traditional Ayurvedic Wellness" />
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] -translate-y-1/2" />
 
         <div className="max-w-7xl mx-auto relative z-10">

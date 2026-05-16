@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import CTASection from '../components/CTASection';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const babyCategories = ['All', 'Baby Food', 'Diapers', 'Baby Lotion', 'Feeding Bottles', 'Baby Vitamins', 'Toys & Care'];
 
@@ -78,7 +79,8 @@ export default function BabyProductsPage() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative pt-12 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+      <section className="relative pt-16 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+        <Breadcrumbs currentPage="Baby Care & Products" />
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-rose-500/5 rounded-full blur-[120px] -translate-y-1/2" />
 
         <div className="max-w-7xl mx-auto relative z-10">

@@ -10,6 +10,7 @@ import {
 import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
 import CTASection from '../components/CTASection';
+import Breadcrumbs from '../components/Breadcrumbs';
 
 const categories = ['All', 'Medicines', 'Wellness', 'Devices', 'Ayurvedic', 'Baby'];
 
@@ -36,7 +37,8 @@ export default function MedicinesPage() {
       </Helmet>
 
       {/* Modern Header Section */}
-      <section className="relative pt-12 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+      <section className="relative pt-16 pb-24 px-4 bg-white dark:bg-dark overflow-hidden">
+        <Breadcrumbs currentPage="Medicines" />
         {/* Background Patterns */}
         <div className="absolute inset-0 opacity-[0.03] dark:opacity-[0.05] pointer-events-none" 
              style={{ backgroundImage: 'radial-gradient(#059669 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
