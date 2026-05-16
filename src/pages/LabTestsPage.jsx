@@ -76,14 +76,17 @@ export default function LabTestsPage() {
                 ))}
               </div>
 
-              <motion.button
+              <motion.a
+                href={`https://wa.me/919037507643?text=${encodeURIComponent('Hi! I am interested in booking a Lab Test for home collection.')}`}
+                target="_blank"
+                rel="noopener noreferrer"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="px-8 py-3 bg-primary text-white font-black text-sm rounded-2xl shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
+                className="px-8 py-3 bg-primary text-white font-black text-sm rounded-2xl shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2 inline-flex w-max"
               >
                  Book Collection <ArrowRight size={18} />
-              </motion.button>
+              </motion.a>
             </div>
 
             <motion.div
