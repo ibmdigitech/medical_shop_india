@@ -5,9 +5,11 @@ import AdminLayout from '../layouts/AdminLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 // Admin Pages
+import AdminLogin from '../pages/admin/AdminLogin';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminProducts from '../pages/admin/AdminProducts';
 import AdminOrders from '../pages/admin/AdminOrders';
+import AdminProtectedRoute from '../components/admin/AdminProtectedRoute';
 
 import HomePage from '../pages/HomePage';
 import MedicinesPage from '../pages/MedicinesPage';
@@ -75,13 +77,18 @@ export default function AppRouter() {
           <Route path="*" element={<NotFound />} />
         </Route>
         
-        {/* Admin Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminDashboard />} />
-          <Route path="dashboard" element={<AdminDashboard />} />
-          <Route path="products" element={<AdminProducts />} />
-          <Route path="orders" element={<AdminOrders />} />
-          {/* Add more admin routes here in the future */}
+        {/* Admin Login (Public) */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+
+        {/* Admin Routes (Protected) */}
+        <Route path="/admin" element={<AdminProtectedRoute />}>
+          <Route element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="orders" element={<AdminOrders />} />
+            {/* Add more admin routes here in the future */}
+          </Route>
         </Route>
       </Routes>
     </Suspense>
