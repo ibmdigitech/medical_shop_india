@@ -169,7 +169,7 @@ export default function Navbar() {
           >
             <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
             <motion.div 
-              className="relative w-80 h-full bg-white dark:bg-dark shadow-2xl flex flex-col pt-32 px-6"
+              className="relative w-full sm:w-96 max-w-[100vw] min-h-[100dvh] h-screen overflow-y-auto bg-white dark:bg-dark shadow-2xl flex flex-col pt-32 px-6 pb-10"
             >
               <div className="absolute top-8 left-8 right-8 flex items-center justify-between">
                 <ThemeToggle />
