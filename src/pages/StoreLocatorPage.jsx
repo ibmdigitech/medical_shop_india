@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
-import { MapPin, Phone, Clock, Search, Navigation, ArrowRight, Star, Shield, Zap } from 'lucide-react';
+import { MapPin, Phone, Clock, Search, Navigation, ArrowRight, Star, Shield, Zap, Award } from 'lucide-react';
 import CTASection from '../components/CTASection';
 
 const stores = [
@@ -24,7 +24,7 @@ export default function StoreLocatorPage() {
       </Helmet>
 
       {/* Premium Hero Section */}
-      <section className="relative pt-48 pb-32 bg-white dark:bg-dark overflow-hidden">
+      <section className="relative pt-20 pb-12 bg-white dark:bg-dark overflow-hidden">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/4" />
@@ -41,7 +41,7 @@ export default function StoreLocatorPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="text-5xl md:text-8xl font-black text-slate-900 dark:text-white leading-[1.1] mb-8"
+              className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-4"
             >
               Our Presence In <br />
               <span className="text-primary italic">Kerala</span>
@@ -51,7 +51,7 @@ export default function StoreLocatorPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-slate-500 dark:text-gray-400 text-xl md:text-2xl leading-relaxed mb-12"
+              className="text-slate-500 dark:text-gray-400 text-sm md:text-base leading-relaxed mb-6"
             >
               Visit our state-of-the-art pharmacy in Omassery or locate our distribution hubs for lightning-fast home delivery.
             </motion.p>
@@ -74,7 +74,7 @@ export default function StoreLocatorPage() {
       </section>
 
       {/* Stores List & Map Section */}
-      <section className="py-24 px-4 bg-slate-50 dark:bg-dark-card/30">
+      <section className="py-12 px-4 bg-slate-50 dark:bg-dark-card/30">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
@@ -91,7 +91,7 @@ export default function StoreLocatorPage() {
                   initial={{ opacity: 0, x: -30 }} 
                   whileInView={{ opacity: 1, x: 0 }} 
                   viewport={{ once: true }}
-                  className="group bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[48px] p-10 hover:border-primary/40 hover:shadow-2xl transition-all duration-500"
+                  className="group bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[32px] p-6 hover:border-primary/40 hover:shadow-2xl transition-all duration-500"
                 >
                   <div className="flex flex-col md:flex-row gap-10 items-start md:items-center">
                     <div className="flex-1">
@@ -102,8 +102,8 @@ export default function StoreLocatorPage() {
                         </div>
                       </div>
                       
-                      <h3 className="text-3xl font-black text-slate-900 dark:text-white mb-4 group-hover:text-primary transition-colors italic">{store.name}</h3>
-                      <p className="text-slate-500 dark:text-gray-400 text-lg mb-8 leading-relaxed max-w-md">{store.address}</p>
+                      <h3 className="text-xl font-black text-slate-900 dark:text-white mb-2 group-hover:text-primary transition-colors italic">{store.name}</h3>
+                      <p className="text-slate-500 dark:text-gray-400 text-sm mb-6 leading-relaxed max-w-md">{store.address}</p>
                       
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                         <div className="flex items-center gap-3">
@@ -144,7 +144,7 @@ export default function StoreLocatorPage() {
 
             {/* Map Preview */}
             <div className="lg:col-span-5">
-              <div className="sticky top-32 rounded-[60px] overflow-hidden border-[12px] border-white dark:border-white/10 shadow-2xl h-[600px] relative group">
+              <div className="sticky top-32 rounded-[32px] overflow-hidden border-[6px] border-white dark:border-white/10 shadow-2xl h-[400px] relative group">
                 <iframe
                   title="Amster Med Care Location"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3915.7!2d75.955!3d11.35!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba6736c7f4f5e6b%3A0x0!2sOmassery!5e0!3m2!1sen!2sin!4v1700000000000"

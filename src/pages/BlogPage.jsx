@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Clock, User, ArrowRight, Search, Calendar, Tag, ChevronRight, Share2 } from 'lucide-react';
 import NewsletterSection from '../components/NewsletterSection';
@@ -58,7 +59,7 @@ export default function BlogPage() {
       </Helmet>
 
       {/* Premium Hero Section */}
-      <section className="relative pt-48 pb-32 bg-slate-900 overflow-hidden">
+      <section className="relative pt-4 pb-12 bg-slate-900 overflow-hidden">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[120px] -translate-y-1/2" />
         <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
@@ -76,7 +77,7 @@ export default function BlogPage() {
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7 }}
-              className="text-5xl md:text-7xl font-black text-white leading-tight mb-8"
+              className="text-3xl md:text-4xl font-black text-white leading-tight mb-4"
             >
               Wellness Insights & <br />
               <span className="text-primary italic">Expert Guides</span>
@@ -86,7 +87,7 @@ export default function BlogPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-slate-400 text-xl leading-relaxed mb-12"
+              className="text-slate-400 text-sm leading-relaxed mb-6"
             >
               Stay informed with the latest in healthcare, nutrition, and medicine. Curated by our expert medical team.
             </motion.p>

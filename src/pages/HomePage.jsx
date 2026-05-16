@@ -71,13 +71,13 @@ export default function HomePage() {
       </Helmet>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center bg-white dark:bg-dark overflow-hidden">
+      <section className="relative bg-white dark:bg-dark overflow-hidden">
         {/* Background Decorative Elements */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
 
-        <div className="relative z-10 max-w-[1440px] mx-auto px-4 pt-32 lg:pt-48 pb-32">
-          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 pt-20 pb-28">
+          <div className="flex flex-col lg:flex-row items-start gap-10 lg:gap-16">
             {/* Left Content */}
             <div className="lg:w-1/2 text-center lg:text-left">
               <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
@@ -91,7 +91,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
-                className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white leading-[0.95] mb-8 tracking-tighter"
+                className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white leading-tight mb-4 tracking-tight"
               >
                 Reliable And <br />
                 <span className="text-primary italic">Trusted Care</span>
@@ -101,7 +101,7 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.1 }}
-                className="text-slate-500 dark:text-gray-400 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto lg:mx-0"
+                className="text-slate-500 dark:text-gray-400 text-sm md:text-base leading-relaxed mb-6 max-w-xl mx-auto lg:mx-0"
               >
                 Just dial to Amster for your Med and Care. We provide genuine medicines, surgicals, baby care, and cosmetics with <span className="text-blue-600 font-bold">Free Home Delivery</span>.
               </motion.p>
@@ -128,7 +128,7 @@ export default function HomePage() {
               transition={{ duration: 0.8 }}
               className="lg:w-1/2 relative"
             >
-              <div className="relative rounded-[48px] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] border-[12px] border-white dark:border-white/5 max-h-[550px] aspect-square lg:aspect-auto">
+              <div className="relative rounded-[32px] overflow-hidden shadow-xl border-[6px] border-white dark:border-white/5 h-[280px] lg:h-[360px]">
                 <img 
                   src={heroImage} 
                   alt="Amster Med Care Hero" 
@@ -222,7 +222,7 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="group relative bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] p-8 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden cursor-pointer"
+                className="group relative bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] p-8 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden"
               >
                 <div className={`w-16 h-16 rounded-[24px] bg-gradient-to-br ${cat.color} flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg text-white`}>
                    <cat.icon size={28} />
@@ -267,20 +267,32 @@ export default function HomePage() {
                   initial={{ opacity: 0, y: 30 }} 
                   whileInView={{ opacity: 1, y: 0 }} 
                   viewport={{ once: true }} 
-                  transition={{ delay: i * 0.05 }}
-                  className="bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] overflow-hidden hover:shadow-2xl transition-all group flex flex-col h-full"
+                  transition={{ delay: i * 0.05, duration: 0.5 }}
+                  whileHover={{ 
+                    y: -10, 
+                    scale: 1.02,
+                    transition: { type: 'spring', stiffness: 300, damping: 20 }
+                  }}
+                  className="bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] overflow-hidden shadow-md hover:shadow-2xl hover:shadow-primary/10 group flex flex-col h-full"
                 >
-                  <div className="h-64 relative overflow-hidden bg-slate-50">
-                    <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
-                    <span className="absolute top-6 left-6 px-3 py-1 bg-accent text-white text-[10px] font-black rounded-full shadow-lg">-{p.discount}</span>
+                  <div className="h-56 relative overflow-hidden bg-slate-50">
+                    <motion.img 
+                      src={p.image} 
+                      alt={p.title} 
+                      className="w-full h-full object-cover"
+                      whileHover={{ scale: 1.12 }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                    />
+                    {/* Gradient Overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <span className="absolute top-4 left-4 px-3 py-1 bg-accent text-white text-[10px] font-black rounded-full shadow-lg">-{p.discount}</span>
                     {p.type === 'Generic' && (
-                      <span className="absolute top-6 right-6 px-3 py-1 bg-primary text-white text-[10px] font-black rounded-full shadow-lg flex items-center gap-1 uppercase tracking-widest">
+                      <span className="absolute top-4 right-4 px-3 py-1 bg-primary text-white text-[10px] font-black rounded-full shadow-lg flex items-center gap-1 uppercase tracking-widest">
                          Generic
                       </span>
                     )}
                   </div>
-                  <div className="p-8 flex-1 flex flex-col">
+                  <div className="p-6 flex-1 flex flex-col">
                     <div className="flex items-center justify-between mb-2">
                       <p className="text-slate-400 text-[10px] uppercase font-black tracking-[0.2em]">{p.brand}</p>
                       <div className="flex items-center text-amber-400 gap-1">
@@ -288,18 +300,21 @@ export default function HomePage() {
                         <span className="text-slate-900 dark:text-white font-black text-xs">{p.rating}</span>
                       </div>
                     </div>
-                    <h3 className="text-slate-900 dark:text-white font-black text-xl mb-4 group-hover:text-primary transition-colors leading-tight line-clamp-1">{p.title}</h3>
-                    <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50 dark:border-white/5">
+                    <h3 className="text-slate-900 dark:text-white font-black text-lg mb-4 group-hover:text-primary transition-colors duration-300 leading-tight line-clamp-1">{p.title}</h3>
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-slate-50 dark:border-white/5">
                       <div className="flex flex-col">
-                        <span className="text-primary font-black text-2xl tracking-tighter">₹ {p.price}</span>
+                        <span className="text-primary font-black text-xl tracking-tighter">₹ {p.price}</span>
                         <span className="text-slate-400 text-xs line-through">MRP ₹ {p.mrp}</span>
                       </div>
-                      <button
+                      <motion.button
                         onClick={() => addToCart({ ...p, name: p.title })}
-                        className="w-14 h-14 bg-primary text-white rounded-2xl transition-all flex items-center justify-center active:scale-90 shadow-xl shadow-primary/20 hover:shadow-primary/40 group-hover:rotate-6"
+                        whileHover={{ scale: 1.15, rotate: 8, backgroundColor: '#059669' }}
+                        whileTap={{ scale: 0.88 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                        className="w-12 h-12 bg-primary text-white rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20"
                       >
-                        <ShoppingCart size={24} className="fill-white" />
-                      </button>
+                        <ShoppingCart size={20} className="fill-white" />
+                      </motion.button>
                     </div>
                   </div>
                 </motion.div>
@@ -341,7 +356,7 @@ export default function HomePage() {
 
             <div className="lg:w-1/2 relative">
               <div className="relative rounded-[60px] overflow-hidden border-[10px] border-white/5 shadow-2xl">
-                 <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format" alt="Quality Care" className="w-full h-[600px] object-cover" />
+                 <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&auto=format&fit=crop" alt="Quality Care" className="w-full h-[600px] object-cover" />
                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
                  <div className="absolute bottom-12 left-12 right-12 p-8 bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/10">
                     <Award size={48} className="text-primary-light mb-6" />

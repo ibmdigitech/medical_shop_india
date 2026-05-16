@@ -18,13 +18,13 @@ export default function LabTestsPage() {
       </Helmet>
 
       {/* Premium Hero Section */}
-      <section className="relative pt-12 pb-32 bg-white dark:bg-dark overflow-hidden">
+      <section className="relative pt-4 pb-12 bg-white dark:bg-dark overflow-hidden">
         {/* Background Patterns */}
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px] -translate-y-1/2 translate-x-1/4" />
         <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[120px] translate-y-1/2 -translate-x-1/4" />
 
         <div className="max-w-7xl mx-auto px-4 relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-20">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
             <div className="lg:w-1/2 text-center lg:text-left">
               <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
                 <span className="inline-flex items-center gap-2 px-5 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary text-xs font-black tracking-widest uppercase mb-8">
@@ -36,7 +36,7 @@ export default function LabTestsPage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
-                className="text-5xl md:text-7xl font-black text-slate-900 dark:text-white leading-[1.05] mb-8"
+                className="text-3xl md:text-4xl font-black text-slate-900 dark:text-white leading-tight mb-4"
               >
                 Health Checkups <br />
                 <span className="text-primary italic">At Your Door</span>
@@ -46,12 +46,12 @@ export default function LabTestsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-slate-500 dark:text-gray-400 text-xl md:text-2xl leading-relaxed mb-12 max-w-xl"
+                className="text-slate-500 dark:text-gray-400 text-sm md:text-base leading-relaxed mb-8 max-w-xl"
               >
                 Experience world-class diagnostic services with free home sample collection. Accurate results from NABL-certified laboratories.
               </motion.p>
 
-              <div className="grid grid-cols-2 gap-6 mb-12">
+              <div className="grid grid-cols-2 gap-3 mb-4">
                 {[
                   { icon: Clock, title: 'Results in 24h', desc: 'Fast turnaround' },
                   { icon: ShieldCheck, title: 'NABL Certified', desc: 'Verified labs' },
@@ -80,9 +80,9 @@ export default function LabTestsPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6 }}
-                className="px-10 py-5 bg-primary text-white font-black text-lg rounded-2xl shadow-2xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3"
+                className="px-8 py-3 bg-primary text-white font-black text-sm rounded-2xl shadow-xl shadow-primary/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-2"
               >
-                 Book Collection <ArrowRight size={22} />
+                 Book Collection <ArrowRight size={18} />
               </motion.button>
             </div>
 
@@ -92,8 +92,8 @@ export default function LabTestsPage() {
               transition={{ duration: 1 }}
               className="lg:w-1/2 relative"
             >
-              <div className="relative rounded-[60px] overflow-hidden border-[12px] border-white dark:border-white/5 shadow-2xl">
-                 <img src="https://images.unsplash.com/photo-1579154235602-4c47a3fa7a9b?w=800&auto=format" alt="Lab Test" className="w-full h-auto object-cover" />
+              <div className="relative rounded-[32px] overflow-hidden border-[6px] border-white dark:border-white/5 shadow-2xl h-[350px] lg:h-[420px]">
+                 <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?w=800&auto=format&fit=crop" alt="Lab Test" className="w-full h-full object-cover" />
                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
                  <div className="absolute bottom-10 left-10 right-10 p-8 bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/10">
                     <div className="flex items-center gap-4 mb-4">
@@ -158,9 +158,14 @@ export default function LabTestsPage() {
                       </span>
                    </div>
 
-                   <button className="w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2">
+                   <a 
+                     href={`https://wa.me/919037507643?text=${encodeURIComponent(`Hi! I'd like to book the "${test.title}" lab test (₹${test.price}). Please confirm availability and home collection timing.`)}`}
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="w-full py-5 bg-slate-900 text-white font-black rounded-2xl hover:bg-primary transition-all active:scale-95 flex items-center justify-center gap-2"
+                   >
                       Book Now <ChevronRight size={18} />
-                   </button>
+                   </a>
                 </div>
               </motion.div>
             ))}
