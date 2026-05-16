@@ -25,13 +25,13 @@ import 'swiper/css/pagination';
 
 const categories = [
   { id: 1, title: 'Medicines', icon: Pill, color: 'from-emerald-400 to-emerald-600', description: 'Wide range of genuine prescription and OTC medicines.', slug: 'medicines' },
-  { id: 2, title: 'Wellness', icon: Heart, color: 'from-pink-400 to-pink-600', description: 'Vitamins, supplements, and health boosters for a better life.', slug: 'wellness' },
-  { id: 3, title: 'Personal Care', icon: Sparkles, color: 'from-purple-400 to-purple-600', description: 'Premium skin, hair, and body care products.', slug: 'personal-care' },
-  { id: 4, title: 'Baby Care', icon: Baby, color: 'from-blue-400 to-blue-600', description: 'Gentle and safe products for your little ones.', slug: 'baby-care' },
-  { id: 5, title: 'Ayurvedic', icon: Activity, color: 'from-orange-400 to-orange-600', description: 'Traditional herbal and natural remedies.', slug: 'ayurvedic' },
-  { id: 6, title: 'Surgicals', icon: Stethoscope, color: 'from-slate-700 to-slate-900', description: 'Medical equipment and healthcare tools.', slug: 'surgicals' },
-  { id: 7, title: 'Health Food', icon: Zap, color: 'from-yellow-400 to-yellow-600', description: 'Organic and nutritious food for specialized diets.', slug: 'health-food' },
-  { id: 8, title: 'Lab Tests', icon: FlaskConical, color: 'from-cyan-400 to-cyan-600', description: 'Book home collection for diagnostic tests.', slug: 'lab-tests' },
+  { id: 2, title: 'Veterinary', icon: Heart, color: 'from-secondary-light to-secondary', description: 'Premium pet care, nutrition, and animal healthcare products.', slug: 'veterinary' },
+  { id: 3, title: 'Baby Products', icon: Baby, color: 'from-rose-400 to-rose-600', description: 'Gentle and safe essentials for your little ones.', slug: 'baby-products' },
+  { id: 4, title: 'Cosmetics', icon: Sparkles, color: 'from-amber-400 to-amber-600', description: 'Premium beauty, skincare, and organic cosmetics.', slug: 'cosmetics' },
+  { id: 5, title: 'Surgicals', icon: Stethoscope, color: 'from-blue-600 to-blue-800', description: 'Professional medical devices and hospital supplies.', slug: 'surgicals' },
+  { id: 6, title: 'Covid Supplies', icon: ShieldAlert, color: 'from-teal-400 to-teal-600', description: 'Essential safety gear, masks, and sanitizers.', slug: 'covid-supplies' },
+  { id: 7, title: 'Ayurvedic', icon: Activity, color: 'from-emerald-500 to-emerald-700', description: 'Traditional herbal remedies and natural wellness.', slug: 'ayurvedic-products' },
+  { id: 8, title: 'Generic Medicines', icon: Zap, color: 'from-indigo-400 to-indigo-600', description: 'Affordable, high-quality generic healthcare alternatives.', slug: 'generic-medicines' },
 ];
 
 function TestimonialCard({ testimonial, index }) {
@@ -229,7 +229,7 @@ export default function HomePage() {
                 </div>
                 <h3 className="text-slate-900 dark:text-white font-black text-2xl mb-3">{cat.title}</h3>
                 <p className="text-slate-500 dark:text-gray-400 text-sm mb-8 leading-relaxed line-clamp-2">{cat.description}</p>
-                <Link to={`/category/${cat.slug}`} className="text-primary font-black text-xs flex items-center gap-2 group-hover:gap-3 transition-all tracking-widest uppercase">
+                <Link to={`/${cat.slug}`} className="text-primary font-black text-xs flex items-center gap-2 group-hover:gap-3 transition-all tracking-widest uppercase">
                   Explore <ChevronRight size={14} />
                 </Link>
               </motion.div>

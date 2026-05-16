@@ -14,6 +14,14 @@ import FranchisePage from '../pages/FranchisePage';
 import LabTestsPage from '../pages/LabTestsPage';
 import CompareMedicinesPage from '../pages/CompareMedicinesPage';
 import StoreLocatorPage from '../pages/StoreLocatorPage';
+import VeterinaryPage from '../pages/VeterinaryPage';
+import BabyProductsPage from '../pages/BabyProductsPage';
+import CosmeticsPage from '../pages/CosmeticsPage';
+import SurgicalsPage from '../pages/SurgicalsPage';
+import CovidSuppliesPage from '../pages/CovidSuppliesPage';
+import AyurvedicPage from '../pages/AyurvedicPage';
+import GenericMedicinesPage from '../pages/GenericMedicinesPage';
+
 const WellnessPage = () => <div className="pt-32 text-center text-white">Wellness Page (Coming Soon)</div>;
 
 function NotFound() {
@@ -48,6 +56,16 @@ export default function AppRouter() {
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
           <Route path="/franchise" element={<FranchisePage />} />
+          
+          {/* New Category Routes */}
+          <Route path="/veterinary" element={<VeterinaryPage />} />
+          <Route path="/baby-products" element={<BabyProductsPage />} />
+          <Route path="/cosmetics" element={<CosmeticsPage />} />
+          <Route path="/surgicals" element={<SurgicalsPage />} />
+          <Route path="/covid-supplies" element={<CovidSuppliesPage />} />
+          <Route path="/ayurvedic-products" element={<AyurvedicPage />} />
+          <Route path="/generic-medicines" element={<GenericMedicinesPage />} />
+
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
