@@ -10,6 +10,7 @@ import UploadPrescriptionPage from '../pages/UploadPrescriptionPage';
 import AboutPage from '../pages/AboutPage';
 import ContactPage from '../pages/ContactPage';
 import BlogPage from '../pages/BlogPage';
+import FranchisePage from '../pages/FranchisePage';
 import LabTestsPage from '../pages/LabTestsPage';
 import CompareMedicinesPage from '../pages/CompareMedicinesPage';
 import StoreLocatorPage from '../pages/StoreLocatorPage';
@@ -46,6 +47,7 @@ export default function AppRouter() {
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/blog" element={<BlogPage />} />
+          <Route path="/franchise" element={<FranchisePage />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>

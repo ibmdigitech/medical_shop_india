@@ -1,10 +1,7 @@
 @import "tailwindcss";
 
-/* Enable class-based dark mode for Tailwind v4 */
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  /* Medical Trust Colors - Clean & Professional */
+  /* Medical Trust Colors - Refined & Professional */
   --color-primary: #059669;      /* Medical Green - Primary */
   --color-primary-dark: #047857;
   --color-primary-light: #10B981;
@@ -23,20 +20,22 @@
   --color-app-card: var(--card-bg);
   --color-app-border: var(--border-color);
 
-  /* Dark Theme */
+  /* Dark Theme Colors */
   --color-dark: #0F172A;
   --color-dark-card: #1E293B;
   --color-dark-border: #334155;
 
+  /* Modern Typography */
   --font-sans: "Plus Jakarta Sans", "Inter", sans-serif;
   --font-heading: "Outfit", sans-serif;
 
-  --background-image-glass-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
-
+  /* Custom Utilities */
   --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+  --shadow-premium: 0 20px 50px -12px rgba(0, 0, 0, 0.08);
 
-  --animate-marquee: marquee 25s linear infinite;
+  --animate-marquee: marquee 30s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-slow: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 
   @keyframes marquee {
     0% { transform: translateX(0%); }
@@ -44,7 +43,7 @@
   }
   @keyframes float {
     0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    50% { transform: translateY(-15px); }
   }
 }
 
@@ -52,7 +51,7 @@
   --bg-color: #FFFFFF;
   --text-color: #0F172A;
   --card-bg: #F8FAFC;
-  --border-color: #E2E8F0;
+  --border-color: #F1F5F9;
 }
 
 .dark {
@@ -66,43 +65,54 @@
   body {
     @apply bg-app-bg text-app-text font-sans antialiased selection:bg-primary/30 selection:text-primary-light transition-colors duration-300;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading tracking-tight;
+  }
 }
 
 @layer components {
   .glass-card {
-    @apply bg-white/70 dark:bg-dark-card/70 backdrop-blur-md border border-app-border rounded-2xl shadow-lg;
+    @apply bg-white/80 dark:bg-dark-card/80 backdrop-blur-xl border border-app-border rounded-3xl shadow-premium;
   }
   
   .btn-primary {
-    @apply px-6 py-3 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-primary/50;
+    @apply px-8 py-4 bg-primary hover:bg-primary-dark text-white font-bold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-primary/20 hover:shadow-primary/40 flex items-center justify-center gap-2;
   }
   
   .btn-secondary {
-    @apply px-6 py-3 bg-secondary hover:bg-secondary-dark text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg hover:shadow-secondary/50;
-  }
-  
-  .btn-offer {
-    @apply px-6 py-3 bg-accent hover:bg-accent-dark text-white font-bold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg animate-pulse;
+    @apply px-8 py-4 bg-secondary hover:bg-secondary-dark text-white font-bold rounded-2xl transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-xl shadow-secondary/20 hover:shadow-secondary/40 flex items-center justify-center gap-2;
   }
   
   .btn-outline {
-    @apply px-6 py-3 border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold rounded-xl transition-all duration-300 transform hover:scale-105 active:scale-95;
+    @apply px-8 py-4 border-2 border-slate-100 dark:border-white/10 text-slate-900 dark:text-white font-bold rounded-2xl transition-all duration-300 hover:border-primary hover:text-primary active:scale-[0.98] flex items-center justify-center gap-2;
   }
 
   .section-title {
-    @apply text-4xl md:text-5xl font-bold mb-6 text-app-text;
+    @apply text-4xl md:text-6xl font-black mb-6 leading-tight;
   }
 
-  .badge-offer {
-    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-accent text-white;
+  .badge-premium {
+    @apply inline-flex items-center gap-2 px-4 py-2 bg-primary/10 border border-primary/20 rounded-full text-primary text-[10px] font-black tracking-widest uppercase mb-6;
   }
 }
 
 /* Swiper custom styles */
 .swiper-pagination-bullet {
-  @apply !bg-gray-400 dark:!bg-white/50;
+  @apply !bg-gray-300 dark:!bg-white/30 !opacity-100;
 }
 
 .swiper-pagination-bullet-active {
-  @apply !bg-primary;
+  @apply !bg-primary !w-8 !rounded-full transition-all duration-300;
+}
+
+/* Scrollbar refinement */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 dark:bg-white/10 rounded-full hover:bg-slate-300 dark:hover:bg-white/20;
 }

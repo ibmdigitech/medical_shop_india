@@ -3,7 +3,7 @@ import { Smartphone, Apple, Play, CheckCircle } from 'lucide-react';
 
 export default function CTASection() {
   return (
-    <section className="py-16 px-4 overflow-hidden">
+    <section className="py-32 px-4 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="relative bg-gradient-to-br from-primary via-secondary to-primary-dark rounded-[2.5rem] p-8 md:p-16 overflow-hidden shadow-2xl shadow-primary/20">
           

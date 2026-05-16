@@ -1,4 +1,4 @@
-﻿import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -14,7 +14,7 @@ export default function MainLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-dark text-gray-900 dark:text-white">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pt-24 md:pt-32">
         <Outlet />
       </main>
       <Footer />

@@ -1,460 +1,236 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-eotoection
-import { motion, useInView } from 'framer-motion';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import {
-  ArrowRight, Play, Globe, Smartphone, Brain, Cloud, Shield,
-  BarChart3, CheckCircle, Zap, Users, Award, Code2,
-  Upload, Search, ShoppingCart, Activity, Pill, FlaskConical, Stethoscope,
-  MessageCircle, ShieldCheck
-} from 'lucide-react';
-import CountUp from 'react-countup';
 import { Helmet } from 'react-helmet-async';
-import { categories } from '../data/categories';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Zap, ArrowRight, ShieldCheck, ChevronRight, 
+  Search, Upload, Pill, Heart, Baby, 
+  Stethoscope, ShieldAlert, Activity, Sparkles,
+  FlaskConical, Globe, Phone, MapPin, ShoppingCart, 
+  MessageCircle, Star, Clock, Shield, Users, Award,
+  Truck, ChevronDown
+} from 'lucide-react';
+import { useCart } from '../context/CartContext';
 import { products } from '../data/products';
-import { stats } from '../data/stats';
 import { testimonials } from '../data/testimonials';
-import { faqs } from '../data/faqs';
-import ServiceCard from '../components/ServiceCard'; // Reusing as CategoryCard
-import TestimonialCard from '../components/TestimonialCard';
-import FAQAccordion from '../components/FAQAccordion';
+import heroImage from '../assets/hero_v4.png';
 import CTASection from '../components/CTASection';
 import NewsletterSection from '../components/NewsletterSection';
-import { useCart } from '../context/CartContext';
 
-const typingWords = ['Generic Medicines', 'Lab Tests', 'Health Devices', 'Wellness Products', 'Personal Care', 'Baby Care'];
+// Swiper imports for moving product section
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Pagination, Navigation } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/pagination';
 
-const floatingIcons = [
-  { icon: Pill, x: '10%', y: '20%', delay: 0 },
-  { icon: Activity, x: '85%', y: '15%', delay: 0.5 },
-  { icon: FlaskConical, x: '5%', y: '70%', delay: 1 },
-  { icon: Stethoscope, x: '90%', y: '65%', delay: 1.5 },
+const categories = [
+  { id: 1, title: 'Medicines', icon: Pill, color: 'from-emerald-400 to-emerald-600', description: 'Wide range of genuine prescription and OTC medicines.', slug: 'medicines' },
+  { id: 2, title: 'Wellness', icon: Heart, color: 'from-pink-400 to-pink-600', description: 'Vitamins, supplements, and health boosters for a better life.', slug: 'wellness' },
+  { id: 3, title: 'Personal Care', icon: Sparkles, color: 'from-purple-400 to-purple-600', description: 'Premium skin, hair, and body care products.', slug: 'personal-care' },
+  { id: 4, title: 'Baby Care', icon: Baby, color: 'from-blue-400 to-blue-600', description: 'Gentle and safe products for your little ones.', slug: 'baby-care' },
+  { id: 5, title: 'Ayurvedic', icon: Activity, color: 'from-orange-400 to-orange-600', description: 'Traditional herbal and natural remedies.', slug: 'ayurvedic' },
+  { id: 6, title: 'Surgicals', icon: Stethoscope, color: 'from-slate-700 to-slate-900', description: 'Medical equipment and healthcare tools.', slug: 'surgicals' },
+  { id: 7, title: 'Health Food', icon: Zap, color: 'from-yellow-400 to-yellow-600', description: 'Organic and nutritious food for specialized diets.', slug: 'health-food' },
+  { id: 8, title: 'Lab Tests', icon: FlaskConical, color: 'from-cyan-400 to-cyan-600', description: 'Book home collection for diagnostic tests.', slug: 'lab-tests' },
 ];
 
-const clients = [
-  'Cipla', 'Abbott', 'Sun Pharma', 'Lupin',
-  'GSK', 'Pfizer', 'Dabur', 'Himalaya',
-];
-
-function StatsSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+function TestimonialCard({ testimonial, index }) {
   return (
-    <section ref={ref} className="py-16 px-4 bg-dark-card border-y border-white/5">
-      <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
-        {stats.map((stat) => (
-          <motion.div
-            key={stat.id}
-            initial={{ opacity: 0, y: 30 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, delay: stat.id * 0.1 }}
-            className="text-center"
-          >
-            <div className="text-4xl md:text-5xl font-black bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light mb-1">
-              {isInView ? <span>{stat.value}</span> : <span>0</span>}{stat.suffix}
-            </div>
-            <p className="text-gray-400 text-sm">{stat.label}</p>
-          </motion.div>
-        ))}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
+      className="p-8 rounded-[32px] bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 shadow-xl shadow-slate-200/50 dark:shadow-none relative"
+    >
+      <div className="flex gap-1 text-amber-400 mb-6">
+        {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
       </div>
-    </section>
-  );
-}
-
-function TypingText() {
-  const [index, setIndex] = useState(0);
-  const [displayed, setDisplayed] = useState('');
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    const word = typingWords[index];
-    let timeout;
-    if (!deleting && displayed.length < word.length) {
-      timeout = setTimeout(() => setDisplayed(word.slice(0, displayed.length + 1)), 80);
-    } else if (!deleting && displayed.length === word.length) {
-      timeout = setTimeout(() => setDeleting(true), 1800);
-    } else if (deleting && displayed.length > 0) {
-      timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 40);
-    } else {
-      setDeleting(false);
-      setIndex((i) => (i + 1) % typingWords.length);
-    }
-    return () => clearTimeout(timeout);
-  }, [displayed, deleting, index]);
-
-  return (
-    <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light via-accent to-secondary-light">
-      {displayed}<span className="animate-pulse">|</span>
-    </span>
+      <p className="text-slate-700 dark:text-gray-300 text-lg italic leading-relaxed mb-8">"{testimonial.text}"</p>
+      <div className="flex items-center gap-4">
+        <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center text-white font-black text-xl shadow-lg">
+          {testimonial.name[0]}
+        </div>
+        <div>
+          <h4 className="text-slate-900 dark:text-white font-black">{testimonial.name}</h4>
+          <p className="text-slate-500 text-sm">{testimonial.location}</p>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
 export default function HomePage() {
   const { addToCart } = useCart();
+
   return (
     <>
       <Helmet>
-        <title>Amster Med Care - Buy Medicines Online with Free Home Delivery | Kerala's Trusted Pharmacy</title>
-        <meta name="description" content="Order medicines online in Kerala with FREE home delivery. Get FLAT 25% OFF on all medicines. Fast delivery, genuine products, expert pharmacists. Trusted by 10,000+ customers in Omassery & across Kerala." />
-        <meta name="keywords" content="online pharmacy Kerala, buy medicines online, home delivery pharmacy, medical shop Omassery, discount medicines, generic drugs, healthcare products, pharmacy delivery, free delivery Kerala, Amster Med Care" />
+        <title>Amster Med Care - Reliable And Trusted Care | Free Home Delivery Kerala</title>
+        <meta name="description" content="Order medicines online with Amster Med Care. Reliable and trusted care with FREE home delivery across Omassery and Kerala. Get genuine medicines at best prices." />
       </Helmet>
 
-      {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-white to-green-50 dark:from-gray-900 dark:via-dark dark:to-gray-900">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: 'radial-gradient(circle at 25% 25%, #0891B2 2px, transparent 2px), radial-gradient(circle at 75% 75%, #059669 2px, transparent 2px)', backgroundSize: '60px 60px' }}
-        />
+      {/* Hero Section */}
+      <section className="relative min-h-screen flex items-center bg-white dark:bg-dark overflow-hidden">
+        {/* Background Decorative Elements */}
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/4" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-secondary/5 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/4" />
 
-        {/* Animated gradient orbs */}
-        <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-20 left-20 w-80 h-80 bg-secondary/10 rounded-full blur-3xl animate-float" style={{ animationDelay: '2s' }} />
+        <div className="relative z-10 max-w-[1440px] mx-auto px-4 pt-32 lg:pt-48 pb-32">
+          <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
+            {/* Left Content */}
+            <div className="lg:w-1/2 text-center lg:text-left">
+              <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/5 border border-primary/10 rounded-full text-primary text-xs font-black mb-8 tracking-wider uppercase">
+                  <span className="w-2 h-2 bg-primary rounded-full animate-pulse-slow" />
+                  Trusted Pharmacy in Omassery
+                </div>
+              </motion.div>
 
-        <div className="relative z-10 max-w-6xl mx-auto px-4 text-center pt-24 pb-16">
-          {/* Offer Badge */}
-          <motion.div initial={{ opacity: 0, y: -20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.6 }}>
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-accent to-red-600 text-white rounded-full font-bold text-sm mb-8 shadow-lg shadow-accent/30 animate-pulse">
-              <span>🔥 FLAT 25% OFF</span>
-              <span className="hidden sm:inline mx-2">|</span>
-              <span className="hidden sm:inline">🚚 FREE Home Delivery</span>
+              <motion.h1
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, ease: "easeOut" }}
+                className="text-6xl md:text-8xl font-black text-slate-900 dark:text-white leading-[0.95] mb-8 tracking-tighter"
+              >
+                Reliable And <br />
+                <span className="text-primary italic">Trusted Care</span>
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.1 }}
+                className="text-slate-500 dark:text-gray-400 text-lg md:text-xl leading-relaxed mb-12 max-w-xl mx-auto lg:mx-0"
+              >
+                Just dial to Amster for your Med and Care. We provide genuine medicines, surgicals, baby care, and cosmetics with <span className="text-blue-600 font-bold">Free Home Delivery</span>.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.8, delay: 0.2 }}
+                className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start"
+              >
+                <Link to="/medicines" className="w-full sm:w-auto px-10 py-5 bg-primary text-white font-black rounded-3xl hover:shadow-2xl hover:shadow-primary/40 transition-all duration-500 flex items-center justify-center gap-3 group uppercase tracking-widest text-xs">
+                  <ShoppingCart size={18} className="group-hover:rotate-12 transition-transform" /> Shop Medicines
+                </Link>
+                <Link to="/upload-prescription" className="w-full sm:w-auto px-10 py-5 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white font-black rounded-3xl hover:border-primary transition-all duration-500 flex items-center justify-center gap-3 uppercase tracking-widest text-xs shadow-xl shadow-slate-200/50 dark:shadow-none">
+                  <Upload size={18} /> Upload Rx
+                </Link>
+              </motion.div>
             </div>
-          </motion.div>
 
-          {/* Main Heading */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.1 }}
-            className="text-4xl sm:text-5xl md:text-7xl font-black text-gray-900 dark:text-white leading-tight mb-6"
-          >
-            Your Trusted{' '}
-            <span className="block mt-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-              Online Pharmacy
-            </span>
-          </motion.h1>
-
-          {/* Subheading */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-lg md:text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto mb-10"
-          >
-            Get medicines, wellness products & healthcare essentials delivered to your doorstep across Kerala.
-            Order before 6 PM for <b className="text-primary">same-day delivery</b>!
-          </motion.p>
-
-          {/* Primary CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
-          >
-            <Link
-              to="/medicines"
-              className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-primary-dark text-white font-bold text-lg rounded-2xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+            {/* Right Image Content - Optimized Size */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8 }}
+              className="lg:w-1/2 relative"
             >
-              <ShoppingCart size={24} />
-              Order Medicines Now
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
-            </Link>
-            <Link
-              to="/wellness"
-              className="w-full sm:w-auto px-8 py-4 bg-white dark:bg-dark-card border-2 border-primary text-primary font-semibold text-lg rounded-2xl hover:bg-primary hover:text-white transition-all duration-300"
-            >
-              Explore Wellness Products
-            </Link>
-          </motion.div>
-
-          {/* Trust Indicators */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="flex flex-wrap items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400"
-          >
-            <span className="flex items-center gap-1">
-              <ShieldCheck size={18} className="text-green-600" />
-              100% Genuine Medicines
-            </span>
-            <span className="hidden sm:inline">•</span>
-            <span className="flex items-center gap-1">
-              <Zap size={18} className="text-amber-500" />
-              Same Day Delivery
-            </span>
-            <span className="hidden sm:inline">•</span>
-            <span className="flex items-center gap-1">
-              <Users size={18} className="text-primary" />
-              10,000+ Happy Customers
-            </span>
-          </motion.div>
+              <div className="relative rounded-[48px] overflow-hidden shadow-[0_40px_80px_-15px_rgba(0,0,0,0.12)] border-[12px] border-white dark:border-white/5 max-h-[550px] aspect-square lg:aspect-auto">
+                <img 
+                  src={heroImage} 
+                  alt="Amster Med Care Hero" 
+                  className="w-full h-full object-cover"
+                />
+                
+                {/* Floating Express Delivery Badge */}
+                <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-xl p-4 rounded-3xl shadow-2xl border border-white flex items-center gap-4 animate-bounce-slow">
+                   <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
+                      <Truck size={24} />
+                   </div>
+                   <div>
+                      <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Delivery</p>
+                      <p className="text-sm font-black text-slate-900 uppercase">100% Express</p>
+                   </div>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
 
-        {/* Floating Floating Icons */}
-        {floatingIcons.map(({ icon: Icon, x, y, delay }, i) => (
-          <motion.div
-            key={i}
-            className="absolute hidden lg:flex w-16 h-16 rounded-2xl bg-white dark:bg-dark-card border border-gray-200 dark:border-dark-border items-center justify-center text-primary shadow-lg"
-            style={{ left: x, top: y }}
-            animate={{ y: [0, -20, 0] }}
-            transition={{ duration: 4 + i, repeat: Infinity, delay, ease: 'easeInOut' }}
-          >
-            <Icon size={28} />
-          </motion.div>
-        ))}
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4"
-        >
-          <Link to="/upload-prescription" className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-2xl hover:shadow-primary/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2">
-            <Upload size={18} /> Upload Prescription
-          </Link>
-          <Link to="/medicines" className="w-full sm:w-auto px-8 py-4 bg-primary/10 border-2 border-primary text-primary font-semibold rounded-xl hover:bg-primary hover:text-white transition-all duration-300 flex items-center justify-center gap-2">
-            <Search size={16} /> Search Medicines
-          </Link>
-        </motion.div>
+        {/* Marquee Banner - Restored */}
+        <div className="absolute bottom-0 left-0 w-full bg-primary py-4 overflow-hidden border-t border-white/10">
+          <div className="flex whitespace-nowrap animate-marquee w-max">
+            {[1, 2, 3, 4].map((set) => (
+              <div key={set} className="flex items-center gap-12 sm:gap-24 px-12 shrink-0">
+                <span className="flex items-center gap-4 text-white font-black text-xs sm:text-sm tracking-[0.2em] uppercase">
+                   FREE HOME DELIVERY IN OMASSERY
+                </span>
+                <span className="text-white/30 font-black">•</span>
+                <span className="flex items-center gap-4 text-white font-black text-xs sm:text-sm tracking-[0.2em] uppercase">
+                   RELIABLE & TRUSTED CARE
+                </span>
+                <span className="text-white/30 font-black">•</span>
+                <span className="flex items-center gap-4 text-white font-black text-xs sm:text-sm tracking-[0.2em] uppercase">
+                   ORDER VIA WHATSAPP: +91 90375 07643
+                </span>
+                <span className="text-white/30 font-black">•</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
-      {/* Stats */}
-      <StatsSection />
-
-      {/* Moving Offers Marquee */}
-      <div className="bg-primary py-4 overflow-hidden border-y border-white/10 relative z-20">
-        <div className="flex whitespace-nowrap animate-marquee">
-          {[1, 2, 3, 4].map((n) => (
-            <div key={n} className="flex items-center gap-12 px-6">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <MessageCircle className="text-white" size={20} />
-                </div>
-                <span className="text-white font-bold tracking-tight">Order via WhatsApp: +91 90375 07643</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <Zap className="text-white" size={20} />
-                </div>
-                <span className="text-white font-bold tracking-tight">Free Home Delivery in Omassery</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
-                  <ShieldCheck className="text-white" size={20} />
-                </div>
-                <span className="text-white font-bold tracking-tight">100% Genuine Medicines</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <style dangerouslySetInnerHTML={{
-        __html: `
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 20s linear infinite;
-        }
-      `}} />
-
-      {/* Special Offers & Delivery Highlights Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white dark:from-dark-card dark:to-dark">
-        <div className="max-w-7xl mx-auto">
-          {/* Section Header */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-16"
-          >
-            <span className="inline-block px-4 py-1.5 bg-accent/10 border border-accent/30 rounded-full text-accent text-sm font-bold mb-4">
-              🚀 LIMITED TIME OFFERS
-            </span>
-            <h2 className="text-4xl md:text-5xl font-black text-app-text mb-4">
-              Mega Savings + <span className="text-primary">Free Delivery</span>
-            </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-lg max-w-2xl mx-auto">
-              Get the best deals on medicines and healthcare products with our fast, reliable delivery across Kerala.
-            </p>
-          </motion.div>
-
-          {/* Offer Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+      {/* Stats Section */}
+      <section className="py-24 bg-white dark:bg-dark border-b border-slate-100 dark:border-white/5">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
             {[
-              {
-                title: "FLAT 25% OFF",
-                desc: "On all medicines - Use code MED25",
-                icon: "💊",
-                color: "from-red-500 to-red-600",
-              },
-              {
-                title: "FREE DELIVERY",
-                desc: "On orders above ₹499 in Omassery",
-                icon: "🚚",
-                color: "from-primary to-primary-dark",
-              },
-              {
-                title: "SAME DAY DELIVERY",
-                desc: "Order before 6 PM & get today",
-                icon: "⚡",
-                color: "from-secondary to-secondary-dark",
-              },
-              {
-                title: "REFER & EARN",
-                desc: "Get ₹200 for every friend",
-                icon: "💰",
-                color: "from-amber-500 to-amber-600",
-              }
-            ].map((offer, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
+              { value: '10 Lakh+', label: 'HAPPY CUSTOMERS', color: 'text-primary' },
+              { value: '35000+', label: 'PIN CODES COVERED', color: 'text-secondary' },
+              { value: '75 Lakh+', label: 'ORDERS DELIVERED', color: 'text-blue-600' },
+              { value: '100+', label: 'AUTHENTIC STORES', color: 'text-slate-900 dark:text-white' },
+            ].map((stat, i) => (
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 20 }} 
+                whileInView={{ opacity: 1, y: 0 }} 
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-50 to-white dark:from-dark-card dark:to-dark border border-gray-200 dark:border-dark-border p-6 hover:shadow-xl transition-all hover:-translate-y-1 group"
+                className="text-center"
               >
-                <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${offer.color} opacity-10 rounded-bl-full -mr-12 -mt-12 group-hover:opacity-20 transition-opacity`} />
-                <div className="relative z-10">
-                  <span className="text-4xl mb-4 block">{offer.icon}</span>
-                  <h3 className="text-xl font-bold text-app-text mb-2">{offer.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm">{offer.desc}</p>
-                </div>
+                <h3 className={`text-5xl md:text-7xl font-black mb-3 ${stat.color} tracking-tighter`}>{stat.value}</h3>
+                <p className="text-slate-400 font-black text-[10px] tracking-[0.3em] uppercase">{stat.label}</p>
               </motion.div>
             ))}
           </div>
-
-          {/* Delivery Areas Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-r from-primary/5 via-secondary/5 to-primary/5 rounded-3xl p-8 md:p-12 border border-primary/10"
-          >
-            <div className="flex flex-col lg:flex-row items-center gap-8">
-              <div className="flex-1 text-center lg:text-left">
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/15 rounded-full mb-4">
-                  <MapPin size={18} className="text-primary" />
-                  <span className="font-bold text-primary">Fast Delivery Areas</span>
-                </div>
-                <h3 className="text-2xl md:text-3xl font-bold text-app-text mb-4">
-                  We Deliver Across Kerala
-                </h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Free home delivery within 5km radius of Omassery. Pan-Kerala delivery available for all orders. Get your medicines delivered within 24-48 hours.
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                  {['Omassery', 'Kozhikode', 'Malappuram', 'Kannur', 'Thrissur', 'Ernakulam'].map(city => (
-                    <span key={city} className="px-3 py-1 bg-white dark:bg-dark-card rounded-full text-sm font-medium border border-gray-200 dark:border-dark-border shadow-sm">
-                      {city}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              <div className="flex-shrink-0">
-                <div className="w-40 h-40 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-2xl animate-float">
-                  <div className="text-center text-white">
-                    <div className="text-3xl font-bold">24-48</div>
-                    <div className="text-sm">Hours Delivery</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 
-      {/* Complete Healthcare Solution */}
-      <section className="py-20 px-4 bg-gradient-to-b from-dark to-dark-card overflow-hidden">
+      {/* Categories Section */}
+      <section className="py-32 bg-slate-50 dark:bg-dark-card/30 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col lg:flex-row items-center gap-16">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="lg:w-1/2"
-            >
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
-                Your Complete <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Healthcare Partner</span>
+          <div className="flex flex-col md:flex-row items-end justify-between mb-20 gap-8">
+            <div className="max-w-2xl text-center md:text-left">
+              <span className="text-primary font-black text-xs tracking-widest uppercase mb-4 block">Our Pharmacy</span>
+              <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6">
+                Browse by <span className="text-primary italic">Health Categories</span>
               </h2>
-              <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                Amster Med Care goes beyond just delivering medicines. We are committed to your family's overall well-being with our holistic health services, expert consultations, and genuine healthcare products.
-              </p>
-
-              <div className="space-y-6">
-                {[
-                  { icon: Zap, title: 'Superfast Delivery', desc: 'Get your emergency medicines delivered in record time directly to your door.' },
-                  { icon: Shield, title: '100% Genuine Guarantee', desc: 'Every single product is sourced directly from certified manufacturers and thoroughly quality checked.' },
-                  { icon: Award, title: 'Expert Pharmacists', desc: 'Our licensed pharmacists are available 24/7 to guide you with your dosage and substitutions.' },
-                ].map((item, i) => (
-                  <div key={i} className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/30 transition-colors">
-                    <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary-light shrink-0">
-                      <item.icon size={24} />
-                    </div>
-                    <div>
-                      <h4 className="text-white font-bold mb-1">{item.title}</h4>
-                      <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="lg:w-1/2 relative"
-            >
-              <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
-              <div className="relative bg-dark-card border border-white/10 rounded-[40px] overflow-hidden shadow-2xl">
-                <img src="https://images.unsplash.com/photo-1576091160550-2173ff9e5ee5?w=800&auto=format" alt="Amster Med Care Pharmacy" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8">
-                  <div>
-                    <h3 className="text-white font-bold text-2xl mb-2">Omassery's Most Trusted</h3>
-                    <p className="text-gray-300 text-sm">Serving the community with dedication and care for over a decade.</p>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
+              <p className="text-slate-500 dark:text-gray-400 text-lg">Find exactly what you need with our organized healthcare sections.</p>
+            </div>
+            <Link to="/medicines" className="px-8 py-4 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl font-black text-slate-900 dark:text-white hover:border-primary transition-all flex items-center gap-2 group">
+              View All Categories <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+            </Link>
           </div>
-        </div>
-      </section>
 
-      {/* Browse by Category (Medkart Style) */}
-      <section className="py-20 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <motion.h2 initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-bold text-white mb-4">
-              Browse by <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Health Categories</span>
-            </motion.h2>
-            <p className="text-gray-400 max-w-xl mx-auto">Find exactly what you need with our organized healthcare sections.</p>
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {categories.map((cat, i) => (
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {categories.slice(0, 8).map((cat, i) => (
               <motion.div
                 key={cat.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.05 }}
-                className="group relative bg-dark-card border border-white/10 rounded-2xl p-6 hover:border-primary/40 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 overflow-hidden"
+                className="group relative bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] p-8 hover:border-primary/40 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden cursor-pointer"
               >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${cat.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  {/* Category Icon */}
-                  <div className="text-white font-bold">{cat.title[0]}</div>
+                <div className={`w-16 h-16 rounded-[24px] bg-gradient-to-br ${cat.color} flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg text-white`}>
+                   <cat.icon size={28} />
                 </div>
-                <h3 className="text-white font-bold text-lg mb-2">{cat.title}</h3>
-                <p className="text-gray-500 text-xs mb-4 line-clamp-2">{cat.description}</p>
-                <Link to={`/category/${cat.slug}`} className="text-primary-light text-xs font-semibold flex items-center gap-1 hover:gap-2 transition-all">
-                  Shop Now <ArrowRight size={12} />
+                <h3 className="text-slate-900 dark:text-white font-black text-2xl mb-3">{cat.title}</h3>
+                <p className="text-slate-500 dark:text-gray-400 text-sm mb-8 leading-relaxed line-clamp-2">{cat.description}</p>
+                <Link to={`/category/${cat.slug}`} className="text-primary font-black text-xs flex items-center gap-2 group-hover:gap-3 transition-all tracking-widest uppercase">
+                  Explore <ChevronRight size={14} />
                 </Link>
               </motion.div>
             ))}
@@ -462,108 +238,139 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Prescription Banner (Medkart Style) */}
-      <section className="py-10 px-4">
-        <div className="max-w-6xl mx-auto bg-gradient-to-r from-primary/20 to-secondary/20 border border-white/10 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-8">
-          <div className="text-center md:text-left">
-            <h2 className="text-2xl md:text-4xl font-bold text-white mb-2">Order with Prescription</h2>
-            <p className="text-gray-300 max-w-md">Upload your doctor's prescription and our pharmacists will handle the rest. Doorstep delivery within 24 hours.</p>
-          </div>
-          <Link to="/upload-prescription" className="px-10 py-4 bg-white text-dark font-bold rounded-xl hover:bg-primary hover:text-white transition-all shadow-xl">
-            Upload Now
-          </Link>
-        </div>
-      </section>
-
-      {/* Top Trending Products (Medkart Style) */}
-      <section className="py-20 px-4 bg-dark/50">
+      {/* Trending Products */}
+      <section className="py-32 px-4 bg-white dark:bg-dark">
         <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-2xl md:text-3xl font-bold text-white">Top <span className="text-primary">Trending Products</span></h2>
-            <Link to="/medicines" className="text-gray-400 hover:text-white text-sm flex items-center gap-1">View All <ArrowRight size={14} /></Link>
+          <div className="text-center mb-20">
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6">
+              Top <span className="text-primary">Trending Products</span>
+            </h2>
+            <p className="text-slate-500 dark:text-gray-400 text-lg max-w-2xl mx-auto">High-quality medicines and healthcare products curated just for you.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products.slice(0, 4).map((p, i) => (
-              <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                className="bg-dark-card border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group shadow-lg">
-                <div className="h-48 relative overflow-hidden bg-white">
-                  <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <span className="absolute top-3 left-3 px-2 py-0.5 bg-accent text-white text-[10px] font-bold rounded shadow-md">{p.discount}</span>
-                  {p.type === 'Generic' && (
-                    <span className="absolute top-3 right-3 px-2 py-0.5 bg-gradient-to-r from-primary to-primary-dark text-white text-[10px] font-bold rounded shadow-md flex items-center gap-1">
-                      <LucideIcons.Zap size={10} fill="currentColor" /> GENERIC
-                    </span>
-                  )}
-                </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <div className="flex items-center justify-between mb-1">
-                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">{p.brand}</p>
-                    <div className="flex items-center text-amber-400">
-                      <LucideIcons.Star size={10} fill="currentColor" />
-                      <span className="text-gray-300 font-bold text-[10px] ml-1">{p.rating}</span>
+
+          <Swiper
+            modules={[Autoplay, Pagination]}
+            spaceBetween={30}
+            slidesPerView={1}
+            autoplay={{ delay: 3000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            breakpoints={{
+              640: { slidesPerView: 2 },
+              1024: { slidesPerView: 3 },
+              1280: { slidesPerView: 4 },
+            }}
+            className="pb-20"
+          >
+            {products.slice(0, 12).map((p, i) => (
+              <SwiperSlide key={p.id}>
+                <motion.div 
+                  initial={{ opacity: 0, y: 30 }} 
+                  whileInView={{ opacity: 1, y: 0 }} 
+                  viewport={{ once: true }} 
+                  transition={{ delay: i * 0.05 }}
+                  className="bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-[40px] overflow-hidden hover:shadow-2xl transition-all group flex flex-col h-full"
+                >
+                  <div className="h-64 relative overflow-hidden bg-slate-50">
+                    <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors" />
+                    <span className="absolute top-6 left-6 px-3 py-1 bg-accent text-white text-[10px] font-black rounded-full shadow-lg">-{p.discount}</span>
+                    {p.type === 'Generic' && (
+                      <span className="absolute top-6 right-6 px-3 py-1 bg-primary text-white text-[10px] font-black rounded-full shadow-lg flex items-center gap-1 uppercase tracking-widest">
+                         Generic
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-8 flex-1 flex flex-col">
+                    <div className="flex items-center justify-between mb-2">
+                      <p className="text-slate-400 text-[10px] uppercase font-black tracking-[0.2em]">{p.brand}</p>
+                      <div className="flex items-center text-amber-400 gap-1">
+                        <Star size={12} fill="currentColor" />
+                        <span className="text-slate-900 dark:text-white font-black text-xs">{p.rating}</span>
+                      </div>
+                    </div>
+                    <h3 className="text-slate-900 dark:text-white font-black text-xl mb-4 group-hover:text-primary transition-colors leading-tight line-clamp-1">{p.title}</h3>
+                    <div className="flex items-center justify-between mt-auto pt-6 border-t border-slate-50 dark:border-white/5">
+                      <div className="flex flex-col">
+                        <span className="text-primary font-black text-2xl tracking-tighter">₹ {p.price}</span>
+                        <span className="text-slate-400 text-xs line-through">MRP ₹ {p.mrp}</span>
+                      </div>
+                      <button
+                        onClick={() => addToCart({ ...p, name: p.title })}
+                        className="w-14 h-14 bg-primary text-white rounded-2xl transition-all flex items-center justify-center active:scale-90 shadow-xl shadow-primary/20 hover:shadow-primary/40 group-hover:rotate-6"
+                      >
+                        <ShoppingCart size={24} className="fill-white" />
+                      </button>
                     </div>
                   </div>
-                  <h3 className="text-white font-bold text-sm mb-2 group-hover:text-primary transition-colors line-clamp-1">{p.title}</h3>
-                  <p className="text-gray-500 text-[10px] line-clamp-2 mb-3">{p.description}</p>
-                  <div className="flex items-center justify-between mt-auto">
-                    <div className="flex flex-col">
-                      <span className="text-accent font-black text-lg">₹ {p.price}</span>
-                      <span className="text-gray-500 text-[10px] line-through">MRP ₹ {p.mrp}</span>
-                    </div>
-                    <button
-                      onClick={() => addToCart({ ...p, name: p.title })}
-                      className="w-10 h-10 bg-primary/10 hover:bg-primary text-primary hover:text-white rounded-lg transition-all flex items-center justify-center active:scale-95 shadow-inner"
-                    >
-                      <ShoppingCart size={18} />
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+                </motion.div>
+              </SwiperSlide>
             ))}
-          </div>
+          </Swiper>
         </div>
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-20 px-4 bg-dark-card">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 bg-secondary/10 border border-secondary/20 rounded-full text-secondary-light text-xs font-semibold mb-4 tracking-wider uppercase">Why Choose MedKart</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">Authentic Medicines. <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Substantial Savings.</span></h2>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: Zap, title: 'Affordable Generic', desc: 'Save up to 85% on your monthly medicine bills with quality generic alternatives.' },
-              { icon: Shield, title: 'Quality Checked', desc: 'Every medicine is NABL lab tested under strict international standards.' },
-              { icon: Users, title: 'Doctor\'s Trust', desc: 'Recommended by leading healthcare professionals across India and UAE.' },
-              { icon: FlaskConical, title: '100% Authentic', desc: 'Directly sourced from WHO-GMP certified manufacturers only.' },
-            ].map((item, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="p-6 bg-dark border border-white/10 rounded-2xl hover:border-primary/30 transition-all duration-300">
-                <item.icon size={28} className="text-primary-light mb-3" />
-                <h3 className="text-white font-semibold mb-2">{item.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
-              </motion.div>
-            ))}
+      <section className="py-32 px-4 bg-slate-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-20">
+            <div className="lg:w-1/2">
+              <span className="text-primary font-black text-xs tracking-widest uppercase mb-4 block">The Amster Edge</span>
+              <h2 className="text-4xl md:text-7xl font-black text-white mb-8 leading-tight">
+                Premium Care. <br />
+                <span className="text-primary italic">Substantial Savings.</span>
+              </h2>
+              <p className="text-slate-400 text-xl leading-relaxed mb-12">
+                We combine modern technology with traditional care to provide you with the best pharmacy experience in Kerala.
+              </p>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                {[
+                  { icon: Zap, title: 'Superfast Delivery', desc: 'Emergency meds delivered within 60 mins in Omassery.' },
+                  { icon: ShieldCheck, title: 'Certified Genuine', desc: '100% authentic products sourced directly.' },
+                ].map((item, i) => (
+                  <div key={i} className="p-8 bg-white/5 border border-white/10 rounded-[32px]">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary-light mb-6">
+                      <item.icon size={24} />
+                    </div>
+                    <h4 className="text-white font-black text-lg mb-2">{item.title}</h4>
+                    <p className="text-slate-500 text-sm leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:w-1/2 relative">
+              <div className="relative rounded-[60px] overflow-hidden border-[10px] border-white/5 shadow-2xl">
+                 <img src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=800&auto=format" alt="Quality Care" className="w-full h-[600px] object-cover" />
+                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent" />
+                 <div className="absolute bottom-12 left-12 right-12 p-8 bg-white/10 backdrop-blur-2xl rounded-[40px] border border-white/10">
+                    <Award size={48} className="text-primary-light mb-6" />
+                    <h3 className="text-white font-black text-2xl mb-2 italic">NABL Certified Partner</h3>
+                    <p className="text-slate-300 text-sm">Working with the best labs and manufacturers to ensure your safety and health.</p>
+                 </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials */}
-      <section className="py-20 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <span className="inline-block px-3 py-1 bg-accent/10 border border-accent/20 rounded-full text-accent text-xs font-semibold mb-4 tracking-wider uppercase">Happy Customers</span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white">What People <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Are Saying</span></h2>
+      <section className="py-32 px-4 bg-white dark:bg-dark">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-24">
+            <h2 className="text-4xl md:text-6xl font-black text-slate-900 dark:text-white mb-6">
+              Our <span className="text-primary italic">Community</span> Says
+            </h2>
+            <div className="w-24 h-2 bg-primary mx-auto rounded-full" />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {testimonials.map((t, i) => <TestimonialCard key={t.id} testimonial={t} index={i} />)}
           </div>
         </div>
       </section>
 
-      <CTASection />
       <NewsletterSection />
+      <CTASection />
     </>
   );
 }

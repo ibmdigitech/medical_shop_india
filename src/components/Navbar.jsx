@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, ShoppingCart, Search, MapPin, Sun, Moon, Upload } from 'lucide-react';
+import { 
+  ShoppingCart, Menu, X, Search, User, 
+  MapPin, ChevronDown, Upload, Phone,
+  Sun, Moon, Globe, Zap, ArrowRight, Truck
+} from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
 import logo from '../assets/logo.png';
@@ -16,77 +20,74 @@ const navLinks = [
 ];
 
 export default function Navbar() {
-  const { cartCount } = useCart();
-  const { theme, toggle } = useTheme();
-  const [scrolled, setScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const { cartCount } = useCart();
+  const { theme, toggle } = useTheme();
   const location = useLocation();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
     setSearchOpen(false);
-  }, [location.pathname]);
+  }, [location]);
 
   return (
-    <nav className="relative" itemScope itemType="https://schema.org/Pharmacy">
-      {/* Top Bar - Delivery & Offers */}
-      <div className="bg-gradient-to-r from-primary via-primary-dark to-primary text-white text-xs font-bold py-2 text-center uppercase tracking-wider">
-        <span className="hidden sm:inline">🏠 FREE Home Delivery </span>
-        <span className="hidden md:inline mx-2">|</span>
-        <span className="text-accent-light animate-pulse">🔥 FLAT 25% OFF on All Medicines - Use Code: MED25</span>
-        <span className="hidden sm:inline mx-2">|</span>
-        <span className="hidden sm:inline">📦 Order Before 6PM & Get Same Day Delivery</span>
-      </div>
-      
-      <motion.nav
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled
-            ? 'bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl border-b border-slate-200/50 dark:border-slate-700/50 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'
-            : 'bg-transparent'
-        }`}
-        style={{ top: scrolled ? '0' : '38px' }}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20 gap-4">
-            {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group shrink-0" aria-label="Home">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform duration-300 border border-slate-100 p-0.5">
-                <img src={logo} alt="Amster Med Care Logo" className="w-full h-full object-cover rounded-full" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="text-xl font-black text-slate-900 dark:text-white tracking-tight">AMSTER</span>
-                <span className="text-[10px] font-bold text-primary tracking-[0.2em] uppercase">Med Care</span>
-              </div>
-            </Link>
-
-            {/* Location Selector */}
-            <div className="hidden xl:flex items-center gap-2 text-slate-500 text-xs px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg hover:border-primary transition-all cursor-pointer">
-              <MapPin size={14} className="text-primary" />
-              <span className="whitespace-nowrap">Deliver to: <b className="text-slate-900">Omassery, Kerala</b></span>
-              <ChevronDown size={12} />
+    <motion.nav
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      className={`fixed top-0 left-0 w-full z-50 transition-all duration-500 ${
+        isScrolled 
+          ? 'bg-white/90 dark:bg-dark/90 backdrop-blur-2xl shadow-xl py-3 border-b border-slate-100 dark:border-white/5' 
+          : 'bg-white/95 dark:bg-dark/95 backdrop-blur-md py-4 border-b border-slate-50 dark:border-white/5'
+      }`}
+    >
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 sm:h-20 gap-4">
+          {/* Logo Section - Left Aligned */}
+          <Link to="/" className="flex items-center gap-3 group shrink-0" aria-label="Home">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl overflow-hidden bg-white flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-500 border border-slate-100 p-0.5">
+              <img src={logo} alt="Amster Med Care Logo" className="w-full h-full object-cover rounded-xl" />
             </div>
+            <div className="flex flex-col justify-center leading-none">
+              <span className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tighter">AMSTER</span>
+              <span className="text-[8px] sm:text-[9px] font-black text-primary tracking-[0.3em] uppercase mt-0.5">Med Care</span>
+            </div>
+          </Link>
 
-            {/* Desktop Nav */}
-            <div className="hidden lg:flex items-center gap-2 lg:gap-4 flex-1 justify-center">
+          {/* Deliver to Section - Refined */}
+          <div className="hidden xl:flex items-center gap-3 text-slate-500 px-4 h-12 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl hover:border-primary/50 transition-all cursor-pointer group shrink-0">
+            <div className="text-primary">
+              <MapPin size={18} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-0.5">Deliver to</p>
+              <div className="flex items-center gap-1">
+                <span className="text-xs font-black text-slate-900 dark:text-white leading-none">Omassery, Kerala</span>
+                <ChevronDown size={12} className="text-slate-400" />
+              </div>
+            </div>
+          </div>
+
+          {/* Desktop Nav - Perfectly Centered */}
+          <div className="hidden lg:flex items-center justify-center flex-1 px-4">
+            <div className="flex items-center gap-1 bg-slate-100 dark:bg-white/5 p-1 h-12 rounded-2xl border border-slate-200/50 dark:border-white/5">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `whitespace-nowrap px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    `px-5 h-full flex items-center rounded-xl text-[13px] font-black tracking-tight transition-all duration-300 ${
                       isActive
-                        ? 'text-primary bg-primary/10'
-                        : 'text-gray-600 hover:text-primary hover:bg-primary/5'
+                        ? 'text-white bg-primary shadow-lg shadow-primary/20'
+                        : 'text-slate-600 dark:text-gray-400 hover:text-primary'
                     }`
                   }
                 >
@@ -94,122 +95,109 @@ export default function Navbar() {
                 </NavLink>
               ))}
             </div>
+          </div>
 
-            {/* Search Bar */}
-            <div className="hidden xl:flex w-64 relative group">
-              <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary transition-colors" />
-              <input 
-                type="search"
-                placeholder="Search products..." 
-                aria-label="Search medicines"
-                className="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm text-app-text placeholder-gray-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-              />
-            </div>
+          {/* Right Action Section - Uniform Icons */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            <button 
+              onClick={() => setSearchOpen(!searchOpen)}
+              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-500 hover:text-primary transition-all active:scale-90"
+              aria-label="Search"
+            >
+              <Search size={18} />
+            </button>
 
-            {/* Icons & CTA */}
-            <div className="flex items-center gap-2 sm:gap-3">
-              {/* Theme Toggle */}
-              <button
-                onClick={toggle}
-                className="p-2 rounded-xl text-slate-600 hover:text-primary hover:bg-primary/5 transition-all"
-                aria-label="Toggle theme"
-              >
-                {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
-              </button>
-              <button 
-                onClick={() => setSearchOpen(!searchOpen)}
-                className="md:hidden p-2 text-slate-600 hover:text-primary rounded-lg hover:bg-primary/5 transition-all"
-                aria-label="Open search"
-              >
-                <Search size={22} />
-              </button>
-              
-              {/* Cart */}
-              <Link to="/cart" className="relative p-2 text-gray-600 hover:text-primary transition-colors group" aria-label="Shopping cart">
-                <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/10 rounded-lg transition-colors" />
-                <ShoppingCart size={22} className="relative" />
-                {cartCount > 0 && (
-                  <span className="absolute -top-1 -right-1 w-5 h-5 bg-accent text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-white" aria-label={`Cart contains ${cartCount} items`}>
-                    {cartCount}
-                  </span>
-                )}
-              </Link>
+            <Link 
+              to="/cart" 
+              className="relative w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-600 dark:text-gray-300 hover:text-primary transition-all active:scale-90"
+              aria-label="Cart"
+            >
+              <ShoppingCart size={20} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-accent text-white text-[10px] font-black rounded-full flex items-center justify-center border-2 border-white dark:border-dark shadow-lg">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
-              <Link
-                to="/upload-prescription"
-                className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-semibold rounded-xl hover:shadow-lg hover:shadow-primary/30 hover:scale-105 active:scale-95 transition-all duration-300"
-                aria-label="Upload prescription"
-              >
-                <Upload size={16} /> <span className="hidden xl:inline">Upload Rx</span>
-              </Link>
+            <button 
+              onClick={toggle}
+              className="w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-500 hover:text-primary transition-all active:scale-90"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
 
-              {/* Main CTA - Order Now */}
-              <Link
-                to="/medicines"
-                className="hidden sm:flex items-center gap-2 px-4 py-2.5 bg-accent hover:bg-accent-dark text-white text-sm font-bold rounded-xl shadow-lg hover:shadow-accent/50 hover:scale-105 active:scale-95 transition-all duration-300"
-                aria-label="Order medicines now"
-              >
-                🚚 Order Now
-              </Link>
-
-              <button
-                onClick={() => setMobileOpen(!mobileOpen)}
-                className="lg:hidden p-2 text-gray-600 hover:text-primary rounded-lg hover:bg-primary/5 transition-all"
-                aria-label="Toggle mobile menu"
-                aria-expanded={mobileOpen}
-              >
-                {mobileOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
+            <button
+              onClick={() => setMobileOpen(!mobileOpen)}
+              className="lg:hidden w-10 h-10 sm:w-11 sm:h-11 flex items-center justify-center bg-slate-100 dark:bg-white/5 text-slate-900 dark:text-white rounded-2xl active:scale-90 transition-all border border-slate-200 dark:border-white/10"
+              aria-label="Toggle Menu"
+            >
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
           </div>
         </div>
+      </div>
 
-        {/* Mobile Search Overlay */}
-        <AnimatePresence>
-          {searchOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="md:hidden bg-white dark:bg-dark-card border-b border-gray-200 dark:border-dark-border px-4 py-3"
-            >
+      {/* Mobile Search Overlay */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            className="bg-white dark:bg-dark-card border-b border-slate-100 dark:border-white/5 px-4 py-6 shadow-2xl"
+          >
+            <div className="max-w-3xl mx-auto">
               <div className="relative">
-                <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search size={22} className="absolute left-6 top-1/2 -translate-y-1/2 text-primary" />
                 <input 
                   type="search"
                   autoFocus
-                  placeholder="Search medicines, products..." 
-                  aria-label="Search medicines mobile"
-                  className="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-dark-card border border-gray-200 dark:border-dark-border rounded-xl text-sm text-app-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+                  placeholder="Search medicines, wellness products, surgicals..." 
+                  className="w-full pl-16 pr-8 py-5 bg-slate-50 dark:bg-white/5 border border-slate-100 dark:border-white/5 rounded-3xl text-lg font-bold focus:outline-none focus:border-primary transition-all shadow-inner"
                 />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed inset-0 z-40 lg:hidden"
+            className="fixed inset-0 z-[60] lg:hidden flex justify-end"
           >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
-            <div className="absolute right-0 top-0 h-full w-80 bg-white dark:bg-dark-card border-l border-gray-200 dark:border-dark-border flex flex-col pt-24 px-6">
-              <div className="space-y-1">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
+            <motion.div 
+              className="relative w-80 h-full bg-white dark:bg-dark shadow-2xl flex flex-col pt-32 px-6"
+            >
+              <div className="absolute top-8 left-8 right-8 flex items-center justify-between">
+                <button 
+                  onClick={toggle}
+                  className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-white/10"
+                >
+                  {theme === 'dark' ? <Sun size={24} /> : <Moon size={24} />}
+                </button>
+                <button onClick={() => setMobileOpen(false)} className="w-12 h-12 flex items-center justify-center bg-slate-100 dark:bg-white/5 rounded-2xl text-slate-900 dark:text-white border border-slate-200 dark:border-white/10">
+                  <X size={24} />
+                </button>
+              </div>
+
+              <div className="flex flex-col gap-2">
                 {navLinks.map((link) => (
                   <NavLink
                     key={link.path}
                     to={link.path}
                     className={({ isActive }) =>
-                      `block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
+                      `px-6 py-4 rounded-2xl text-lg font-black tracking-tight transition-all ${
                         isActive
-                          ? 'text-primary bg-primary/10'
-                          : 'text-gray-600 dark:text-gray-300 hover:text-primary hover:bg-primary/5'
+                          ? 'text-primary bg-primary/10 shadow-sm'
+                          : 'text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5'
                       }`
                     }
                   >
@@ -218,39 +206,34 @@ export default function Navbar() {
                 ))}
               </div>
               
-              {/* Mobile Promo Banner */}
-              <div className="mt-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/20">
-                <p className="text-sm font-bold text-primary mb-2">🎯 Special Offer</p>
-                <p className="text-xs text-gray-600 dark:text-gray-300 mb-3">FLAT 25% OFF on all medicines. Order now & get free home delivery.</p>
+              <div className="mt-12 space-y-4">
+                <Link
+                  to="/upload-prescription"
+                  className="w-full py-5 bg-primary text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-primary/20"
+                >
+                  <Upload size={20} /> Upload Prescription
+                </Link>
                 <Link
                   to="/medicines"
-                  className="block w-full text-center py-2.5 bg-accent text-white font-bold rounded-lg text-sm"
-                  onClick={() => setMobileOpen(false)}
+                  className="w-full py-5 bg-accent-dark text-white font-black rounded-2xl flex items-center justify-center gap-3 shadow-xl shadow-accent/20"
                 >
-                  Shop Now
+                  <ShoppingCart size={20} /> Browse Medicines
                 </Link>
               </div>
 
-              <div className="mt-6 space-y-3">
-                <Link
-                  to="/upload-prescription"
-                  className="flex items-center justify-center gap-2 py-3 bg-primary text-white font-semibold rounded-xl"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  <Upload size={18} /> Upload Prescription
-                </Link>
-                <Link
-                  to="/contact"
-                  className="block text-center py-3 bg-gradient-to-r from-secondary to-secondary-dark text-white font-semibold rounded-xl shadow-lg shadow-secondary/20"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Get Started
-                </Link>
+              <div className="mt-auto pb-12">
+                <div className="p-6 bg-slate-50 dark:bg-white/5 rounded-3xl border border-slate-100 dark:border-white/10">
+                  <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-4 text-center">Support</p>
+                  <a href="tel:+919037507643" className="flex items-center justify-center gap-3 text-slate-900 dark:text-white font-black mb-3 text-lg">
+                    <Phone size={20} className="text-primary" /> +91 90375 07643
+                  </a>
+                  <p className="text-xs text-slate-400 text-center font-bold italic">Available 24/7 for you.</p>
+                </div>
               </div>
-            </div>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 }

@@ -53,35 +53,54 @@ export default function ContactForm() {
     >
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="relative">
-          <User size={16} className="absolute left-3 top-3.5 text-gray-500" />
+          <User size={16} className="absolute left-3 top-3.5 text-slate-400" />
           <input name="name" value={form.name} onChange={handleChange} placeholder="Full Name" required
-            className="w-full pl-9 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50 transition-all" />
+            className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary transition-all shadow-sm" />
         </div>
         <div className="relative">
-          <Mail size={16} className="absolute left-3 top-3.5 text-gray-500" />
+          <Mail size={16} className="absolute left-3 top-3.5 text-slate-400" />
           <input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email Address" required
-            className="w-full pl-9 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50 transition-all" />
+            className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary transition-all shadow-sm" />
         </div>
       </div>
       <div className="relative">
-        <Phone size={16} className="absolute left-3 top-3.5 text-gray-500" />
-        <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone Number (e.g. +971 50 000 0000)"
-          className="w-full pl-9 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50 transition-all" />
+        <Phone size={16} className="absolute left-3 top-3.5 text-slate-400" />
+        <input name="phone" value={form.phone} onChange={handleChange} placeholder="Phone Number (e.g. +91 90000 00000)" required
+          className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary transition-all shadow-sm" />
       </div>
-      <select name="service" value={form.service} onChange={handleChange}
-        className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-gray-400 text-sm focus:outline-none focus:border-primary/50 transition-all">
-        <option value="">Select a Service</option>
-        {['Web Development','Mobile App Development','HRMS Solutions','ERP Systems','Cloud Services','AI Solutions','Cyber Security','IT Consultancy','Digital Marketing'].map(s => (
-          <option key={s} value={s} className="bg-dark">{s}</option>
-        ))}
-      </select>
       <div className="relative">
-        <MessageSquare size={16} className="absolute left-3 top-3.5 text-gray-500" />
-        <textarea name="message" value={form.message} onChange={handleChange} placeholder="Tell us about your project..." required rows={4}
-          className="w-full pl-9 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder-gray-500 text-sm focus:outline-none focus:border-primary/50 transition-all resize-none" />
+        <select 
+          name="service" 
+          value={form.service} 
+          onChange={handleChange}
+          required
+          className="w-full px-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-600 dark:text-slate-400 text-sm focus:outline-none focus:border-primary transition-all shadow-sm appearance-none"
+        >
+          <option value="" className="bg-white dark:bg-dark text-slate-900 dark:text-white">Select Inquiry Type</option>
+          {[
+            'Prescription Verification',
+            'Medicine Availability',
+            'Lab Test Booking',
+            'Home Delivery Support',
+            'Franchise Opportunity',
+            'General Health Advice',
+            'Career Inquiry',
+            'Other Feedback'
+          ].map(s => (
+            <option key={s} value={s} className="bg-white dark:bg-dark text-slate-900 dark:text-white">{s}</option>
+          ))}
+        </select>
+        <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+           <Send size={14} className="rotate-90" />
+        </div>
       </div>
-      <button type="submit" className="w-full py-3.5 bg-gradient-to-r from-primary to-secondary text-white font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2">
-        <Send size={16} /> Send Message
+      <div className="relative">
+        <MessageSquare size={16} className="absolute left-3 top-3.5 text-slate-400" />
+        <textarea name="message" value={form.message} onChange={handleChange} placeholder="How can our pharmacists help you today?" required rows={4}
+          className="w-full pl-9 pr-4 py-3 bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-900 dark:text-white placeholder-slate-500 text-sm focus:outline-none focus:border-primary transition-all resize-none shadow-sm" />
+      </div>
+      <button type="submit" className="w-full py-4 bg-primary text-white font-black rounded-xl hover:shadow-xl hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] transition-all duration-300 flex items-center justify-center gap-3 uppercase tracking-widest text-xs">
+        <Send size={16} /> Send Inquiry Now
       </button>
     </motion.form>
   );

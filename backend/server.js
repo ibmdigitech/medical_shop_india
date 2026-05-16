@@ -138,6 +138,15 @@ app.post('/api/orders', (req, res) => {
 });
 
 // Start Server
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
+});
+
+server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`Port ${PORT} is already in use. Please kill the process using it.`);
+    } else {
+        console.error('Server error:', err);
+    }
+    process.exit(1);
 });
