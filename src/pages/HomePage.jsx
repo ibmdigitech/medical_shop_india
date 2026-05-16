@@ -369,7 +369,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Choose Smart, Choose Generic (Medkart USP) */}
+      {/* Complete Healthcare Solution */}
       <section className="py-20 px-4 bg-gradient-to-b from-dark to-dark-card overflow-hidden">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row items-center gap-16">
@@ -379,19 +379,19 @@ export default function HomePage() {
               viewport={{ once: true }}
               className="lg:w-1/2"
             >
-              <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight">
-                Choose Smart, <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Choose Generic!</span>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-6 leading-tight">
+                Your Complete <br />
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-primary-light to-secondary-light">Healthcare Partner</span>
               </h2>
               <p className="text-gray-400 text-lg mb-8 leading-relaxed">
-                Wondering how generic medicines are better₹ They contain the same active ingredients, are WHO-GMP certified, and save you up to 85% compared to expensive branded medicines.
+                Amster Med Care goes beyond just delivering medicines. We are committed to your family's overall well-being with our holistic health services, expert consultations, and genuine healthcare products.
               </p>
 
               <div className="space-y-6">
                 {[
-                  { icon: Zap, title: 'Same Effectiveness', desc: 'Identical active ingredients and therapeutic effects.' },
-                  { icon: Shield, title: 'NABL Quality Checked', desc: 'Tested under strict standards for safety and purity.' },
-                  { icon: Award, title: 'Doctor Recommended', desc: 'Trusted by healthcare professionals globally.' },
+                  { icon: Zap, title: 'Superfast Delivery', desc: 'Get your emergency medicines delivered in record time directly to your door.' },
+                  { icon: Shield, title: '100% Genuine Guarantee', desc: 'Every single product is sourced directly from certified manufacturers and thoroughly quality checked.' },
+                  { icon: Award, title: 'Expert Pharmacists', desc: 'Our licensed pharmacists are available 24/7 to guide you with your dosage and substitutions.' },
                 ].map((item, i) => (
                   <div key={i} className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-primary/30 transition-colors">
                     <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center text-primary-light shrink-0">
@@ -413,27 +413,12 @@ export default function HomePage() {
               className="lg:w-1/2 relative"
             >
               <div className="absolute inset-0 bg-primary/20 blur-[100px] rounded-full" />
-              <div className="relative bg-dark-card border border-white/10 rounded-[40px] p-8 md:p-12 shadow-2xl overflow-hidden group">
-                <div className="flex flex-col gap-6 relative z-10">
-                  <div className="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
-                    <div>
-                      <p className="text-gray-500 text-xs font-bold uppercase mb-1">Branded Medicine</p>
-                      <h4 className="text-white font-bold text-lg">Branded X</h4>
-                    </div>
-                    <span className="text-red-400 font-bold text-xl line-through opacity-50">₹ 185</span>
-                  </div>
-                  <div className="flex justify-center">
-                    <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white font-bold">VS</div>
-                  </div>
-                  <div className="p-6 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-between scale-110 shadow-xl shadow-primary/20">
-                    <div>
-                      <p className="text-primary-light text-xs font-bold uppercase mb-1">Generic Alternative</p>
-                      <h4 className="text-white font-bold text-lg">Generic Y</h4>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-white font-black text-2xl">₹ 34</span>
-                      <p className="text-primary-light text-[10px] font-bold">82% SAVINGS</p>
-                    </div>
+              <div className="relative bg-dark-card border border-white/10 rounded-[40px] overflow-hidden shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1576091160550-2173ff9e5ee5?w=800&auto=format" alt="Amster Med Care Pharmacy" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex items-end p-8">
+                  <div>
+                    <h3 className="text-white font-bold text-2xl mb-2">Omassery's Most Trusted</h3>
+                    <p className="text-gray-300 text-sm">Serving the community with dedication and care for over a decade.</p>
                   </div>
                 </div>
               </div>
@@ -501,17 +486,29 @@ export default function HomePage() {
             {products.slice(0, 4).map((p, i) => (
               <motion.div key={p.id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="bg-dark-card border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all group shadow-lg">
-                <div className="h-48 relative overflow-hidden bg-white/5">
+                <div className="h-48 relative overflow-hidden bg-white">
                   <img src={p.image} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
-                  <span className="absolute top-3 left-3 px-2 py-0.5 bg-secondary text-white text-[10px] font-bold rounded">{p.discount}</span>
+                  <span className="absolute top-3 left-3 px-2 py-0.5 bg-accent text-white text-[10px] font-bold rounded shadow-md">{p.discount}</span>
+                  {p.type === 'Generic' && (
+                    <span className="absolute top-3 right-3 px-2 py-0.5 bg-gradient-to-r from-primary to-primary-dark text-white text-[10px] font-bold rounded shadow-md flex items-center gap-1">
+                      <LucideIcons.Zap size={10} fill="currentColor" /> GENERIC
+                    </span>
+                  )}
                 </div>
-                <div className="p-5">
-                  <p className="text-gray-500 text-[10px] uppercase font-bold tracking-wider mb-1">{p.brand}</p>
-                  <h3 className="text-white font-bold text-sm mb-3 group-hover:text-primary transition-colors line-clamp-1">{p.title}</h3>
-                  <div className="flex items-center justify-between mb-4">
+                <div className="p-5 flex-1 flex flex-col">
+                  <div className="flex items-center justify-between mb-1">
+                    <p className="text-gray-500 text-[10px] uppercase font-bold tracking-wider">{p.brand}</p>
+                    <div className="flex items-center text-amber-400">
+                      <LucideIcons.Star size={10} fill="currentColor" />
+                      <span className="text-gray-300 font-bold text-[10px] ml-1">{p.rating}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-white font-bold text-sm mb-2 group-hover:text-primary transition-colors line-clamp-1">{p.title}</h3>
+                  <p className="text-gray-500 text-[10px] line-clamp-2 mb-3">{p.description}</p>
+                  <div className="flex items-center justify-between mt-auto">
                     <div className="flex flex-col">
-                      <span className="text-white font-bold text-lg">₹ {p.price}</span>
-                      <span className="text-gray-500 text-xs line-through">MRP ₹ {p.mrp}</span>
+                      <span className="text-accent font-black text-lg">₹ {p.price}</span>
+                      <span className="text-gray-500 text-[10px] line-through">MRP ₹ {p.mrp}</span>
                     </div>
                     <button
                       onClick={() => addToCart({ ...p, name: p.title })}

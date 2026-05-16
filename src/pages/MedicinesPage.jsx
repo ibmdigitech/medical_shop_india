@@ -163,9 +163,23 @@ export default function MedicinesPage() {
                              </span>
                            )}
                          </div>
-                         <h3 className="text-slate-900 font-bold text-lg mb-4 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                         <h3 className="text-slate-900 font-bold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2 leading-tight">
                            {p.title}
                          </h3>
+                         
+                         {/* Ratings and Reviews */}
+                         <div className="flex items-center gap-1 mb-2">
+                           <div className="flex items-center text-amber-400">
+                             <LucideIcons.Star size={12} fill="currentColor" />
+                             <span className="text-slate-700 font-bold text-xs ml-1">{p.rating}</span>
+                           </div>
+                           <span className="text-slate-400 text-[10px]">({p.reviews} reviews)</span>
+                         </div>
+                         
+                         {/* Description */}
+                         <p className="text-slate-500 text-xs line-clamp-2 mb-4 leading-relaxed">
+                           {p.description}
+                         </p>
                          
                          <div className="mt-auto flex items-end justify-between">
                            <div className="flex flex-col">
