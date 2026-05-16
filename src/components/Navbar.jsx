@@ -15,7 +15,7 @@ const navLinks = [
   { name: 'Medicines', path: '/medicines' },
   { name: 'Compare Medicines', path: '/compare-medicines' },
   { name: 'Lab Tests', path: '/lab-tests' },
-  { name: 'Wellness', path: '/wellness' },
+  { name: 'Ayurvedic', path: '/ayurvedic-products' },
   { name: 'Store Locator', path: '/stores' },
 ];
 

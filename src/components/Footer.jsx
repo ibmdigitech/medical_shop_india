@@ -16,7 +16,7 @@ const footerLinks = {
   services: [
     { name: 'Order Medicines', path: '/medicines' },
     { name: 'Lab Tests', path: '/lab-tests' },
-    { name: 'Wellness', path: '/wellness' },
+    { name: 'Ayurvedic', path: '/ayurvedic-products' },
     { name: 'Compare Medicines', path: '/compare-medicines' },
     { name: 'Upload Prescription', path: '/upload-prescription' },
   ],
