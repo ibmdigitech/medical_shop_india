@@ -184,7 +184,7 @@ export default function Navbar() {
                     key={link.path}
                     to={link.path}
                     className={({ isActive }) =>
-                      `px-6 py-4 rounded-2xl text-lg font-black tracking-tight transition-all ${
+                      `w-full text-left px-6 py-4 rounded-2xl text-lg font-black tracking-tight transition-all ${
                         isActive
                           ? 'text-primary bg-primary/10 shadow-sm'
                           : 'text-slate-900 dark:text-white hover:bg-slate-50 dark:hover:bg-white/5'
