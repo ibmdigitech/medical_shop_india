@@ -61,7 +61,7 @@ export default function AboutPage() {
             className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-12"
           >
              <div className="md:col-span-8 h-[400px] md:h-[600px] rounded-[40px] md:rounded-[60px] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl relative group">
-                <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=1200&auto=format&fit=crop" alt="Pharmacy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <img src="https://images.unsplash.com/photo-1576091160550-2173ff9e5eb8?w=1200&auto=format&fit=crop" alt="Pharmacy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                 <div className="absolute bottom-12 left-12">
                    <h3 className="text-white font-black text-3xl mb-2 italic">Excellence in Service</h3>
@@ -70,7 +70,7 @@ export default function AboutPage() {
              </div>
              <div className="md:col-span-4 grid grid-rows-2 gap-6">
                 <div className="rounded-[40px] md:rounded-[50px] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl relative group">
-                   <img src="https://images.unsplash.com/photo-1585435557343-3b092031a831?w=600&auto=format&fit=crop" alt="Medicines" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                   <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&auto=format&fit=crop" alt="Medicines" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                 </div>
                 <div className="rounded-[40px] md:rounded-[50px] overflow-hidden border-8 border-white dark:border-white/5 shadow-2xl relative group bg-primary flex flex-col items-center justify-center text-center p-8">
                    <Award size={64} className="text-white mb-4 animate-bounce" />
