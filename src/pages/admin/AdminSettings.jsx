@@ -33,15 +33,17 @@ export default function AdminSettings() {
 
   // Load from localStorage
   useEffect(() => {
+    const savedRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
+    const savedProfile = getTaxProfile(savedRegion);
     setStoreName(localStorage.getItem('erpStoreName') || 'Amster Med Care');
     setSupportEmail(localStorage.getItem('erpSupportEmail') || 'info@amstermedcare.com');
-    setSupportPhone(localStorage.getItem('erpSupportPhone') || '+971 4 555 0199');
-    setCurrency(localStorage.getItem('erpCurrency') || 'AED');
-    setTaxRegion(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
-    setStoreAddress(localStorage.getItem('erpStoreAddress') || 'Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
-    setLicenseNo(localStorage.getItem('erpLicenseNo') || 'DHA-PH-2026-8874');
-    setVatRate(localStorage.getItem('erpVatRate') || '5');
-    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || '100348572900003');
+    setSupportPhone(localStorage.getItem('erpSupportPhone') || savedProfile.phone);
+    setCurrency(localStorage.getItem('erpCurrency') || savedProfile.currency);
+    setTaxRegion(savedRegion);
+    setStoreAddress(localStorage.getItem('erpStoreAddress') || savedProfile.address);
+    setLicenseNo(localStorage.getItem('erpLicenseNo') || savedProfile.license);
+    setVatRate(localStorage.getItem('erpVatRate') || savedProfile.defaultTaxRate);
+    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || savedProfile.sampleRegistration);
   }, []);
 
   const handleSave = () => {
@@ -151,9 +153,14 @@ export default function AdminSettings() {
                   <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Active Currency</label>
                   <input 
                     type="text" 
-                    readOnly
-                    value={activeRegion.currencyLabel}
-                    className="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-500 font-bold outline-none cursor-not-allowed"
+                    readOnly={taxRegion !== 'Custom'}
+                    value={taxRegion === 'Custom' ? currency : activeRegion.currencyLabel}
+                    onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+                    className={`w-full px-4 py-3 border border-slate-200 dark:border-white/10 rounded-xl font-bold outline-none ${
+                      taxRegion === 'Custom'
+                        ? 'bg-slate-50 dark:bg-dark text-slate-900 dark:text-white focus:border-primary focus:ring-1 focus:ring-primary'
+                        : 'bg-slate-100 dark:bg-white/5 text-slate-500 cursor-not-allowed'
+                    }`}
                   />
                 </div>
               </div>

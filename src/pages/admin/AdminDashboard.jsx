@@ -8,6 +8,7 @@ import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
   BarChart, Bar, PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const salesData = [
   { name: 'Mon', revenue: 4000, orders: 240 },
@@ -95,9 +96,10 @@ export default function AdminDashboard() {
   const [revenueText, setRevenueText] = useState('AED 124,500');
 
   useEffect(() => {
-    const savedCurrency = localStorage.getItem('erpCurrency') || 'AED';
-    setCurrencySymbol(savedCurrency === 'INR' ? 'INR' : 'AED');
-    setRevenueText(savedCurrency === 'INR' ? 'INR 124,500' : 'AED 124,500');
+    const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    const savedCurrency = localStorage.getItem('erpCurrency') || profile.currency;
+    setCurrencySymbol(savedCurrency);
+    setRevenueText(`${savedCurrency} 124,500`);
   }, []);
 
   const handleExport = () => {
@@ -216,7 +218,7 @@ export default function AdminDashboard() {
         />
         <StatCard 
           title="Inventory Value"
-          value="AED 892K"
+          value={`${currencySymbol} 892K`}
           icon={Package}
           trend="up"
           trendValue="+6.8%"
@@ -367,7 +369,7 @@ export default function AdminDashboard() {
           <div className="mt-6 p-4 rounded-2xl bg-white/10 border border-white/10">
             <p className="text-xs font-black uppercase tracking-widest text-cyan-200 mb-1">DHA Readiness</p>
             <p className="text-2xl font-black">97%</p>
-            <p className="text-xs text-slate-300 mt-1">Audit logs, RX approvals, and VAT records are current.</p>
+            <p className="text-xs text-slate-300 mt-1">Audit logs, RX approvals, and country tax records are current.</p>
           </div>
         </motion.div>
       </div>

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, 
   Tooltip as RechartsTooltip, ResponsiveContainer 
 } from 'recharts';
 import { Download, Calendar, Filter } from 'lucide-react';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const salesData = [
   { name: 'Mon', revenue: 4000, orders: 240, profit: 1200 },
@@ -18,6 +19,12 @@ const salesData = [
 
 export default function AdminSalesReports() {
   const [dateRange, setDateRange] = useState('7days');
+  const [currency, setCurrency] = useState('AED');
+
+  useEffect(() => {
+    const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    setCurrency(localStorage.getItem('erpCurrency') || profile.currency);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -57,7 +64,7 @@ export default function AdminSalesReports() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Total Revenue</p>
-          <p className="text-3xl font-black text-slate-900 dark:text-white">AED 38,000</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-white">{currency} 38,000</p>
           <p className="text-sm text-emerald-500 font-bold mt-2">+12.5% from last period</p>
         </div>
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
@@ -67,7 +74,7 @@ export default function AdminSalesReports() {
         </div>
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Avg. Order Value</p>
-          <p className="text-3xl font-black text-slate-900 dark:text-white">AED 1,245</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-white">{currency} 1,245</p>
           <p className="text-sm text-rose-500 font-bold mt-2">-2.1% from last period</p>
         </div>
       </div>

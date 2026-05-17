@@ -1,20 +1,63 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Tag, Calendar, CheckCircle2, 
   XCircle, Edit, Trash2, Percent
 } from 'lucide-react';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const offers = [
-  { id: 'OFF-001', code: 'WELCOME25', title: 'New User Discount', type: 'Percentage', value: '25%', minOrder: 'AED 49', validUntil: '2026-12-31', status: 'Active' },
-  { id: 'OFF-002', code: 'FREEDEL', title: 'Free Delivery', type: 'Shipping', value: 'Free', minOrder: 'AED 99', validUntil: '2026-06-30', status: 'Active' },
-  { id: 'OFF-003', code: 'SUMMER10', title: 'Summer Special', type: 'Percentage', value: '10%', minOrder: 'AED 149', validUntil: '2026-08-31', status: 'Active' },
-  { id: 'OFF-004', code: 'FLAT500', title: 'Flat Discount', type: 'Fixed', value: 'AED 50', minOrder: 'AED 500', validUntil: '2026-05-01', status: 'Expired' },
+  { id: 'OFF-001', code: 'WELCOME25', title: 'New User Discount', type: 'Percentage', value: '25%', minOrder: 49, validUntil: '2026-12-31', status: 'Active' },
+  { id: 'OFF-002', code: 'FREEDEL', title: 'Free Delivery', type: 'Shipping', value: 'Free', minOrder: 99, validUntil: '2026-06-30', status: 'Active' },
+  { id: 'OFF-003', code: 'SUMMER10', title: 'Summer Special', type: 'Percentage', value: '10%', minOrder: 149, validUntil: '2026-08-31', status: 'Active' },
+  { id: 'OFF-004', code: 'FLAT500', title: 'Flat Discount', type: 'Fixed', value: 50, minOrder: 500, validUntil: '2026-05-01', status: 'Expired' },
 ];
 
 export default function AdminOffers() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [offersList, setOffersList] = useState(offers);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currency, setCurrency] = useState('AED');
+  const [offerForm, setOfferForm] = useState({
+    code: '',
+    value: '',
+    title: '',
+    minOrder: '',
+    validUntil: '',
+  });
+
+  useEffect(() => {
+    const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    setCurrency(localStorage.getItem('erpCurrency') || profile.currency);
+  }, []);
+
+  const formatMoney = (value) => `${currency} ${value}`;
+
+  const resetOfferForm = () => {
+    setOfferForm({
+      code: '',
+      value: '',
+      title: '',
+      minOrder: '',
+      validUntil: '',
+    });
+  };
+
+  const handleCreateOffer = () => {
+    const nextOffer = {
+      id: `OFF-${String(offersList.length + 1).padStart(3, '0')}`,
+      code: offerForm.code.trim().toUpperCase() || 'NEWOFFER',
+      title: offerForm.title.trim() || 'New Promotional Offer',
+      type: offerForm.value.includes('%') ? 'Percentage' : 'Fixed',
+      value: offerForm.value.trim() || '10%',
+      minOrder: Number(offerForm.minOrder || 0),
+      validUntil: offerForm.validUntil || '2026-12-31',
+      status: 'Active',
+    };
+
+    setOffersList([nextOffer, ...offersList]);
+    resetOfferForm();
+    setIsAddModalOpen(false);
+  };
 
   return (
     <div className="space-y-6">
@@ -80,7 +123,7 @@ export default function AdminOffers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-              {offers.map((offer) => (
+              {offersList.map((offer) => (
                 <tr key={offer.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                   <td className="p-4">
                     <span className="px-3 py-1 bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white font-black rounded-lg border border-slate-200 dark:border-white/10 tracking-widest">
@@ -91,8 +134,8 @@ export default function AdminOffers() {
                     <p className="font-bold text-slate-900 dark:text-white">{offer.title}</p>
                     <p className="text-xs text-slate-500">{offer.type}</p>
                   </td>
-                  <td className="p-4 font-black text-primary">{offer.value}</td>
-                  <td className="p-4 font-bold text-slate-700 dark:text-gray-300">{offer.minOrder}</td>
+                  <td className="p-4 font-black text-primary">{typeof offer.value === 'number' ? formatMoney(offer.value) : offer.value}</td>
+                  <td className="p-4 font-bold text-slate-700 dark:text-gray-300">{formatMoney(offer.minOrder)}</td>
                   <td className="p-4 text-sm text-slate-600 dark:text-gray-400">{offer.validUntil}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider ${
@@ -148,28 +191,57 @@ export default function AdminOffers() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Coupon Code</label>
-                    <input type="text" placeholder="e.g. SUMMER20" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white uppercase" />
+                    <input
+                      type="text"
+                      value={offerForm.code}
+                      onChange={(e) => setOfferForm({ ...offerForm, code: e.target.value })}
+                      placeholder="e.g. SUMMER20"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white uppercase"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Discount Value</label>
-                    <input type="text" placeholder="e.g. 20%" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                    <input
+                      type="text"
+                      value={offerForm.value}
+                      onChange={(e) => setOfferForm({ ...offerForm, value: e.target.value })}
+                      placeholder="e.g. 20%"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                    />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Offer Title</label>
-                  <input type="text" placeholder="e.g. Summer Special Discount" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                  <input
+                    type="text"
+                    value={offerForm.title}
+                    onChange={(e) => setOfferForm({ ...offerForm, title: e.target.value })}
+                    placeholder="e.g. Summer Special Discount"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Minimum Order (AED)</label>
-                    <input type="number" placeholder="500" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Minimum Order ({currency})</label>
+                    <input
+                      type="number"
+                      value={offerForm.minOrder}
+                      onChange={(e) => setOfferForm({ ...offerForm, minOrder: e.target.value })}
+                      placeholder="500"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                    />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Valid Until</label>
-                    <input type="date" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                    <input
+                      type="date"
+                      value={offerForm.validUntil}
+                      onChange={(e) => setOfferForm({ ...offerForm, validUntil: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                    />
                   </div>
                 </div>
-                <button onClick={() => setIsAddModalOpen(false)} className="w-full py-4 mt-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                <button onClick={handleCreateOffer} className="w-full py-4 mt-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
                   <CheckCircle2 size={20} /> Save Offer
                 </button>
               </div>

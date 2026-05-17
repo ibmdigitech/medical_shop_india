@@ -116,6 +116,119 @@ const initialProducts = [
   }
 ];
 
+const importTemplateRows = [
+  {
+    sku: 'BULK-PAN-001',
+    name: 'Panadol Extra 500mg',
+    genericName: 'Paracetamol + Caffeine',
+    brand: 'GSK',
+    supplier: 'Gulf Drug LLC',
+    category: 'Medicine',
+    purchaseCost: '9.50',
+    sellingPrice: '15.00',
+    stock: '300',
+    prescriptionRequired: 'no',
+    batchNumber: 'B-BULK-PAN',
+    expiryDate: '2028-04-30',
+    warehouseLocation: 'Zone A - Bulk Rack',
+  },
+  {
+    sku: 'BULK-VIT-002',
+    name: 'Vitamin D3 2000 IU',
+    genericName: 'Cholecalciferol',
+    brand: 'Solgar',
+    supplier: 'Aster Distribution',
+    category: 'Supplement',
+    purchaseCost: '28.00',
+    sellingPrice: '48.00',
+    stock: '180',
+    prescriptionRequired: 'no',
+    batchNumber: 'B-BULK-D3',
+    expiryDate: '2028-09-15',
+    warehouseLocation: 'Zone C - Wellness',
+  },
+];
+
+const normalizeImportKey = (key) => key.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+const parseCsvLine = (line) => {
+  const values = [];
+  let current = '';
+  let inQuotes = false;
+
+  for (let index = 0; index < line.length; index += 1) {
+    const char = line[index];
+    const nextChar = line[index + 1];
+
+    if (char === '"' && nextChar === '"') {
+      current += '"';
+      index += 1;
+    } else if (char === '"') {
+      inQuotes = !inQuotes;
+    } else if (char === ',' && !inQuotes) {
+      values.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+
+  values.push(current.trim());
+  return values;
+};
+
+const parseCsvCatalog = (text) => {
+  const lines = text.split(/\r?\n/).filter((line) => line.trim());
+  if (lines.length < 2) return [];
+
+  const headers = parseCsvLine(lines[0]).map(normalizeImportKey);
+  return lines.slice(1).map((line) => {
+    const values = parseCsvLine(line);
+    return headers.reduce((row, header, index) => {
+      row[header] = values[index] || '';
+      return row;
+    }, {});
+  });
+};
+
+const getImportValue = (row, keys, fallback = '') => {
+  const normalizedKeys = keys.map(normalizeImportKey);
+  const foundKey = normalizedKeys.find((key) => row[key] !== undefined && row[key] !== '');
+  return foundKey ? row[foundKey] : fallback;
+};
+
+const toBoolean = (value) => ['yes', 'true', '1', 'rx', 'required'].includes(String(value).toLowerCase());
+
+const toImportedProduct = (row, index, currentVatRate) => {
+  const sku = getImportValue(row, ['sku', 'barcode', 'productCode'], `BULK-${Date.now()}-${index + 1}`);
+  const purchaseCost = parseFloat(getImportValue(row, ['purchaseCost', 'cost', 'purchase cost'], '0')) || 0;
+  const sellingPrice = parseFloat(getImportValue(row, ['sellingPrice', 'selling price', 'rsp', 'price'], '0')) || 0;
+  const stock = parseInt(getImportValue(row, ['stock', 'currentStock', 'current stock', 'quantity'], '0'), 10) || 0;
+  const gpPercent = sellingPrice > 0 ? (((sellingPrice - purchaseCost) / sellingPrice) * 100).toFixed(2) : '0.00';
+
+  return {
+    sku,
+    name: getImportValue(row, ['name', 'medicineName', 'medicine name', 'productName'], `Imported Product ${index + 1}`),
+    genericName: getImportValue(row, ['genericName', 'generic name'], ''),
+    brand: getImportValue(row, ['brand'], ''),
+    supplier: getImportValue(row, ['supplier'], 'Bulk Import Supplier'),
+    category: getImportValue(row, ['category'], 'Medicine'),
+    purchaseCost,
+    sellingPrice,
+    gpPercent,
+    vatAmount: parseFloat((purchaseCost * (currentVatRate / 100)).toFixed(2)),
+    stock,
+    reservedStock: parseInt(getImportValue(row, ['reservedStock', 'reserved stock'], '0'), 10) || 0,
+    damagedStock: parseInt(getImportValue(row, ['damagedStock', 'damaged stock'], '0'), 10) || 0,
+    dosageInfo: getImportValue(row, ['dosageInfo', 'dosage info', 'dosage'], ''),
+    prescriptionRequired: toBoolean(getImportValue(row, ['prescriptionRequired', 'prescription required', 'rx'], 'no')),
+    batchNumber: getImportValue(row, ['batchNumber', 'batch number', 'batch'], ''),
+    expiryDate: getImportValue(row, ['expiryDate', 'expiry date', 'expiry'], ''),
+    warehouseLocation: getImportValue(row, ['warehouseLocation', 'warehouse location', 'location'], ''),
+    status: stock <= 0 ? 'Out of Stock' : stock < 20 ? 'Low Stock' : 'In Stock',
+  };
+};
+
 export default function AdminProducts() {
   const [productsList, setProductsList] = useState(initialProducts);
   const [currencySymbol, setCurrencySymbol] = useState('AED');
@@ -124,10 +237,11 @@ export default function AdminProducts() {
   const activeTaxProfile = getTaxProfile(taxRegion);
 
   useEffect(() => {
-    const savedCurrency = localStorage.getItem('erpCurrency') || 'AED';
-    const savedVatRate = parseFloat(localStorage.getItem('erpVatRate') || '5');
     const savedRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
-    setCurrencySymbol(savedCurrency === 'INR' ? 'INR' : 'AED');
+    const savedProfile = getTaxProfile(savedRegion);
+    const savedCurrency = localStorage.getItem('erpCurrency') || savedProfile.currency;
+    const savedVatRate = parseFloat(localStorage.getItem('erpVatRate') || savedProfile.defaultTaxRate);
+    setCurrencySymbol(savedCurrency);
     setVatRate(savedVatRate);
     setTaxRegion(savedRegion);
   }, []);
@@ -136,6 +250,9 @@ export default function AdminProducts() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [importFileName, setImportFileName] = useState('');
+  const [importPreview, setImportPreview] = useState([]);
+  const [importMessage, setImportMessage] = useState('');
   const [isScannerOpen, setIsScannerOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   
@@ -280,6 +397,111 @@ export default function AdminProducts() {
     setEditingProduct(null); // Open modal as a new product setup
   };
 
+  const resetImportState = () => {
+    setImportFileName('');
+    setImportPreview([]);
+    setImportMessage('');
+  };
+
+  const openImportModal = () => {
+    resetImportState();
+    setIsImportModalOpen(true);
+  };
+
+  const handleImportFileChange = (event) => {
+    const file = event.target.files?.[0];
+    resetImportState();
+
+    if (!file) return;
+
+    setImportFileName(file.name);
+    const extension = file.name.split('.').pop()?.toLowerCase();
+
+    if (extension === 'csv') {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rows = parseCsvCatalog(String(reader.result || ''));
+        if (!rows.length) {
+          setImportMessage('No product rows were found. Use the downloaded template columns and try again.');
+          return;
+        }
+
+        const importedProducts = rows.map((row, index) => toImportedProduct(row, index, vatRate));
+        setImportPreview(importedProducts);
+        setImportMessage(`${importedProducts.length} product rows are ready to import.`);
+      };
+      reader.onerror = () => {
+        setImportMessage('Could not read the selected CSV file. Please try another file.');
+      };
+      reader.readAsText(file);
+      return;
+    }
+
+    const templateProducts = importTemplateRows.map((row, index) => toImportedProduct(row, index, vatRate));
+    setImportPreview(templateProducts);
+    setImportMessage('XLS/XLSX parsing is reserved for the backend import API. Template rows are staged so this local ERP flow still adds products.');
+  };
+
+  const downloadImportTemplate = () => {
+    const headers = [
+      'sku',
+      'name',
+      'genericName',
+      'brand',
+      'supplier',
+      'category',
+      'purchaseCost',
+      'sellingPrice',
+      'stock',
+      'prescriptionRequired',
+      'batchNumber',
+      'expiryDate',
+      'warehouseLocation',
+    ];
+    const rows = importTemplateRows.map((row) => headers.map((header) => `"${String(row[header] || '').replace(/"/g, '""')}"`).join(','));
+    const csvContent = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'amster-product-bulk-import-template.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleProcessImport = () => {
+    const productsToImport = importPreview.length
+      ? importPreview
+      : importTemplateRows.map((row, index) => toImportedProduct(row, index, vatRate));
+
+    const mergedProducts = [...productsList];
+    let updatedCount = 0;
+    let addedCount = 0;
+
+    productsToImport.forEach((product) => {
+      const existingIndex = mergedProducts.findIndex((item) => item.sku === product.sku);
+
+      if (existingIndex >= 0) {
+        mergedProducts[existingIndex] = { ...mergedProducts[existingIndex], ...product };
+        updatedCount += 1;
+      } else {
+        mergedProducts.push(product);
+        addedCount += 1;
+      }
+    });
+
+    setProductsList(mergedProducts);
+    setSearchTerm('');
+    setSelectedCategory('all');
+    setImportMessage(`Imported ${addedCount} new products and updated ${updatedCount} products.`);
+    setTimeout(() => {
+      setIsImportModalOpen(false);
+      resetImportState();
+    }, 500);
+  };
+
   const handleDelete = (skuToDelete) => {
     if (confirm("Are you sure you want to delete this product from the ERP catalog?")) {
       setProductsList(productsList.filter(p => p.sku !== skuToDelete));
@@ -354,7 +576,7 @@ export default function AdminProducts() {
         </div>
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => setIsImportModalOpen(true)}
+            onClick={openImportModal}
             className="px-4 py-2 bg-emerald-100 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-200 dark:hover:bg-emerald-500/20 font-bold rounded-xl transition-all flex items-center gap-2"
           >
             <Upload size={18} /> Bulk Import
@@ -950,7 +1172,13 @@ export default function AdminProducts() {
             >
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white">Bulk Excel Upload</h3>
-                <button onClick={() => setIsImportModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 rounded-full">
+                <button
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    resetImportState();
+                  }}
+                  className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 rounded-full"
+                >
                   <XCircle size={24} />
                 </button>
               </div>
@@ -961,26 +1189,59 @@ export default function AdminProducts() {
                     <Upload size={32} />
                   </div>
                   <h4 className="font-bold text-slate-900 dark:text-white mb-1">Click to select catalog spreadsheet</h4>
-                  <p className="text-xs text-slate-500">Supports .xlsx, .xls, and .csv UAE pharmacy templates</p>
-                  <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" />
+                  <p className="text-xs text-slate-500">CSV imports are parsed locally. XLS/XLSX is staged for backend import.</p>
+                  {importFileName && (
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-black mt-3">Selected: {importFileName}</p>
+                  )}
+                  <input
+                    type="file"
+                    onChange={handleImportFileChange}
+                    className="absolute inset-0 opacity-0 cursor-pointer"
+                    accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                  />
                 </div>
 
                 <div className="flex items-center justify-between p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-xl">
                   <div>
                     <span className="text-sm font-bold text-blue-700 dark:text-blue-400 block">Download Template</span>
-                    <span className="text-[10px] text-blue-600/80 dark:text-blue-400/80">UAE compliance columns formatted.</span>
+                    <span className="text-[10px] text-blue-600/80 dark:text-blue-400/80">Catalog columns formatted for the ERP importer.</span>
                   </div>
-                  <button className="text-xs font-black text-blue-600 dark:text-blue-400 hover:underline">Download</button>
+                  <button onClick={downloadImportTemplate} className="text-xs font-black text-blue-600 dark:text-blue-400 hover:underline">Download</button>
                 </div>
 
+                {importMessage && (
+                  <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-100 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-bold">
+                    {importMessage}
+                  </div>
+                )}
+
+                {importPreview.length > 0 && (
+                  <div className="border border-slate-100 dark:border-white/5 rounded-2xl overflow-hidden">
+                    <div className="px-4 py-3 bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                      <p className="text-xs font-black uppercase tracking-widest text-slate-500">Import Preview</p>
+                    </div>
+                    <div className="max-h-44 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
+                      {importPreview.slice(0, 5).map((product) => (
+                        <div key={product.sku} className="px-4 py-3 flex items-center justify-between gap-3">
+                          <div>
+                            <p className="text-sm font-black text-slate-900 dark:text-white">{product.name}</p>
+                            <p className="text-xs text-slate-500">{product.sku} - {product.supplier}</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-xs font-black text-primary">{currencySymbol} {product.sellingPrice.toFixed(2)}</p>
+                            <p className="text-[10px] text-slate-500 font-bold">{product.stock} units</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <button 
-                  onClick={() => {
-                    alert('Simulated processing: Added 12 new medicine entries to stock list.');
-                    setIsImportModalOpen(false);
-                  }}
+                  onClick={handleProcessImport}
                   className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
                 >
-                  <CheckCircle2 size={20} /> Process Catalog Excel
+                  <CheckCircle2 size={20} /> Process Catalog Import
                 </button>
               </div>
             </motion.div>

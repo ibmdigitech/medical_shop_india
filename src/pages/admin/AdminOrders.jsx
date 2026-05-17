@@ -134,11 +134,13 @@ export default function AdminOrders() {
   const taxRegistrationLabel = activeTaxProfile.registrationLabel;
 
   useEffect(() => {
-    setCurrency(localStorage.getItem('erpCurrency') || 'AED');
-    setTaxRegion(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
-    setTaxRate(localStorage.getItem('erpVatRate') || '5');
-    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || '100348572900003');
-    setStoreAddress(localStorage.getItem('erpStoreAddress') || 'Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
+    const savedRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
+    const savedProfile = getTaxProfile(savedRegion);
+    setCurrency(localStorage.getItem('erpCurrency') || savedProfile.currency);
+    setTaxRegion(savedRegion);
+    setTaxRate(localStorage.getItem('erpVatRate') || savedProfile.defaultTaxRate);
+    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || savedProfile.sampleRegistration);
+    setStoreAddress(localStorage.getItem('erpStoreAddress') || savedProfile.address);
   }, []);
 
   const getStatusColor = (status) => {

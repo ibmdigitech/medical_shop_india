@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, UserPlus, MoreVertical, Edit, 
   Trash2, Mail, Phone, MapPin, CheckCircle2, XCircle
 } from 'lucide-react';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const initialCustomers = [
   { id: 'CUST-001', name: 'Rahul Krishnan', email: 'rahul.k@example.ae', phone: '+971 50 432 1001', location: 'Dubai Marina', orders: 12, totalSpent: 12500, status: 'Active' },
@@ -18,6 +19,7 @@ export default function AdminCustomers() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [currency, setCurrency] = useState('AED');
   const [formError, setFormError] = useState('');
   const [customerForm, setCustomerForm] = useState({
     name: '',
@@ -86,6 +88,11 @@ export default function AdminCustomers() {
     const matchesStatus = selectedStatus === 'all' || customer.status.toLowerCase() === selectedStatus;
     return matchesSearch && matchesStatus;
   });
+
+  useEffect(() => {
+    const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    setCurrency(localStorage.getItem('erpCurrency') || profile.currency);
+  }, []);
 
   return (
     <div className="space-y-6">
@@ -172,7 +179,7 @@ export default function AdminCustomers() {
                     <div className="flex items-center gap-1"><MapPin size={14}/> {customer.location}</div>
                   </td>
                   <td className="p-4 font-bold text-slate-700 dark:text-gray-300">{customer.orders}</td>
-                  <td className="p-4 font-black text-slate-900 dark:text-white">AED {customer.totalSpent}</td>
+                  <td className="p-4 font-black text-slate-900 dark:text-white">{currency} {customer.totalSpent}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider ${
                       customer.status === 'Active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
