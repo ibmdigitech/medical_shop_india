@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { 
   Search, Filter, CheckCircle2, AlertTriangle, 
   XCircle, Eye, FileImage, Download 
 } from 'lucide-react';
+import { prescriptionService } from '../../services/adminApiServices';
 
 const prescriptions = [
   { id: 'RX-5021', customer: 'Rahul Krishnan', date: '2026-05-17 09:15 AM', items: 3, status: 'Pending Review', urgency: 'High' },
@@ -13,7 +14,23 @@ const prescriptions = [
 ];
 
 export default function AdminPrescriptions() {
+  const [prescriptionsList, setPrescriptionsList] = useState(prescriptions);
   const [searchTerm, setSearchTerm] = useState('');
+
+  useEffect(() => {
+    prescriptionService.list()
+      .then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          setPrescriptionsList(data);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const filteredPrescriptions = prescriptionsList.filter((rx) => {
+    const query = searchTerm.toLowerCase();
+    return String(rx.id).toLowerCase().includes(query) || String(rx.customer).toLowerCase().includes(query);
+  });
 
   return (
     <div className="space-y-6">
@@ -71,7 +88,7 @@ export default function AdminPrescriptions() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-              {prescriptions.map((rx) => (
+              {filteredPrescriptions.map((rx) => (
                 <tr key={rx.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                   <td className="p-4 font-black text-primary">
                     <div className="flex items-center gap-2">

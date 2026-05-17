@@ -6,6 +6,7 @@ import {
   QrCode, ScanLine, DollarSign, Archive, ClipboardList, ShieldAlert,
   Calendar, Layers, TrendingUp, AlertCircle
 } from 'lucide-react';
+import { productService } from '../../services/adminApiServices';
 import { getTaxProfile } from '../../services/taxProfiles';
 
 const initialProducts = [
@@ -244,6 +245,14 @@ export default function AdminProducts() {
     setCurrencySymbol(savedCurrency);
     setVatRate(savedVatRate);
     setTaxRegion(savedRegion);
+
+    productService.list()
+      .then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          setProductsList(data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -471,7 +480,7 @@ export default function AdminProducts() {
     URL.revokeObjectURL(url);
   };
 
-  const handleProcessImport = () => {
+  const handleProcessImport = async () => {
     const productsToImport = importPreview.length
       ? importPreview
       : importTemplateRows.map((row, index) => toImportedProduct(row, index, vatRate));
@@ -480,17 +489,27 @@ export default function AdminProducts() {
     let updatedCount = 0;
     let addedCount = 0;
 
-    productsToImport.forEach((product) => {
+    await Promise.all(productsToImport.map(async (product) => {
       const existingIndex = mergedProducts.findIndex((item) => item.sku === product.sku);
 
       if (existingIndex >= 0) {
         mergedProducts[existingIndex] = { ...mergedProducts[existingIndex], ...product };
         updatedCount += 1;
+        try {
+          await productService.update(product.sku, mergedProducts[existingIndex]);
+        } catch {
+          // Keep the local import usable if the backend is offline.
+        }
       } else {
         mergedProducts.push(product);
         addedCount += 1;
+        try {
+          await productService.create(product);
+        } catch {
+          // Keep the local import usable if the backend is offline.
+        }
       }
-    });
+    }));
 
     setProductsList(mergedProducts);
     setSearchTerm('');
@@ -502,13 +521,18 @@ export default function AdminProducts() {
     }, 500);
   };
 
-  const handleDelete = (skuToDelete) => {
+  const handleDelete = async (skuToDelete) => {
     if (confirm("Are you sure you want to delete this product from the ERP catalog?")) {
+      try {
+        await productService.remove(skuToDelete);
+      } catch {
+        // Local state still updates so the admin workflow is not blocked while offline.
+      }
       setProductsList(productsList.filter(p => p.sku !== skuToDelete));
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!sku || !name || !purchaseCost || !sellingPrice || !stock) {
       alert('Please fill out all mandatory fields in general and pricing tabs.');
       return;
@@ -543,11 +567,19 @@ export default function AdminProducts() {
     };
 
     if (editingProduct) {
-      // Update
-      setProductsList(productsList.map(p => p.sku === editingProduct.sku ? savedProduct : p));
+      try {
+        const { data } = await productService.update(editingProduct.sku, savedProduct);
+        setProductsList(productsList.map(p => p.sku === editingProduct.sku ? data : p));
+      } catch {
+        setProductsList(productsList.map(p => p.sku === editingProduct.sku ? savedProduct : p));
+      }
     } else {
-      // Add new
-      setProductsList([...productsList, savedProduct]);
+      try {
+        const { data } = await productService.create(savedProduct);
+        setProductsList([...productsList, data]);
+      } catch {
+        setProductsList([...productsList, savedProduct]);
+      }
     }
     setIsModalOpen(false);
   };

@@ -5,7 +5,9 @@ import {
   Clock, Truck, XCircle, MoreVertical, Printer, MapPin, 
   Phone, User, CreditCard, ChevronRight, ShoppingBag, Percent, Receipt
 } from 'lucide-react';
+import { orderService } from '../../services/adminApiServices';
 import { getTaxProfile } from '../../services/taxProfiles';
+import logo from '../../assets/logo.png';
 
 const initialOrders = [
   { 
@@ -141,6 +143,14 @@ export default function AdminOrders() {
     setTaxRate(localStorage.getItem('erpVatRate') || savedProfile.defaultTaxRate);
     setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || savedProfile.sampleRegistration);
     setStoreAddress(localStorage.getItem('erpStoreAddress') || savedProfile.address);
+
+    orderService.list()
+      .then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          setOrdersList(data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const getStatusColor = (status) => {
@@ -170,7 +180,7 @@ export default function AdminOrders() {
     setIsDrawerOpen(true);
   };
 
-  const handleUpdateStatus = (orderId, newStatus) => {
+  const handleUpdateStatus = async (orderId, newStatus) => {
     const updated = ordersList.map(ord => {
       if (ord.id === orderId) {
         let updatedPayStatus = ord.paymentStatus;
@@ -182,12 +192,22 @@ export default function AdminOrders() {
       return ord;
     });
     setOrdersList(updated);
-    if (selectedOrder && selectedOrder.id === orderId) {
-      setSelectedOrder({ ...selectedOrder, status: newStatus, paymentStatus: newStatus === 'Delivered' && selectedOrder.paymentMethod.includes('COD') ? 'Paid' : selectedOrder.paymentStatus });
+    const nextSelectedOrder = selectedOrder && selectedOrder.id === orderId
+      ? { ...selectedOrder, status: newStatus, paymentStatus: newStatus === 'Delivered' && selectedOrder.paymentMethod.includes('COD') ? 'Paid' : selectedOrder.paymentStatus }
+      : null;
+    if (nextSelectedOrder) {
+      setSelectedOrder(nextSelectedOrder);
+      try {
+        const { data } = await orderService.update(orderId, nextSelectedOrder);
+        setSelectedOrder(data);
+        setOrdersList((currentOrders) => currentOrders.map((order) => order.id === orderId ? data : order));
+      } catch {
+        // Local state already reflects the change if the backend is offline.
+      }
     }
   };
 
-  const handleAssignAgent = (orderId, agentName) => {
+  const handleAssignAgent = async (orderId, agentName) => {
     const updated = ordersList.map(ord => {
       if (ord.id === orderId) {
         return { ...ord, deliveryAgent: agentName };
@@ -196,7 +216,15 @@ export default function AdminOrders() {
     });
     setOrdersList(updated);
     if (selectedOrder && selectedOrder.id === orderId) {
-      setSelectedOrder({ ...selectedOrder, deliveryAgent: agentName });
+      const updatedOrder = { ...selectedOrder, deliveryAgent: agentName };
+      setSelectedOrder(updatedOrder);
+      try {
+        const { data } = await orderService.update(orderId, updatedOrder);
+        setSelectedOrder(data);
+        setOrdersList((currentOrders) => currentOrders.map((order) => order.id === orderId ? data : order));
+      } catch {
+        // Local state already reflects the change if the backend is offline.
+      }
     }
   };
 
@@ -387,12 +415,17 @@ export default function AdminOrders() {
 
                   {/* Header Row */}
                   <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="text-lg font-black text-primary">AMSTER MED CARE PHARMACY LLC</h4>
-                      <p className="text-[10px] text-slate-500 leading-relaxed font-bold">
-                        {storeAddress}<br />
-                        {taxRegistrationLabel}: {taxRegistrationNumber} ({taxRate}% {taxName} Reg)
-                      </p>
+                    <div className="flex items-start gap-3 min-w-0">
+                      <div className="w-14 h-14 shrink-0 rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm">
+                        <img src={logo} alt="Amster Med Care logo" className="w-full h-full object-contain" />
+                      </div>
+                      <div className="min-w-0">
+                        <h4 className="text-lg font-black text-primary leading-tight">AMSTER MED CARE PHARMACY LLC</h4>
+                        <p className="text-[10px] text-slate-500 leading-relaxed font-bold">
+                          {storeAddress}<br />
+                          {taxRegistrationLabel}: {taxRegistrationNumber} ({taxRate}% {taxName} Reg)
+                        </p>
+                      </div>
                     </div>
                     <div className="text-right">
                       <h3 className="text-xl font-black text-slate-700 dark:text-slate-300">TAX INVOICE</h3>

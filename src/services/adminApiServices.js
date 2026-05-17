@@ -16,8 +16,8 @@ export const authService = {
 export const productService = createResourceService('products');
 export const orderService = createResourceService('orders');
 export const customerService = createResourceService('customers');
+export const offerService = createResourceService('offers');
 export const salesService = createResourceService('sales-reports');
 export const inventoryService = createResourceService('inventory');
 export const prescriptionService = createResourceService('prescriptions');
 export const deliveryService = createResourceService('deliveries');
-

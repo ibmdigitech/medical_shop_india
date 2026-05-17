@@ -11,7 +11,8 @@ export default function ContactForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/contact', {
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBaseUrl}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

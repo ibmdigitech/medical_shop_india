@@ -4,6 +4,7 @@ import {
   Plus, Tag, Calendar, CheckCircle2, 
   XCircle, Edit, Trash2, Percent
 } from 'lucide-react';
+import { offerService } from '../../services/adminApiServices';
 import { getTaxProfile } from '../../services/taxProfiles';
 
 const offers = [
@@ -28,6 +29,14 @@ export default function AdminOffers() {
   useEffect(() => {
     const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
     setCurrency(localStorage.getItem('erpCurrency') || profile.currency);
+
+    offerService.list()
+      .then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          setOffersList(data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const formatMoney = (value) => `${currency} ${value}`;
@@ -42,7 +51,7 @@ export default function AdminOffers() {
     });
   };
 
-  const handleCreateOffer = () => {
+  const handleCreateOffer = async () => {
     const nextOffer = {
       id: `OFF-${String(offersList.length + 1).padStart(3, '0')}`,
       code: offerForm.code.trim().toUpperCase() || 'NEWOFFER',
@@ -54,9 +63,25 @@ export default function AdminOffers() {
       status: 'Active',
     };
 
-    setOffersList([nextOffer, ...offersList]);
+    try {
+      const { data } = await offerService.create(nextOffer);
+      setOffersList([data, ...offersList]);
+    } catch {
+      setOffersList([nextOffer, ...offersList]);
+    }
     resetOfferForm();
     setIsAddModalOpen(false);
+  };
+
+  const handleDeleteOffer = async (offerId) => {
+    if (!confirm('Delete this offer from the coupon list?')) return;
+
+    try {
+      await offerService.remove(offerId);
+    } catch {
+      // Local state still updates so the admin workflow is not blocked while offline.
+    }
+    setOffersList((currentOffers) => currentOffers.filter((offer) => offer.id !== offerId));
   };
 
   return (
@@ -151,7 +176,10 @@ export default function AdminOffers() {
                       <button className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
                         <Edit size={16} />
                       </button>
-                      <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors">
+                      <button
+                        onClick={() => handleDeleteOffer(offer.id)}
+                        className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>

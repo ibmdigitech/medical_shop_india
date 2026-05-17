@@ -12,6 +12,7 @@ export default function UploadPrescriptionPage() {
   const [file, setFile] = useState(null);
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({ patient_name: '', mobile: '', notes: '' });
+  const [error, setError] = useState('');
 
   const handleFileChange = (e) => {
     if (e.target.files[0]) { 
@@ -26,10 +27,29 @@ export default function UploadPrescriptionPage() {
   
   const handleSubmit = async (e) => { 
     e.preventDefault(); 
-    // Simulation of upload
-    setTimeout(() => {
+    setError('');
+
+    const payload = new FormData();
+    payload.append('patient_name', formData.patient_name);
+    payload.append('mobile', formData.mobile);
+    payload.append('notes', formData.notes);
+    payload.append('prescription', file);
+
+    try {
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+      const response = await fetch(`${apiBaseUrl}/upload-prescription`, {
+        method: 'POST',
+        body: payload,
+      });
+
+      if (!response.ok) {
+        throw new Error('Upload failed');
+      }
+
       setStep(3);
-    }, 1500);
+    } catch {
+      setError('Could not upload the prescription. Please check the backend connection and try again.');
+    }
   };
 
   return (
@@ -170,6 +190,11 @@ export default function UploadPrescriptionPage() {
                    </div>
 
                    <form onSubmit={handleSubmit} className="space-y-8">
+                      {error && (
+                        <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold">
+                          {error}
+                        </div>
+                      )}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                         <div className="space-y-3">
                            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Patient Full Name</label>

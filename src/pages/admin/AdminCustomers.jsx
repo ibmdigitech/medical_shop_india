@@ -4,6 +4,7 @@ import {
   Search, Filter, UserPlus, MoreVertical, Edit, 
   Trash2, Mail, Phone, MapPin, CheckCircle2, XCircle
 } from 'lucide-react';
+import { customerService } from '../../services/adminApiServices';
 import { getTaxProfile } from '../../services/taxProfiles';
 
 const initialCustomers = [
@@ -14,8 +15,29 @@ const initialCustomers = [
   { id: 'CUST-005', name: 'Vishnu R', email: 'vishnu.r@example.ae', phone: '+971 54 432 1005', location: 'Ajman', orders: 0, totalSpent: 0, status: 'Blocked' },
 ];
 
+const CUSTOMERS_STORAGE_KEY = 'erpCustomersList';
+
+const getStoredCustomers = () => {
+  try {
+    const savedCustomers = localStorage.getItem(CUSTOMERS_STORAGE_KEY);
+    const parsedCustomers = savedCustomers ? JSON.parse(savedCustomers) : null;
+    return Array.isArray(parsedCustomers) ? parsedCustomers : initialCustomers;
+  } catch {
+    return initialCustomers;
+  }
+};
+
+const getNextCustomerId = (customers) => {
+  const highestCustomerNumber = customers.reduce((highest, customer) => {
+    const match = String(customer.id || '').match(/^CUST-(\d+)$/);
+    return match ? Math.max(highest, Number(match[1])) : highest;
+  }, 0);
+
+  return `CUST-${String(highestCustomerNumber + 1).padStart(3, '0')}`;
+};
+
 export default function AdminCustomers() {
-  const [customersList, setCustomersList] = useState(initialCustomers);
+  const [customersList, setCustomersList] = useState(getStoredCustomers);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -45,7 +67,7 @@ export default function AdminCustomers() {
     setIsAddModalOpen(true);
   };
 
-  const handleSaveCustomer = () => {
+  const handleSaveCustomer = async () => {
     const name = customerForm.name.trim();
     const email = customerForm.email.trim();
     const phone = customerForm.phone.trim();
@@ -56,9 +78,8 @@ export default function AdminCustomers() {
       return;
     }
 
-    const nextNumber = customersList.length + 1;
     const newCustomer = {
-      id: `CUST-${String(nextNumber).padStart(3, '0')}`,
+      id: getNextCustomerId(customersList),
       name,
       email,
       phone,
@@ -68,14 +89,26 @@ export default function AdminCustomers() {
       status: customerForm.status,
     };
 
-    setCustomersList([newCustomer, ...customersList]);
+    try {
+      const { data: savedCustomer } = await customerService.create(newCustomer);
+      setCustomersList((currentCustomers) => [savedCustomer, ...currentCustomers]);
+    } catch {
+      setCustomersList((currentCustomers) => [newCustomer, ...currentCustomers]);
+    }
+    setSearchTerm('');
+    setSelectedStatus('all');
     setIsAddModalOpen(false);
     resetCustomerForm();
   };
 
-  const handleDeleteCustomer = (customerId) => {
+  const handleDeleteCustomer = async (customerId) => {
     if (confirm('Delete this customer profile from the ERP customer list?')) {
-      setCustomersList(customersList.filter((customer) => customer.id !== customerId));
+      try {
+        await customerService.remove(customerId);
+      } catch {
+        // Local state still updates so the admin workflow is not blocked while offline.
+      }
+      setCustomersList((currentCustomers) => currentCustomers.filter((customer) => customer.id !== customerId));
     }
   };
 
@@ -92,7 +125,19 @@ export default function AdminCustomers() {
   useEffect(() => {
     const profile = getTaxProfile(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
     setCurrency(localStorage.getItem('erpCurrency') || profile.currency);
+
+    customerService.list()
+      .then(({ data }) => {
+        if (Array.isArray(data) && data.length) {
+          setCustomersList(data);
+        }
+      })
+      .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(CUSTOMERS_STORAGE_KEY, JSON.stringify(customersList));
+  }, [customersList]);
 
   return (
     <div className="space-y-6">

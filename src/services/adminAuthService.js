@@ -56,6 +56,25 @@ export const logAdminActivity = (action, metadata = {}) => {
 };
 
 export const loginAdmin = async ({ email, password }) => {
+  try {
+    const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+    const response = await fetch(`${apiBaseUrl}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const result = await response.json();
+      localStorage.setItem(TOKEN_KEY, result.token);
+      localStorage.setItem(SESSION_KEY, JSON.stringify({ user: result.user, issuedAt: Date.now(), expiresAt: result.expiresAt }));
+      logAdminActivity('auth.login', { email, source: 'api' });
+      return result;
+    }
+  } catch {
+    // Keep demo login available when the local backend is not running.
+  }
+
   const user = demoUsers.find((candidate) => candidate.email === email && candidate.password === password);
 
   if (!user) {
@@ -114,4 +133,3 @@ export const logoutAdmin = () => {
 };
 
 export const getAdminActivityLog = () => JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]');
-
