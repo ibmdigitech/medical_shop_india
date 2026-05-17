@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  IndianRupee, ShoppingCart, Users, Package, 
+  Coins, ShoppingCart, Users, Package, 
   TrendingUp, TrendingDown, Clock, AlertTriangle, CheckCircle2, XCircle, Download 
 } from 'lucide-react';
 import { 
@@ -44,6 +44,19 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }) => (
 export default function AdminDashboard() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [currencySymbol, setCurrencySymbol] = useState('₹');
+  const [revenueText, setRevenueText] = useState('₹ 1,24,500');
+
+  useEffect(() => {
+    const savedCurrency = localStorage.getItem('erpCurrency') || 'INR';
+    if (savedCurrency === 'INR') {
+      setCurrencySymbol('₹');
+      setRevenueText('₹ 1,24,500');
+    } else {
+      setCurrencySymbol('AED');
+      setRevenueText('AED 124,500');
+    }
+  }, []);
 
   const handleExport = () => {
     setIsExporting(true);
@@ -93,8 +106,8 @@ export default function AdminDashboard() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard 
           title="Total Revenue" 
-          value="₹ 1,24,500" 
-          icon={IndianRupee} 
+          value={revenueText} 
+          icon={Coins} 
           trend="up" 
           trendValue="+14.5%" 
           color="bg-gradient-to-br from-emerald-400 to-primary"
@@ -203,7 +216,7 @@ export default function AdminDashboard() {
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-slate-900 dark:text-white">₹ 1,240</p>
+                  <p className="font-black text-slate-900 dark:text-white">{currencySymbol} 1,240</p>
                   <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 text-[10px] font-black rounded uppercase tracking-wider mt-1">
                     Pending
                   </span>
@@ -235,7 +248,7 @@ export default function AdminDashboard() {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 dark:text-white">{item.name}</h4>
-                    <p className="text-xs text-slate-500">Supplier: Apollo Pharma</p>
+                    <p className="text-xs text-slate-500">Supplier: Gulf Drug LLC</p>
                   </div>
                 </div>
                 <div className="text-right">
