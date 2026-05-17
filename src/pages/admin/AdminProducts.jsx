@@ -6,6 +6,7 @@ import {
   QrCode, ScanLine, DollarSign, Archive, ClipboardList, ShieldAlert,
   Calendar, Layers, TrendingUp, AlertCircle
 } from 'lucide-react';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const initialProducts = [
   { 
@@ -117,15 +118,16 @@ const initialProducts = [
 
 export default function AdminProducts() {
   const [productsList, setProductsList] = useState(initialProducts);
-  const [currencySymbol, setCurrencySymbol] = useState('₹');
-  const [vatRate, setVatRate] = useState(12);
-  const [taxRegion, setTaxRegion] = useState('India (Kerala)');
+  const [currencySymbol, setCurrencySymbol] = useState('AED');
+  const [vatRate, setVatRate] = useState(5);
+  const [taxRegion, setTaxRegion] = useState('United Arab Emirates');
+  const activeTaxProfile = getTaxProfile(taxRegion);
 
   useEffect(() => {
-    const savedCurrency = localStorage.getItem('erpCurrency') || 'INR';
-    const savedVatRate = parseFloat(localStorage.getItem('erpVatRate') || '12');
-    const savedRegion = localStorage.getItem('erpTaxRegion') || 'India (Kerala)';
-    setCurrencySymbol(savedCurrency === 'INR' ? '₹' : 'AED');
+    const savedCurrency = localStorage.getItem('erpCurrency') || 'AED';
+    const savedVatRate = parseFloat(localStorage.getItem('erpVatRate') || '5');
+    const savedRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
+    setCurrencySymbol(savedCurrency === 'INR' ? 'INR' : 'AED');
     setVatRate(savedVatRate);
     setTaxRegion(savedRegion);
   }, []);
@@ -552,7 +554,7 @@ export default function AdminProducts() {
               <div className="flex border-b border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 p-2 gap-2 shrink-0">
                 {[
                   { id: 'general', label: 'General & Rx', icon: Archive },
-                  { id: 'pricing', label: 'Pricing & VAT', icon: DollarSign },
+                  { id: 'pricing', label: `Pricing & ${activeTaxProfile.taxName}`, icon: DollarSign },
                   { id: 'stock', label: 'Stock & Batches', icon: Layers },
                   { id: 'projection', label: 'Projections & Brand', icon: TrendingUp },
                 ].map((tab) => (
@@ -665,7 +667,7 @@ export default function AdminProducts() {
                   </div>
                 )}
 
-                {/* 2. Pricing & UAE VAT */}
+                {/* 2. Pricing & regional tax */}
                 {modalActiveTab === 'pricing' && (
                   <div className="space-y-4 animate-fadeIn">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -681,7 +683,9 @@ export default function AdminProducts() {
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">{vatRate}% Tax/VAT ({currencySymbol})</label>
+                        <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">
+                          {vatRate}% {activeTaxProfile.taxName} ({currencySymbol})
+                        </label>
                         <input 
                           type="text" 
                           readOnly 
@@ -829,7 +833,7 @@ export default function AdminProducts() {
                     <div className="p-4 bg-blue-50 dark:bg-blue-500/10 border border-blue-100 dark:border-blue-500/20 rounded-2xl space-y-2">
                       <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400">
                         <TrendingUp size={18} />
-                        <h4 className="font-black text-sm uppercase">{taxRegion === 'India (Kerala)' ? 'Kerala' : 'UAE'} Sales Projection (30 Days)</h4>
+                        <h4 className="font-black text-sm uppercase">{taxRegion} Sales Projection (30 Days)</h4>
                       </div>
                       <p className="text-xs text-slate-600 dark:text-gray-300 mt-1 leading-relaxed">
                         Based on localized historical patterns for {name || 'this product'}, demand is expected to <strong>increase by 12%</strong> next month due to high prescription rates. Recommended safety buffer: <strong>120 additional units</strong>.
@@ -986,3 +990,4 @@ export default function AdminProducts() {
     </div>
   );
 }
+

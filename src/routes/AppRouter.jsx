@@ -4,38 +4,39 @@ import MainLayout from '../layouts/MainLayout';
 import AdminLayout from '../layouts/AdminLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 
-// Admin Pages
-import AdminLogin from '../pages/admin/AdminLogin';
-import AdminDashboard from '../pages/admin/AdminDashboard';
-import AdminProducts from '../pages/admin/AdminProducts';
-import AdminOrders from '../pages/admin/AdminOrders';
-import AdminCustomers from '../pages/admin/AdminCustomers';
-import AdminSalesReports from '../pages/admin/AdminSalesReports';
-import AdminStockAudit from '../pages/admin/AdminStockAudit';
-import AdminPrescriptions from '../pages/admin/AdminPrescriptions';
-import AdminDelivery from '../pages/admin/AdminDelivery';
-import AdminOffers from '../pages/admin/AdminOffers';
-import AdminSettings from '../pages/admin/AdminSettings';
 import AdminProtectedRoute from '../components/admin/AdminProtectedRoute';
 
-import HomePage from '../pages/HomePage';
-import MedicinesPage from '../pages/MedicinesPage';
-import CartPage from '../pages/CartPage';
-import UploadPrescriptionPage from '../pages/UploadPrescriptionPage';
-import AboutPage from '../pages/AboutPage';
-import ContactPage from '../pages/ContactPage';
-import BlogPage from '../pages/BlogPage';
-import FranchisePage from '../pages/FranchisePage';
-import LabTestsPage from '../pages/LabTestsPage';
-import CompareMedicinesPage from '../pages/CompareMedicinesPage';
-import StoreLocatorPage from '../pages/StoreLocatorPage';
-import VeterinaryPage from '../pages/VeterinaryPage';
-import BabyProductsPage from '../pages/BabyProductsPage';
-import CosmeticsPage from '../pages/CosmeticsPage';
-import SurgicalsPage from '../pages/SurgicalsPage';
-import CovidSuppliesPage from '../pages/CovidSuppliesPage';
-import AyurvedicPage from '../pages/AyurvedicPage';
-import GenericMedicinesPage from '../pages/GenericMedicinesPage';
+const AdminLogin = lazy(() => import('../pages/admin/AdminLogin'));
+const AdminDashboard = lazy(() => import('../pages/admin/AdminDashboard'));
+const AdminProducts = lazy(() => import('../pages/admin/AdminProducts'));
+const AdminOrders = lazy(() => import('../pages/admin/AdminOrders'));
+const AdminCustomers = lazy(() => import('../pages/admin/AdminCustomers'));
+const AdminSalesReports = lazy(() => import('../pages/admin/AdminSalesReports'));
+const AdminStockAudit = lazy(() => import('../pages/admin/AdminStockAudit'));
+const AdminPrescriptions = lazy(() => import('../pages/admin/AdminPrescriptions'));
+const AdminDelivery = lazy(() => import('../pages/admin/AdminDelivery'));
+const AdminOffers = lazy(() => import('../pages/admin/AdminOffers'));
+const AdminSettings = lazy(() => import('../pages/admin/AdminSettings'));
+const AdminLogout = lazy(() => import('../pages/admin/AdminLogout'));
+
+const HomePage = lazy(() => import('../pages/HomePage'));
+const MedicinesPage = lazy(() => import('../pages/MedicinesPage'));
+const CartPage = lazy(() => import('../pages/CartPage'));
+const UploadPrescriptionPage = lazy(() => import('../pages/UploadPrescriptionPage'));
+const AboutPage = lazy(() => import('../pages/AboutPage'));
+const ContactPage = lazy(() => import('../pages/ContactPage'));
+const BlogPage = lazy(() => import('../pages/BlogPage'));
+const FranchisePage = lazy(() => import('../pages/FranchisePage'));
+const LabTestsPage = lazy(() => import('../pages/LabTestsPage'));
+const CompareMedicinesPage = lazy(() => import('../pages/CompareMedicinesPage'));
+const StoreLocatorPage = lazy(() => import('../pages/StoreLocatorPage'));
+const VeterinaryPage = lazy(() => import('../pages/VeterinaryPage'));
+const BabyProductsPage = lazy(() => import('../pages/BabyProductsPage'));
+const CosmeticsPage = lazy(() => import('../pages/CosmeticsPage'));
+const SurgicalsPage = lazy(() => import('../pages/SurgicalsPage'));
+const CovidSuppliesPage = lazy(() => import('../pages/CovidSuppliesPage'));
+const AyurvedicPage = lazy(() => import('../pages/AyurvedicPage'));
+const GenericMedicinesPage = lazy(() => import('../pages/GenericMedicinesPage'));
 
 const WellnessPage = () => <div className="pt-32 text-center text-white">Wellness Page (Coming Soon)</div>;
 
@@ -86,6 +87,7 @@ export default function AppRouter() {
         
         {/* Admin Login (Public) */}
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/logout" element={<AdminLogout />} />
 
         {/* Admin Routes (Protected) */}
         <Route path="/admin" element={<AdminProtectedRoute />}>
@@ -101,6 +103,7 @@ export default function AppRouter() {
             <Route path="delivery" element={<AdminDelivery />} />
             <Route path="offers" element={<AdminOffers />} />
             <Route path="settings" element={<AdminSettings />} />
+            <Route path="logout" element={<AdminLogout />} />
             {/* Add more admin routes here in the future */}
           </Route>
         </Route>

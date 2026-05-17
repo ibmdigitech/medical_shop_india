@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
-  BarChart, Bar
+  BarChart, Bar, PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 
 const salesData = [
@@ -17,6 +17,53 @@ const salesData = [
   { name: 'Fri', revenue: 6000, orders: 480 },
   { name: 'Sat', revenue: 8000, orders: 620 },
   { name: 'Sun', revenue: 7500, orders: 590 },
+];
+
+const categoryRevenue = [
+  { name: 'OTC Medicines', value: 42000, color: '#059669' },
+  { name: 'Prescription', value: 31500, color: '#0891B2' },
+  { name: 'Wellness', value: 21000, color: '#3B82F6' },
+  { name: 'Devices', value: 14500, color: '#F59E0B' },
+];
+
+const deliveryData = [
+  { name: 'Week 1', onTime: 92, delayed: 8 },
+  { name: 'Week 2', onTime: 94, delayed: 6 },
+  { name: 'Week 3', onTime: 89, delayed: 11 },
+  { name: 'Week 4', onTime: 96, delayed: 4 },
+];
+
+const dashboardKpis = [
+  { metric: 'Total Revenue', value: '124500', trend: '+14.5%', owner: 'Sales' },
+  { metric: 'Total Orders', value: '842', trend: '+8.2%', owner: 'Orders' },
+  { metric: 'Total Customers', value: '4210', trend: '+12.1%', owner: 'CRM' },
+  { metric: 'Inventory Value', value: '892000', trend: '+6.8%', owner: 'Inventory' },
+  { metric: 'Pending Deliveries', value: '31', trend: '-3.1%', owner: 'Delivery' },
+  { metric: 'Prescription Requests', value: '18', trend: '+4.9%', owner: 'Pharmacy' },
+  { metric: 'Low Stock Items', value: '24', trend: '-2.4%', owner: 'Inventory' },
+];
+
+const recentOrders = [
+  { id: 'ORD-9001', customer: 'Aisha Mohammed', items: 3, amount: 1240, status: 'Pending', payment: 'COD' },
+  { id: 'ORD-9002', customer: 'Rahul Krishnan', items: 2, amount: 860, status: 'Processing', payment: 'Paid' },
+  { id: 'ORD-9003', customer: 'Sneha Patel', items: 5, amount: 2150, status: 'RX Review', payment: 'Paid' },
+  { id: 'ORD-9004', customer: 'John Doe', items: 1, amount: 295, status: 'Delivered', payment: 'Paid' },
+];
+
+const lowStockItems = [
+  { name: 'Paracetamol 500mg', sku: 'PRD-PARA-500', stock: 12, reorderLevel: 75, supplier: 'Gulf Drug LLC', status: 'Critical' },
+  { name: 'Vitamin C Tablets', sku: 'PRD-VITC-1000', stock: 45, reorderLevel: 90, supplier: 'Aster Distribution', status: 'Warning' },
+  { name: 'Dolo 650', sku: 'PRD-DOLO-650', stock: 8, reorderLevel: 80, supplier: 'Modern Pharmaceutical LLC', status: 'Critical' },
+  { name: 'Cough Syrup', sku: 'PRD-COUGH-100', stock: 24, reorderLevel: 60, supplier: 'Gulf Drug LLC', status: 'Warning' },
+];
+
+const reportRows = [
+  { module: 'Revenue', detail: 'Gross sales today', value: '18,420', risk: 'Healthy', action: 'Track peak-hour conversion' },
+  { module: 'Orders', detail: 'Awaiting pharmacist or dispatch action', value: '47', risk: 'Medium', action: 'Clear pending queue before 6 PM' },
+  { module: 'Inventory', detail: 'SKUs below reorder point', value: '24', risk: 'High', action: 'Raise supplier purchase order' },
+  { module: 'Prescriptions', detail: 'RX files pending review', value: '18', risk: 'High', action: 'Assign licensed pharmacist' },
+  { module: 'Delivery', detail: 'Delayed delivery jobs', value: '2', risk: 'Medium', action: 'Re-route nearest riders' },
+  { module: 'Tax', detail: 'VAT/GST invoice audit status', value: '97%', risk: 'Low', action: 'Export tax ledger weekly' },
 ];
 
 const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }) => (
@@ -44,34 +91,73 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }) => (
 export default function AdminDashboard() {
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
-  const [currencySymbol, setCurrencySymbol] = useState('₹');
-  const [revenueText, setRevenueText] = useState('₹ 1,24,500');
+  const [currencySymbol, setCurrencySymbol] = useState('AED');
+  const [revenueText, setRevenueText] = useState('AED 124,500');
 
   useEffect(() => {
-    const savedCurrency = localStorage.getItem('erpCurrency') || 'INR';
-    if (savedCurrency === 'INR') {
-      setCurrencySymbol('₹');
-      setRevenueText('₹ 1,24,500');
-    } else {
-      setCurrencySymbol('AED');
-      setRevenueText('AED 124,500');
-    }
+    const savedCurrency = localStorage.getItem('erpCurrency') || 'AED';
+    setCurrencySymbol(savedCurrency === 'INR' ? 'INR' : 'AED');
+    setRevenueText(savedCurrency === 'INR' ? 'INR 124,500' : 'AED 124,500');
   }, []);
 
   const handleExport = () => {
     setIsExporting(true);
     setTimeout(() => {
-      // Create a mock CSV file for download
-      const csvContent = "Date,Revenue,Orders\n2026-05-10,4000,240\n2026-05-11,3000,139\n2026-05-12,5000,380";
+      const generatedAt = new Date().toISOString();
+      const taxRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
+      const vatRate = localStorage.getItem('erpVatRate') || '5';
+      const taxRegistrationNumber = localStorage.getItem('erpTaxRegistrationNumber') || '100348572900003';
+      const storeName = localStorage.getItem('erpStoreName') || 'Amster Med Care';
+      const sections = [
+        ['AMSTER MED CARE ERP DASHBOARD REPORT'],
+        ['Generated At', generatedAt],
+        ['Store', storeName],
+        ['Currency', currencySymbol],
+        ['Tax Region', taxRegion],
+        ['Tax Rate', `${vatRate}%`],
+        ['Tax Registration', taxRegistrationNumber],
+        [],
+        ['KPI SUMMARY'],
+        ['Metric', 'Value', 'Trend', 'Owner'],
+        ...dashboardKpis.map((item) => [item.metric, item.value, item.trend, item.owner]),
+        [],
+        ['DAILY SALES ANALYTICS'],
+        ['Day', 'Revenue', 'Orders'],
+        ...salesData.map((item) => [item.name, item.revenue, item.orders]),
+        [],
+        ['CATEGORY REVENUE'],
+        ['Category', 'Revenue'],
+        ...categoryRevenue.map((item) => [item.name, item.value]),
+        [],
+        ['DELIVERY PERFORMANCE'],
+        ['Week', 'On Time %', 'Delayed %'],
+        ...deliveryData.map((item) => [item.name, item.onTime, item.delayed]),
+        [],
+        ['RECENT ORDERS'],
+        ['Order ID', 'Customer', 'Items', 'Amount', 'Status', 'Payment'],
+        ...recentOrders.map((order) => [order.id, order.customer, order.items, order.amount, order.status, order.payment]),
+        [],
+        ['LOW STOCK ALERTS'],
+        ['Product', 'SKU', 'Current Stock', 'Reorder Level', 'Supplier', 'Status'],
+        ...lowStockItems.map((item) => [item.name, item.sku, item.stock, item.reorderLevel, item.supplier, item.status]),
+        [],
+        ['MANAGEMENT ACTION REPORT'],
+        ['Module', 'Detail', 'Value', 'Risk', 'Recommended Action'],
+        ...reportRows.map((row) => [row.module, row.detail, row.value, row.risk, row.action]),
+      ];
+      const csvContent = sections
+        .map((row) => row.map((cell = '') => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+        .join('\n');
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', 'AmsterMedCare_Dashboard_Report.csv');
+      link.setAttribute('download', `AmsterMedCare_ERP_Dashboard_Full_Report_${generatedAt.slice(0, 10)}.csv`);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+      URL.revokeObjectURL(url);
 
       setIsExporting(false);
       setIsExportModalOpen(false);
@@ -103,7 +189,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
         <StatCard 
           title="Total Revenue" 
           value={revenueText} 
@@ -127,6 +213,30 @@ export default function AdminDashboard() {
           trend="up" 
           trendValue="+12.1%" 
           color="bg-gradient-to-br from-purple-400 to-purple-600"
+        />
+        <StatCard 
+          title="Inventory Value"
+          value="AED 892K"
+          icon={Package}
+          trend="up"
+          trendValue="+6.8%"
+          color="bg-gradient-to-br from-cyan-400 to-secondary"
+        />
+        <StatCard 
+          title="Pending Deliveries"
+          value="31"
+          icon={Clock}
+          trend="down"
+          trendValue="-3.1%"
+          color="bg-gradient-to-br from-amber-400 to-orange-500"
+        />
+        <StatCard 
+          title="RX Requests"
+          value="18"
+          icon={CheckCircle2}
+          trend="up"
+          trendValue="+4.9%"
+          color="bg-gradient-to-br from-teal-400 to-emerald-600"
         />
         <StatCard 
           title="Low Stock Items" 
@@ -195,6 +305,73 @@ export default function AdminDashboard() {
         </motion.div>
       </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.25 }}
+          className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm"
+        >
+          <h3 className="font-black text-lg text-slate-900 dark:text-white mb-6">Category Revenue</h3>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={categoryRevenue} innerRadius={58} outerRadius={92} paddingAngle={4} dataKey="value">
+                  {categoryRevenue.map((entry) => (
+                    <Cell key={entry.name} fill={entry.color} />
+                  ))}
+                </Pie>
+                <RechartsTooltip contentStyle={{ backgroundColor: '#1E293B', border: 'none', borderRadius: '12px', color: '#fff' }} />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="grid grid-cols-2 gap-2">
+            {categoryRevenue.map((item) => (
+              <div key={item.name} className="flex items-center gap-2 text-xs font-bold text-slate-500">
+                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: item.color }} />
+                {item.name}
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}
+          className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm"
+        >
+          <h3 className="font-black text-lg text-slate-900 dark:text-white mb-6">Delivery Performance</h3>
+          <div className="h-[260px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={deliveryData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#334155" opacity={0.2} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#64748b', fontSize: 12 }} />
+                <RechartsTooltip contentStyle={{ backgroundColor: '#1E293B', border: 'none', borderRadius: '12px', color: '#fff' }} />
+                <Line type="monotone" dataKey="onTime" stroke="#059669" strokeWidth={3} dot={false} />
+                <Line type="monotone" dataKey="delayed" stroke="#E11D48" strokeWidth={3} dot={false} />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+          className="bg-gradient-to-br from-slate-900 to-cyan-950 p-6 rounded-3xl border border-white/10 shadow-sm text-white"
+        >
+          <h3 className="font-black text-lg mb-6">Quick Actions</h3>
+          <div className="grid grid-cols-2 gap-3">
+            {['Add Product', 'Create Order', 'Upload Stock', 'Generate Report'].map((action) => (
+              <button key={action} className="px-4 py-4 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl text-sm font-black transition-all text-left">
+                {action}
+              </button>
+            ))}
+          </div>
+          <div className="mt-6 p-4 rounded-2xl bg-white/10 border border-white/10">
+            <p className="text-xs font-black uppercase tracking-widest text-cyan-200 mb-1">DHA Readiness</p>
+            <p className="text-2xl font-black">97%</p>
+            <p className="text-xs text-slate-300 mt-1">Audit logs, RX approvals, and VAT records are current.</p>
+          </div>
+        </motion.div>
+      </div>
+
       {/* Recent Orders & Low Stock */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Recent Orders */}
@@ -204,21 +381,21 @@ export default function AdminDashboard() {
             <button className="text-primary font-bold text-sm hover:underline">View All</button>
           </div>
           <div className="space-y-4">
-            {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent dark:hover:border-white/5 transition-all">
+            {recentOrders.map((order) => (
+              <div key={order.id} className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent dark:hover:border-white/5 transition-all">
                 <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-white/10 flex items-center justify-center text-slate-600 dark:text-gray-300">
                     <Clock size={18} />
                   </div>
                   <div>
-                    <h4 className="font-bold text-slate-900 dark:text-white">Order #ORD-{9000 + i}</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white">{order.id}</h4>
                     <p className="text-xs text-slate-500">2 mins ago • 3 items</p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-black text-slate-900 dark:text-white">{currencySymbol} 1,240</p>
+                  <p className="font-black text-slate-900 dark:text-white">{currencySymbol} {order.amount}</p>
                   <span className="inline-block px-2 py-1 bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 text-[10px] font-black rounded uppercase tracking-wider mt-1">
-                    Pending
+                    {order.status}
                   </span>
                 </div>
               </div>
@@ -233,35 +410,76 @@ export default function AdminDashboard() {
             <button className="text-primary font-bold text-sm hover:underline">Manage Inventory</button>
           </div>
           <div className="space-y-4">
-            {[
-              { name: 'Paracetamol 500mg', stock: 12, status: 'critical' },
-              { name: 'Vitamin C Tablets', stock: 45, status: 'warning' },
-              { name: 'Dolo 650', stock: 8, status: 'critical' },
-              { name: 'Cough Syrup', stock: 24, status: 'warning' },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent dark:hover:border-white/5 transition-all">
+            {lowStockItems.map((item) => (
+              <div key={item.sku} className="flex items-center justify-between p-4 rounded-2xl hover:bg-slate-50 dark:hover:bg-white/5 border border-transparent dark:hover:border-white/5 transition-all">
                 <div className="flex items-center gap-4">
                   <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                    item.status === 'critical' ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
+                    item.status === 'Critical' ? 'bg-rose-100 text-rose-600 dark:bg-rose-500/10 dark:text-rose-400' : 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400'
                   }`}>
                     <Package size={18} />
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-900 dark:text-white">{item.name}</h4>
-                    <p className="text-xs text-slate-500">Supplier: Gulf Drug LLC</p>
+                    <p className="text-xs text-slate-500">Supplier: {item.supplier}</p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-black text-slate-900 dark:text-white">{item.stock} left</p>
                   <p className={`text-[10px] font-black uppercase tracking-wider mt-1 ${
-                    item.status === 'critical' ? 'text-rose-500' : 'text-amber-500'
+                    item.status === 'Critical' ? 'text-rose-500' : 'text-amber-500'
                   }`}>
-                    {item.status === 'critical' ? 'Reorder Now' : 'Low Stock'}
+                    {item.status === 'Critical' ? 'Reorder Now' : 'Low Stock'}
                   </p>
                 </div>
               </div>
             ))}
           </div>
+        </div>
+      </div>
+
+      <div className="bg-white dark:bg-dark-card border border-slate-100 dark:border-white/5 rounded-3xl overflow-hidden shadow-sm">
+        <div className="p-6 border-b border-slate-100 dark:border-white/5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 className="font-black text-lg text-slate-900 dark:text-white">Full Dashboard Report Details</h3>
+            <p className="text-sm text-slate-500 font-bold">Operational risks, values, and recommended next actions.</p>
+          </div>
+          <button onClick={() => setIsExportModalOpen(true)} className="px-4 py-2 bg-primary/10 text-primary hover:bg-primary hover:text-white rounded-xl font-black text-sm transition-all">
+            Download Full Report
+          </button>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Module</th>
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Detail</th>
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Value</th>
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Risk</th>
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Recommended Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+              {reportRows.map((row) => (
+                <tr key={row.module} className="hover:bg-slate-50/70 dark:hover:bg-white/5">
+                  <td className="p-4 font-black text-slate-900 dark:text-white">{row.module}</td>
+                  <td className="p-4 text-sm font-bold text-slate-600 dark:text-gray-300">{row.detail}</td>
+                  <td className="p-4 font-black text-primary">{row.value}</td>
+                  <td className="p-4">
+                    <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest ${
+                      row.risk === 'High'
+                        ? 'bg-rose-100 text-rose-700 dark:bg-rose-500/10 dark:text-rose-400'
+                        : row.risk === 'Medium'
+                        ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400'
+                        : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400'
+                    }`}>
+                      {row.risk}
+                    </span>
+                  </td>
+                  <td className="p-4 text-sm font-bold text-slate-600 dark:text-gray-300">{row.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
       </div>
 

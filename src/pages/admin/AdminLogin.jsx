@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import logo from '../../assets/logo.png';
+import { loginAdmin } from '../../services/adminAuthService';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');
@@ -11,22 +12,18 @@ export default function AdminLogin() {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
 
-    // Simulated Authentication - In production, connect this to your JWT/REST API
-    setTimeout(() => {
-      if (email === 'admin@amstermedcare.com' && password === 'admin123') {
-        // Save dummy token
-        localStorage.setItem('adminToken', 'simulated_jwt_token_123');
-        navigate('/admin/dashboard');
-      } else {
-        setError('Invalid credentials. For demo use: admin@amstermedcare.com / admin123');
-        setIsLoading(false);
-      }
-    }, 1000);
+    try {
+      await loginAdmin({ email, password });
+      navigate('/admin/dashboard');
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,7 +42,7 @@ export default function AdminLogin() {
             <img src={logo} alt="Amster Logo" className="w-12 h-12 object-contain" />
           </div>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white mb-2">Admin Access</h1>
-          <p className="text-slate-500 dark:text-gray-400 font-bold text-sm">Enterprise Management System</p>
+          <p className="text-slate-500 dark:text-gray-400 font-bold text-sm">UAE Pharmacy ERP Management System</p>
         </div>
 
         <div className="p-10">

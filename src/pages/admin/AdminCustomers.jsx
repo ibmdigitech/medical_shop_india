@@ -5,17 +5,87 @@ import {
   Trash2, Mail, Phone, MapPin, CheckCircle2, XCircle
 } from 'lucide-react';
 
-const customers = [
-  { id: 'CUST-001', name: 'Rahul Krishnan', email: 'rahul.k@example.com', phone: '+91 98765 43210', location: 'Omassery', orders: 12, totalSpent: 12500, status: 'Active' },
-  { id: 'CUST-002', name: 'Aisha Mohammed', email: 'aisha.m@example.com', phone: '+91 98765 43211', location: 'Kozhikode', orders: 5, totalSpent: 4500, status: 'Active' },
-  { id: 'CUST-003', name: 'John Doe', email: 'john.d@example.com', phone: '+91 98765 43212', location: 'Wayanad', orders: 2, totalSpent: 1200, status: 'Inactive' },
-  { id: 'CUST-004', name: 'Sneha Patel', email: 'sneha.p@example.com', phone: '+91 98765 43213', location: 'Malappuram', orders: 8, totalSpent: 8900, status: 'Active' },
-  { id: 'CUST-005', name: 'Vishnu R', email: 'vishnu.r@example.com', phone: '+91 98765 43214', location: 'Kannur', orders: 0, totalSpent: 0, status: 'Blocked' },
+const initialCustomers = [
+  { id: 'CUST-001', name: 'Rahul Krishnan', email: 'rahul.k@example.ae', phone: '+971 50 432 1001', location: 'Dubai Marina', orders: 12, totalSpent: 12500, status: 'Active' },
+  { id: 'CUST-002', name: 'Aisha Mohammed', email: 'aisha.m@example.ae', phone: '+971 55 432 1002', location: 'Jumeirah', orders: 5, totalSpent: 4500, status: 'Active' },
+  { id: 'CUST-003', name: 'John Doe', email: 'john.d@example.ae', phone: '+971 52 432 1003', location: 'Abu Dhabi', orders: 2, totalSpent: 1200, status: 'Inactive' },
+  { id: 'CUST-004', name: 'Sneha Patel', email: 'sneha.p@example.ae', phone: '+971 56 432 1004', location: 'Sharjah', orders: 8, totalSpent: 8900, status: 'Active' },
+  { id: 'CUST-005', name: 'Vishnu R', email: 'vishnu.r@example.ae', phone: '+971 54 432 1005', location: 'Ajman', orders: 0, totalSpent: 0, status: 'Blocked' },
 ];
 
 export default function AdminCustomers() {
+  const [customersList, setCustomersList] = useState(initialCustomers);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStatus, setSelectedStatus] = useState('all');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [customerForm, setCustomerForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    location: '',
+    status: 'Active',
+  });
+
+  const resetCustomerForm = () => {
+    setCustomerForm({
+      name: '',
+      email: '',
+      phone: '',
+      location: '',
+      status: 'Active',
+    });
+    setFormError('');
+  };
+
+  const handleOpenAddModal = () => {
+    resetCustomerForm();
+    setIsAddModalOpen(true);
+  };
+
+  const handleSaveCustomer = () => {
+    const name = customerForm.name.trim();
+    const email = customerForm.email.trim();
+    const phone = customerForm.phone.trim();
+    const location = customerForm.location.trim();
+
+    if (!name || !email || !phone) {
+      setFormError('Full name, email, and phone number are required.');
+      return;
+    }
+
+    const nextNumber = customersList.length + 1;
+    const newCustomer = {
+      id: `CUST-${String(nextNumber).padStart(3, '0')}`,
+      name,
+      email,
+      phone,
+      location: location || 'Not assigned',
+      orders: 0,
+      totalSpent: 0,
+      status: customerForm.status,
+    };
+
+    setCustomersList([newCustomer, ...customersList]);
+    setIsAddModalOpen(false);
+    resetCustomerForm();
+  };
+
+  const handleDeleteCustomer = (customerId) => {
+    if (confirm('Delete this customer profile from the ERP customer list?')) {
+      setCustomersList(customersList.filter((customer) => customer.id !== customerId));
+    }
+  };
+
+  const filteredCustomers = customersList.filter((customer) => {
+    const query = searchTerm.toLowerCase();
+    const matchesSearch =
+      customer.name.toLowerCase().includes(query) ||
+      customer.email.toLowerCase().includes(query) ||
+      customer.phone.toLowerCase().includes(query);
+    const matchesStatus = selectedStatus === 'all' || customer.status.toLowerCase() === selectedStatus;
+    return matchesSearch && matchesStatus;
+  });
 
   return (
     <div className="space-y-6">
@@ -26,7 +96,7 @@ export default function AdminCustomers() {
         </div>
         <div className="flex items-center gap-3">
           <button 
-            onClick={() => setIsAddModalOpen(true)}
+            onClick={handleOpenAddModal}
             className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
           >
             <UserPlus size={18} /> Add Customer
@@ -47,7 +117,11 @@ export default function AdminCustomers() {
           />
         </div>
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <select className="flex-1 sm:flex-none px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none text-slate-700 dark:text-white font-bold">
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="flex-1 sm:flex-none px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none text-slate-700 dark:text-white font-bold"
+          >
             <option value="all">All Status</option>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
@@ -75,7 +149,7 @@ export default function AdminCustomers() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-white/5">
-              {customers.map((customer) => (
+              {filteredCustomers.map((customer) => (
                 <tr key={customer.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                   <td className="p-4">
                     <div className="flex items-center gap-3">
@@ -98,7 +172,7 @@ export default function AdminCustomers() {
                     <div className="flex items-center gap-1"><MapPin size={14}/> {customer.location}</div>
                   </td>
                   <td className="p-4 font-bold text-slate-700 dark:text-gray-300">{customer.orders}</td>
-                  <td className="p-4 font-black text-slate-900 dark:text-white">₹{customer.totalSpent}</td>
+                  <td className="p-4 font-black text-slate-900 dark:text-white">AED {customer.totalSpent}</td>
                   <td className="p-4">
                     <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider ${
                       customer.status === 'Active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-400' :
@@ -116,7 +190,10 @@ export default function AdminCustomers() {
                       <button className="p-2 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-500/10 rounded-lg transition-colors">
                         <Edit size={16} />
                       </button>
-                      <button className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors">
+                      <button
+                        onClick={() => handleDeleteCustomer(customer.id)}
+                        className="p-2 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 rounded-lg transition-colors"
+                      >
                         <Trash2 size={16} />
                       </button>
                     </div>
@@ -153,19 +230,63 @@ export default function AdminCustomers() {
               </div>
 
               <div className="space-y-4">
+                {formError && (
+                  <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold">
+                    {formError}
+                  </div>
+                )}
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Full Name</label>
-                  <input type="text" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                  <input
+                    type="text"
+                    value={customerForm.name}
+                    onChange={(e) => setCustomerForm({ ...customerForm, name: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Email Address</label>
-                  <input type="email" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                  <input
+                    type="email"
+                    value={customerForm.email}
+                    onChange={(e) => setCustomerForm({ ...customerForm, email: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                  />
                 </div>
                 <div className="space-y-2">
                   <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Phone Number</label>
-                  <input type="tel" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
+                  <input
+                    type="tel"
+                    value={customerForm.phone}
+                    onChange={(e) => setCustomerForm({ ...customerForm, phone: e.target.value })}
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                  />
                 </div>
-                <button onClick={() => setIsAddModalOpen(false)} className="w-full py-4 mt-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Location</label>
+                    <input
+                      type="text"
+                      value={customerForm.location}
+                      onChange={(e) => setCustomerForm({ ...customerForm, location: e.target.value })}
+                      placeholder="Dubai Marina"
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Status</label>
+                    <select
+                      value={customerForm.status}
+                      onChange={(e) => setCustomerForm({ ...customerForm, status: e.target.value })}
+                      className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white"
+                    >
+                      <option>Active</option>
+                      <option>Inactive</option>
+                      <option>Blocked</option>
+                    </select>
+                  </div>
+                </div>
+                <button onClick={handleSaveCustomer} className="w-full py-4 mt-4 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2">
                   <CheckCircle2 size={20} /> Save Customer
                 </button>
               </div>

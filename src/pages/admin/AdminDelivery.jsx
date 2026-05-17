@@ -6,11 +6,11 @@ import {
 } from 'lucide-react';
 
 const deliveries = [
-  { id: 'DEL-8902', orderId: 'ORD-9024', agent: 'Suresh Kumar', destination: 'Omassery, Calicut', status: 'Out for Delivery', eta: '30 mins', phone: '+91 98765 11111' },
-  { id: 'DEL-8901', orderId: 'ORD-9023', agent: 'Unassigned', destination: 'Koduvally, Calicut', status: 'Pending Dispatch', eta: '-', phone: '-' },
-  { id: 'DEL-8900', orderId: 'ORD-9020', agent: 'Ramesh V', destination: 'Thamarassery, Calicut', status: 'Delivered', eta: 'Delivered at 2:00 PM', phone: '+91 98765 22222' },
-  { id: 'DEL-8899', orderId: 'ORD-9018', agent: 'Suresh Kumar', destination: 'Mukkam, Calicut', status: 'Delivered', eta: 'Delivered at 12:30 PM', phone: '+91 98765 11111' },
-  { id: 'DEL-8898', orderId: 'ORD-9015', agent: 'Unassigned', destination: 'Areacode, Malappuram', status: 'Delayed', eta: 'Rescheduled', phone: '-' },
+  { id: 'DEL-8902', orderId: 'ORD-9024', agent: 'Suresh Kumar', destination: 'Dubai Marina, Dubai', status: 'Out for Delivery', eta: '30 mins', phone: '+971 50 111 1101' },
+  { id: 'DEL-8901', orderId: 'ORD-9023', agent: 'Unassigned', destination: 'Al Barsha, Dubai', status: 'Pending Dispatch', eta: '-', phone: '-' },
+  { id: 'DEL-8900', orderId: 'ORD-9020', agent: 'Ramesh V', destination: 'Business Bay, Dubai', status: 'Delivered', eta: 'Delivered at 2:00 PM', phone: '+971 55 222 2202' },
+  { id: 'DEL-8899', orderId: 'ORD-9018', agent: 'Suresh Kumar', destination: 'Al Nahda, Dubai', status: 'Delivered', eta: 'Delivered at 12:30 PM', phone: '+971 50 111 1101' },
+  { id: 'DEL-8898', orderId: 'ORD-9015', agent: 'Unassigned', destination: 'Al Majaz, Sharjah', status: 'Delayed', eta: 'Rescheduled', phone: '-' },
 ];
 
 export default function AdminDelivery() {
@@ -238,7 +238,7 @@ export default function AdminDelivery() {
                   </div>
                   <div>
                     <h3 className="text-xl font-black text-slate-900 dark:text-white">Live Fleet Tracking</h3>
-                    <p className="text-xs font-bold text-slate-500">24 Active Agents in Omassery region</p>
+                    <p className="text-xs font-bold text-slate-500">24 active agents across Dubai and Sharjah</p>
                   </div>
                 </div>
                 <button onClick={() => setIsMapModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-50 dark:bg-white/5 rounded-full hover:bg-slate-100 dark:hover:bg-white/10">

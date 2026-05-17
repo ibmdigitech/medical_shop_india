@@ -6,10 +6,10 @@ import {
 } from 'lucide-react';
 
 const offers = [
-  { id: 'OFF-001', code: 'WELCOME25', title: 'New User Discount', type: 'Percentage', value: '25%', minOrder: '₹499', validUntil: '2026-12-31', status: 'Active' },
-  { id: 'OFF-002', code: 'FREEDEL', title: 'Free Delivery', type: 'Shipping', value: 'Free', minOrder: '₹999', validUntil: '2026-06-30', status: 'Active' },
-  { id: 'OFF-003', code: 'SUMMER10', title: 'Summer Special', type: 'Percentage', value: '10%', minOrder: '₹1499', validUntil: '2026-08-31', status: 'Active' },
-  { id: 'OFF-004', code: 'FLAT500', title: 'Flat Discount', type: 'Fixed', value: '₹500', minOrder: '₹5000', validUntil: '2026-05-01', status: 'Expired' },
+  { id: 'OFF-001', code: 'WELCOME25', title: 'New User Discount', type: 'Percentage', value: '25%', minOrder: 'AED 49', validUntil: '2026-12-31', status: 'Active' },
+  { id: 'OFF-002', code: 'FREEDEL', title: 'Free Delivery', type: 'Shipping', value: 'Free', minOrder: 'AED 99', validUntil: '2026-06-30', status: 'Active' },
+  { id: 'OFF-003', code: 'SUMMER10', title: 'Summer Special', type: 'Percentage', value: '10%', minOrder: 'AED 149', validUntil: '2026-08-31', status: 'Active' },
+  { id: 'OFF-004', code: 'FLAT500', title: 'Flat Discount', type: 'Fixed', value: 'AED 50', minOrder: 'AED 500', validUntil: '2026-05-01', status: 'Expired' },
 ];
 
 export default function AdminOffers() {
@@ -161,7 +161,7 @@ export default function AdminOffers() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Minimum Order (₹)</label>
+                    <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Minimum Order (AED)</label>
                     <input type="number" placeholder="500" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white" />
                   </div>
                   <div className="space-y-2">

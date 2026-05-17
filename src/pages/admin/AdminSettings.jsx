@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { 
   Save, Store, MapPin, Phone, Mail, 
   CreditCard, Bell, Shield, Globe, CheckCircle2, AlertTriangle, HelpCircle
 } from 'lucide-react';
+import { getTaxProfile, getTaxProfileOptions } from '../../services/taxProfiles';
 
 export default function AdminSettings() {
   const [activeTab, setActiveTab] = useState('general');
@@ -12,15 +14,15 @@ export default function AdminSettings() {
   const [storeName, setStoreName] = useState('');
   const [supportEmail, setSupportEmail] = useState('');
   const [supportPhone, setSupportPhone] = useState('');
-  const [currency, setCurrency] = useState('INR');
-  const [taxRegion, setTaxRegion] = useState('India (Kerala)');
+  const [currency, setCurrency] = useState('AED');
+  const [taxRegion, setTaxRegion] = useState('United Arab Emirates');
   const [storeAddress, setStoreAddress] = useState('');
   const [licenseNo, setLicenseNo] = useState('');
 
   // Payment & Tax Settings State
-  const [vatRate, setVatRate] = useState('12'); // 12% standard GST/VAT for medicines in Kerala
+  const [vatRate, setVatRate] = useState('5');
   const [taxRegistrationNumber, setTaxRegistrationNumber] = useState('');
-  const [enableTaxSeparation, setEnableTaxSeparation] = useState(true); // Split CGST/SGST
+  const activeRegion = getTaxProfile(taxRegion);
 
   // Security Permissions State
   const [roles, setRoles] = useState({
@@ -33,13 +35,13 @@ export default function AdminSettings() {
   useEffect(() => {
     setStoreName(localStorage.getItem('erpStoreName') || 'Amster Med Care');
     setSupportEmail(localStorage.getItem('erpSupportEmail') || 'info@amstermedcare.com');
-    setSupportPhone(localStorage.getItem('erpSupportPhone') || '+91 90375 07643');
-    setCurrency(localStorage.getItem('erpCurrency') || 'INR');
-    setTaxRegion(localStorage.getItem('erpTaxRegion') || 'India (Kerala)');
-    setStoreAddress(localStorage.getItem('erpStoreAddress') || 'First Floor, ABC Complex, Near Bus Stand, Omassery, Calicut - 673582');
-    setLicenseNo(localStorage.getItem('erpLicenseNo') || 'KL-KKD-2026-PHA-998');
-    setVatRate(localStorage.getItem('erpVatRate') || '12');
-    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || '32AABCA1234F1Z5');
+    setSupportPhone(localStorage.getItem('erpSupportPhone') || '+971 4 555 0199');
+    setCurrency(localStorage.getItem('erpCurrency') || 'AED');
+    setTaxRegion(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    setStoreAddress(localStorage.getItem('erpStoreAddress') || 'Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
+    setLicenseNo(localStorage.getItem('erpLicenseNo') || 'DHA-PH-2026-8874');
+    setVatRate(localStorage.getItem('erpVatRate') || '5');
+    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || '100348572900003');
   }, []);
 
   const handleSave = () => {
@@ -58,22 +60,14 @@ export default function AdminSettings() {
   };
 
   const handleRegionChange = (region) => {
+    const profile = getTaxProfile(region);
     setTaxRegion(region);
-    if (region === 'India (Kerala)') {
-      setCurrency('INR');
-      setVatRate('12'); // Standard GST for Indian drugs is 12%
-      setStoreAddress('First Floor, ABC Complex, Near Bus Stand, Omassery, Calicut - 673582');
-      setSupportPhone('+91 90375 07643');
-      setLicenseNo('KL-KKD-2026-PHA-998');
-      setTaxRegistrationNumber('32AABCA1234F1Z5');
-    } else {
-      setCurrency('AED');
-      setVatRate('5'); // UAE standard VAT rate is 5%
-      setStoreAddress('Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
-      setSupportPhone('+971 4 234 5678');
-      setLicenseNo('DHA-PH-2026-8874');
-      setTaxRegistrationNumber('100348572900003');
-    }
+    setCurrency(profile.currency);
+    setVatRate(profile.defaultTaxRate);
+    setStoreAddress(profile.address);
+    setSupportPhone(profile.phone);
+    setLicenseNo(profile.license);
+    setTaxRegistrationNumber(profile.sampleRegistration);
   };
 
   return (
@@ -82,7 +76,7 @@ export default function AdminSettings() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-black text-slate-900 dark:text-white">ERP Configuration</h1>
-          <p className="text-slate-500 dark:text-gray-400 mt-1 font-bold">Manage store parameters, India Kerala/UAE VAT setups, and authorization metrics.</p>
+          <p className="text-slate-500 dark:text-gray-400 mt-1 font-bold">Manage country tax profiles, VAT/GST, pharmacy licensing, and authorization metrics.</p>
         </div>
         <div className="flex items-center gap-3">
           <button 
@@ -110,7 +104,7 @@ export default function AdminSettings() {
         <div className="w-full lg:w-64 space-y-2 shrink-0">
           {[
             { id: 'general', label: 'General & Region', icon: Store },
-            { id: 'payment', label: 'Taxes & VAT (Kerala/UAE)', icon: CreditCard },
+            { id: 'payment', label: 'Taxes & VAT', icon: CreditCard },
             { id: 'locations', label: 'Pharmacy Locations', icon: MapPin },
             { id: 'security', label: 'Staff Roles (RBAC)', icon: Shield },
           ].map((tab) => (
@@ -147,8 +141,9 @@ export default function AdminSettings() {
                     onChange={(e) => handleRegionChange(e.target.value)}
                     className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none text-slate-900 dark:text-white font-black"
                   >
-                    <option value="India (Kerala)">India (Kerala State GST/VAT Model)</option>
-                    <option value="United Arab Emirates">United Arab Emirates (5% UAE VAT Model)</option>
+                    {getTaxProfileOptions().map((option) => (
+                      <option key={option.value} value={option.value}>{option.label}</option>
+                    ))}
                   </select>
                 </div>
 
@@ -157,7 +152,7 @@ export default function AdminSettings() {
                   <input 
                     type="text" 
                     readOnly
-                    value={currency === 'INR' ? 'INR (₹ - Indian Rupee)' : 'AED (AED - UAE Dirham)'}
+                    value={activeRegion.currencyLabel}
                     className="w-full px-4 py-3 bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-xl text-slate-500 font-bold outline-none cursor-not-allowed"
                   />
                 </div>
@@ -224,39 +219,36 @@ export default function AdminSettings() {
             <div className="space-y-6 animate-fadeIn">
               <div>
                 <h2 className="text-xl font-black text-slate-900 dark:text-white">Taxation Settings & VAT Logs</h2>
-                <p className="text-xs text-slate-500 mt-1">Configure VAT percentages, split state SGST / federal CGST, and tax invoice headers.</p>
+                <p className="text-xs text-slate-500 mt-1">Configure country tax slabs, invoice headers, and pharmacy tax registrations.</p>
               </div>
 
               <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                 <div className="p-4 bg-amber-50 dark:bg-amber-500/10 border border-amber-100 dark:border-amber-500/20 rounded-2xl flex gap-3 text-xs text-amber-800 dark:text-amber-400">
                   <AlertTriangle size={24} className="shrink-0" />
                   <div>
-                    <span className="font-black block uppercase mb-1">State GST & VAT Compliance Notice</span>
+                    <span className="font-black block uppercase mb-1">{activeRegion.noticeTitle}</span>
                     <span>
-                      {taxRegion === 'India (Kerala)' 
-                        ? 'For Indian pharmacies operating in Kerala, medicine supplies are subject to 12% standard GST (split equally into 6% CGST and 6% SGST). Life saving items can be configured at 5%.' 
-                        : 'For UAE pharmacys, Federal Tax Authority standard VAT is fixed at 5% across generic and medical products.'}
+                      {activeRegion.notice}
                     </span>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Base Tax / VAT Rate (%)</label>
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Base {activeRegion.taxName} Rate (%)</label>
                     <select 
                       value={vatRate} 
                       onChange={(e) => setVatRate(e.target.value)}
                       className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none text-slate-900 dark:text-white font-black"
                     >
-                      <option value="5">5% (UAE Standard / Lifesaving Drugs)</option>
-                      <option value="12">12% (India Kerala standard Medicine GST)</option>
-                      <option value="18">18% (Supplements & Luxury items)</option>
-                      <option value="0">0% (Tax Exempted Items)</option>
+                      {activeRegion.taxRates.map((rate) => (
+                        <option key={rate.value} value={rate.value}>{rate.label}</option>
+                      ))}
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">GSTIN / TRN Registration ID</label>
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">{activeRegion.registrationLabel}</label>
                     <input 
                       type="text" 
                       value={taxRegistrationNumber} 
@@ -267,20 +259,12 @@ export default function AdminSettings() {
                   </div>
                 </div>
 
-                {taxRegion === 'India (Kerala)' && (
-                  <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-2xl space-y-3 border border-slate-100 dark:border-white/5">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-sm font-black text-slate-800 dark:text-white">Split Central CGST & State SGST</p>
-                        <p className="text-xs text-slate-500">Automatically display {parseFloat(vatRate)/2}% CGST and {parseFloat(vatRate)/2}% SGST in billing breakdown.</p>
-                      </div>
-                      <input 
-                        type="checkbox" 
-                        checked={enableTaxSeparation}
-                        onChange={(e) => setEnableTaxSeparation(e.target.checked)}
-                        className="w-5 h-5 text-primary rounded focus:ring-primary cursor-pointer" 
-                      />
-                    </div>
+                {activeRegion.splitTax?.enabled && (
+                  <div className="p-4 bg-slate-50 dark:bg-white/5 rounded-2xl border border-slate-100 dark:border-white/5">
+                    <p className="text-sm font-black text-slate-800 dark:text-white">{activeRegion.splitTax.labels.join(' / ')} Split Preview</p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Billing can display {parseFloat(vatRate || 0) / 2}% {activeRegion.splitTax.labels[0]} and {parseFloat(vatRate || 0) / 2}% {activeRegion.splitTax.labels[1]} for an effective {vatRate}% {activeRegion.taxName}.
+                    </p>
                   </div>
                 )}
               </div>
@@ -297,9 +281,10 @@ export default function AdminSettings() {
 
               <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-white/5">
                 {[
-                  { name: 'Amster Med Care Omassery (HQ)', area: 'Calicut Bus Stand Road, Kozhikode, Kerala', type: 'Physical Store & Distribution', code: 'BR-001' },
-                  { name: 'Amster Care Calicut City', area: 'Mavoor Road, Kozhikode, Kerala', type: 'Physical Pharmacy', code: 'BR-002' },
-                  { name: 'Amster Care Dubai Marina Hub', area: 'Marina Heights, Marina Walk, Dubai, UAE', type: 'Fulfillment Warehouse', code: 'BR-003' }
+                  { name: 'Amster Med Care Dubai HQ', area: 'Downtown Dubai, Dubai, UAE', type: 'Physical Store & Distribution', code: 'BR-001' },
+                  { name: 'Amster Care Sharjah', area: 'Al Majaz, Sharjah, UAE', type: 'Physical Pharmacy', code: 'BR-002' },
+                  { name: 'Amster Care Dubai Marina Hub', area: 'Marina Heights, Marina Walk, Dubai, UAE', type: 'Fulfillment Warehouse', code: 'BR-003' },
+                  { name: 'Amster Med Care Omassery', area: 'Omassery, Calicut, Kerala, India', type: 'India GST Branch', code: 'IN-001' }
                 ].map((branch, idx) => (
                   <div key={idx} className="p-4 border border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 rounded-2xl flex items-center justify-between">
                     <div>

@@ -57,7 +57,7 @@ export default function AdminSalesReports() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Total Revenue</p>
-          <p className="text-3xl font-black text-slate-900 dark:text-white">₹ 38,000</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-white">AED 38,000</p>
           <p className="text-sm text-emerald-500 font-bold mt-2">+12.5% from last period</p>
         </div>
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
@@ -67,7 +67,7 @@ export default function AdminSalesReports() {
         </div>
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <p className="text-sm font-bold text-slate-500 uppercase tracking-widest mb-1">Avg. Order Value</p>
-          <p className="text-3xl font-black text-slate-900 dark:text-white">₹ 1,245</p>
+          <p className="text-3xl font-black text-slate-900 dark:text-white">AED 1,245</p>
           <p className="text-sm text-rose-500 font-bold mt-2">-2.1% from last period</p>
         </div>
       </div>

@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Filter, Eye, Download, CheckCircle2, 
   Clock, Truck, XCircle, MoreVertical, Printer, MapPin, 
   Phone, User, CreditCard, ChevronRight, ShoppingBag, Percent, Receipt
 } from 'lucide-react';
+import { getTaxProfile } from '../../services/taxProfiles';
 
 const initialOrders = [
   { 
@@ -119,10 +120,26 @@ export default function AdminOrders() {
   const [ordersList, setOrdersList] = useState(initialOrders);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const [currency, setCurrency] = useState('AED');
+  const [taxRegion, setTaxRegion] = useState('United Arab Emirates');
+  const [taxRate, setTaxRate] = useState('5');
+  const [taxRegistrationNumber, setTaxRegistrationNumber] = useState('100348572900003');
+  const [storeAddress, setStoreAddress] = useState('Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
   
   // Selected Order for Details View Drawer
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const activeTaxProfile = getTaxProfile(taxRegion);
+  const taxName = activeTaxProfile.taxName;
+  const taxRegistrationLabel = activeTaxProfile.registrationLabel;
+
+  useEffect(() => {
+    setCurrency(localStorage.getItem('erpCurrency') || 'AED');
+    setTaxRegion(localStorage.getItem('erpTaxRegion') || 'United Arab Emirates');
+    setTaxRate(localStorage.getItem('erpVatRate') || '5');
+    setTaxRegistrationNumber(localStorage.getItem('erpTaxRegistrationNumber') || '100348572900003');
+    setStoreAddress(localStorage.getItem('erpStoreAddress') || 'Office Suite 4B, Health Heights, Downtown Dubai, Dubai, UAE');
+  }, []);
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -264,7 +281,7 @@ export default function AdminOrders() {
                     <p className="text-xs text-slate-400">{order.phone}</p>
                   </td>
                   <td className="p-4 text-sm text-slate-600 dark:text-gray-400 font-bold">{order.date}</td>
-                  <td className="p-4 font-black text-slate-900 dark:text-white">AED {order.total.toFixed(2)}</td>
+                  <td className="p-4 font-black text-slate-900 dark:text-white">{currency} {order.total.toFixed(2)}</td>
                   <td className="p-4">
                     <span className={`text-xs font-black uppercase tracking-wider ${
                       order.paymentStatus === 'Paid' ? 'text-emerald-500' :
@@ -359,7 +376,7 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                {/* 2. UAE VAT Compliant TAX Invoice Sheet */}
+                {/* 2. Regional tax compliant invoice sheet */}
                 <div id="invoice-sheet" className="p-6 border border-slate-200 dark:border-white/10 rounded-[24px] bg-white dark:bg-slate-900 text-slate-900 dark:text-white space-y-6 relative shadow-lg">
                   {/* Decorative Watermark */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-100 dark:text-white/5 font-black text-6xl tracking-widest select-none pointer-events-none uppercase -rotate-12">
@@ -371,9 +388,8 @@ export default function AdminOrders() {
                     <div>
                       <h4 className="text-lg font-black text-primary">AMSTER MED CARE PHARMACY LLC</h4>
                       <p className="text-[10px] text-slate-500 leading-relaxed font-bold">
-                        Office Suite 4B, Health Heights<br />
-                        Downtown Dubai, Dubai, UAE<br />
-                        TRN: 100348572900003 (5% UAE VAT Reg)
+                        {storeAddress}<br />
+                        {taxRegistrationLabel}: {taxRegistrationNumber} ({taxRate}% {taxName} Reg)
                       </p>
                     </div>
                     <div className="text-right">
@@ -408,8 +424,8 @@ export default function AdminOrders() {
                         <tr className="border-b border-slate-100 dark:border-white/5 text-slate-500 font-black">
                           <th className="py-2">Description</th>
                           <th className="py-2 text-center">Qty</th>
-                          <th className="py-2 text-right">RSP (AED)</th>
-                          <th className="py-2 text-right">Total (AED)</th>
+                          <th className="py-2 text-right">RSP ({currency})</th>
+                          <th className="py-2 text-right">Total ({currency})</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-bold">
@@ -429,29 +445,35 @@ export default function AdminOrders() {
                   <div className="border-t border-slate-100 dark:border-white/5 pt-4 text-xs flex justify-end">
                     <div className="w-64 space-y-2 text-slate-600 dark:text-gray-300 font-bold">
                       <div className="flex justify-between">
-                        <span>Subtotal Excl. VAT:</span>
-                        <span className="text-slate-900 dark:text-white">AED {selectedOrder.subtotal.toFixed(2)}</span>
+                        <span>Subtotal Excl. {taxName}:</span>
+                        <span className="text-slate-900 dark:text-white">{currency} {selectedOrder.subtotal.toFixed(2)}</span>
                       </div>
                       {selectedOrder.discount > 0 && (
                         <div className="flex justify-between text-rose-500">
                           <span>Discount Deduction:</span>
-                          <span>- AED {selectedOrder.discount.toFixed(2)}</span>
+                          <span>- {currency} {selectedOrder.discount.toFixed(2)}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
-                        <span>UAE VAT Collected (5%):</span>
-                        <span className="text-slate-900 dark:text-white">AED {selectedOrder.vat.toFixed(2)}</span>
+                        <span>{activeTaxProfile.country} {taxName} Collected ({taxRate}%):</span>
+                        <span className="text-slate-900 dark:text-white">{currency} {selectedOrder.vat.toFixed(2)}</span>
                       </div>
+                      {activeTaxProfile.splitTax?.enabled && (
+                        <div className="flex justify-between text-slate-500">
+                          <span>{activeTaxProfile.splitTax.labels.join(' / ')} Split:</span>
+                          <span>{taxRate / 2}% + {taxRate / 2}%</span>
+                        </div>
+                      )}
                       <div className="flex justify-between border-t border-slate-200 dark:border-white/10 pt-2 font-black text-sm text-slate-900 dark:text-white">
                         <span>Total Invoice (Net):</span>
-                        <span className="text-primary">AED {selectedOrder.total.toFixed(2)}</span>
+                        <span className="text-primary">{currency} {selectedOrder.total.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
 
                   {/* Invoice Footer regulatory */}
                   <div className="border-t border-dashed border-slate-200 dark:border-white/10 pt-4 text-[9px] text-slate-400 font-bold text-center space-y-1">
-                    <p>This Tax Invoice is issued in accordance with UAE Decree-Law No. (8) of 2017 on Value Added Tax.</p>
+                    <p>{activeTaxProfile.invoiceFooter}</p>
                     <p>Prescription drugs checked and sealed by licensed pharmacist staff. Thank you for choosing Amster.</p>
                   </div>
                 </div>
