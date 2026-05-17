@@ -9,6 +9,13 @@ import AdminLogin from '../pages/admin/AdminLogin';
 import AdminDashboard from '../pages/admin/AdminDashboard';
 import AdminProducts from '../pages/admin/AdminProducts';
 import AdminOrders from '../pages/admin/AdminOrders';
+import AdminCustomers from '../pages/admin/AdminCustomers';
+import AdminSalesReports from '../pages/admin/AdminSalesReports';
+import AdminStockAudit from '../pages/admin/AdminStockAudit';
+import AdminPrescriptions from '../pages/admin/AdminPrescriptions';
+import AdminDelivery from '../pages/admin/AdminDelivery';
+import AdminOffers from '../pages/admin/AdminOffers';
+import AdminSettings from '../pages/admin/AdminSettings';
 import AdminProtectedRoute from '../components/admin/AdminProtectedRoute';
 
 import HomePage from '../pages/HomePage';
@@ -87,6 +94,13 @@ export default function AppRouter() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="products" element={<AdminProducts />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="customers" element={<AdminCustomers />} />
+            <Route path="sales-reports" element={<AdminSalesReports />} />
+            <Route path="stock-audit" element={<AdminStockAudit />} />
+            <Route path="prescriptions" element={<AdminPrescriptions />} />
+            <Route path="delivery" element={<AdminDelivery />} />
+            <Route path="offers" element={<AdminOffers />} />
+            <Route path="settings" element={<AdminSettings />} />
             {/* Add more admin routes here in the future */}
           </Route>
         </Route>

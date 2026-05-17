@@ -1,7 +1,8 @@
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   IndianRupee, ShoppingCart, Users, Package, 
-  TrendingUp, TrendingDown, Clock, AlertTriangle, CheckCircle2 
+  TrendingUp, TrendingDown, Clock, AlertTriangle, CheckCircle2, XCircle, Download 
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
@@ -41,6 +42,29 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }) => (
 );
 
 export default function AdminDashboard() {
+  const [isExportModalOpen, setIsExportModalOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+
+  const handleExport = () => {
+    setIsExporting(true);
+    setTimeout(() => {
+      // Create a mock CSV file for download
+      const csvContent = "Date,Revenue,Orders\n2026-05-10,4000,240\n2026-05-11,3000,139\n2026-05-12,5000,380";
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'AmsterMedCare_Dashboard_Report.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setIsExporting(false);
+      setIsExportModalOpen(false);
+    }, 2000);
+  };
+
   return (
     <div className="space-y-8">
       {/* Page Header */}
@@ -56,7 +80,10 @@ export default function AdminDashboard() {
             <option>This Month</option>
             <option>This Year</option>
           </select>
-          <button className="px-5 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all">
+          <button 
+            onClick={() => setIsExportModalOpen(true)}
+            className="px-5 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all"
+          >
             Export Report
           </button>
         </div>
@@ -224,6 +251,86 @@ export default function AdminDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Export Report Modal */}
+      <AnimatePresence>
+        {isExportModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsExportModalOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-dark-card rounded-[32px] p-8 shadow-2xl z-50 border border-slate-100 dark:border-white/5"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-black text-slate-900 dark:text-white">Export Dashboard Data</h3>
+                <button onClick={() => setIsExportModalOpen(false)} className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                  <XCircle size={24} />
+                </button>
+              </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Date Range</label>
+                  <select className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white">
+                    <option>Today</option>
+                    <option>Last 7 Days</option>
+                    <option>Last 30 Days</option>
+                    <option>This Year</option>
+                    <option>Custom Range</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Format</label>
+                  <select className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary focus:ring-1 focus:ring-primary text-slate-900 dark:text-white">
+                    <option>PDF Document (.pdf)</option>
+                    <option>Excel Spreadsheet (.xlsx)</option>
+                    <option>CSV File (.csv)</option>
+                  </select>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-sm font-bold text-slate-700 dark:text-gray-300">Included Modules</label>
+                  <div className="grid grid-cols-2 gap-2 mt-2">
+                    <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-gray-400 font-bold">
+                      <input type="checkbox" defaultChecked className="rounded text-primary focus:ring-primary" /> Revenue
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-gray-400 font-bold">
+                      <input type="checkbox" defaultChecked className="rounded text-primary focus:ring-primary" /> Orders
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-gray-400 font-bold">
+                      <input type="checkbox" defaultChecked className="rounded text-primary focus:ring-primary" /> Stock Alerts
+                    </label>
+                    <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-gray-400 font-bold">
+                      <input type="checkbox" defaultChecked className="rounded text-primary focus:ring-primary" /> Customers
+                    </label>
+                  </div>
+                </div>
+                <button 
+                  onClick={handleExport} 
+                  disabled={isExporting}
+                  className="w-full py-4 mt-4 bg-primary hover:bg-primary-dark disabled:opacity-70 disabled:cursor-not-allowed text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center justify-center gap-2"
+                >
+                  {isExporting ? (
+                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: "linear" }}>
+                      <Clock size={20} />
+                    </motion.div>
+                  ) : (
+                    <Download size={20} />
+                  )}
+                  {isExporting ? 'Generating Report...' : 'Generate Export'}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

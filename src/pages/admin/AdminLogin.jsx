@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Mail, ArrowRight, ShieldCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
-import logo from '../assets/logo.png';
+import logo from '../../assets/logo.png';
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('');

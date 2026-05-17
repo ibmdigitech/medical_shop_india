@@ -25,6 +25,7 @@ const footerLinks = {
     { name: 'Terms of Service', path: '/terms' },
     { name: 'Return & Refund', path: '/return-policy' },
     { name: 'Shipping Policy', path: '/shipping' },
+    { name: 'Admin Portal', path: '/admin/login' },
   ]
 };
 
