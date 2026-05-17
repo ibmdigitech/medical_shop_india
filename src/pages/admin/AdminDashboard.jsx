@@ -175,7 +175,7 @@ export default function AdminDashboard() {
     },
     {
       label: 'Create Order',
-      onClick: () => navigate('/admin/orders'),
+      onClick: () => navigate('/admin/orders', { state: { openCreateOrder: true } }),
     },
     {
       label: 'Upload Stock',

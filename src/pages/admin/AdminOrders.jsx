@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Search, Filter, Eye, Download, CheckCircle2, 
+  Search, Filter, Eye, Download, CheckCircle2, Plus, 
   Clock, Truck, XCircle, MoreVertical, Printer, MapPin, 
-  Phone, User, CreditCard, ChevronRight, ShoppingBag, Percent, Receipt
+  Phone, User, CreditCard, ChevronRight, ShoppingBag, Percent, Receipt, Barcode, Building2
 } from 'lucide-react';
 import { orderService } from '../../services/adminApiServices';
 import { getTaxProfile } from '../../services/taxProfiles';
@@ -118,8 +119,68 @@ const initialOrders = [
   }
 ];
 
+const ORDERS_STORAGE_KEY = 'erpOrdersList';
+
+const normalizeOrder = (order, index = 0) => {
+  const numericId = String(order.id || index + 1).replace(/\D/g, '') || String(index + 1);
+  const companyId = order.companyId || `CMP-${numericId.padStart(4, '0')}`;
+  const lpoNumber = order.lpoNumber || `LPO-${numericId.padStart(5, '0')}`;
+
+  return {
+    ...order,
+    companyName: order.companyName || order.supplierName || order.customerName || 'Company not set',
+    companyId,
+    lpoNumber,
+    barcodeValue: order.barcodeValue || `${companyId}-${lpoNumber}-${order.id || `ORD-${numericId}`}`,
+    items: Array.isArray(order.items) ? order.items : [],
+  };
+};
+
+const normalizeOrders = (orders) => orders.map((order, index) => normalizeOrder(order, index));
+
+const getStoredOrders = () => {
+  try {
+    const savedOrders = localStorage.getItem(ORDERS_STORAGE_KEY);
+    const parsedOrders = savedOrders ? JSON.parse(savedOrders) : null;
+    return Array.isArray(parsedOrders) ? normalizeOrders(parsedOrders) : normalizeOrders(initialOrders);
+  } catch {
+    return normalizeOrders(initialOrders);
+  }
+};
+
+const getNextOrderId = (orders) => {
+  const highestOrderNumber = orders.reduce((highest, order) => {
+    const match = String(order.id || '').match(/^ORD-(\d+)$/);
+    return match ? Math.max(highest, Number(match[1])) : highest;
+  }, 0);
+
+  return `ORD-${String(highestOrderNumber + 1).padStart(4, '0')}`;
+};
+
+const getNextCompanyId = (orders) => {
+  const highestCompanyNumber = orders.reduce((highest, order) => {
+    const match = String(order.companyId || '').match(/^CMP-(\d+)$/);
+    return match ? Math.max(highest, Number(match[1])) : highest;
+  }, 0);
+
+  return `CMP-${String(highestCompanyNumber + 1).padStart(4, '0')}`;
+};
+
+const getNextLpoNumber = (orders) => {
+  const highestLpoNumber = orders.reduce((highest, order) => {
+    const match = String(order.lpoNumber || '').match(/^LPO-(\d+)$/);
+    return match ? Math.max(highest, Number(match[1])) : highest;
+  }, 0);
+
+  return `LPO-${String(highestLpoNumber + 1).padStart(5, '0')}`;
+};
+
+const toNumber = (value) => Number.parseFloat(value || 0) || 0;
+
 export default function AdminOrders() {
-  const [ordersList, setOrdersList] = useState(initialOrders);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [ordersList, setOrdersList] = useState(getStoredOrders);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [currency, setCurrency] = useState('AED');
@@ -131,9 +192,47 @@ export default function AdminOrders() {
   // Selected Order for Details View Drawer
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [formError, setFormError] = useState('');
+  const [orderForm, setOrderForm] = useState({
+    companyName: '',
+    customerName: '',
+    phone: '',
+    email: '',
+    address: '',
+    itemName: '',
+    qty: '1',
+    price: '',
+    discount: '0',
+    paymentMethod: 'Cash on Delivery (COD)',
+    status: 'Pending',
+  });
   const activeTaxProfile = getTaxProfile(taxRegion);
   const taxName = activeTaxProfile.taxName;
   const taxRegistrationLabel = activeTaxProfile.registrationLabel;
+
+  const renderBarcode = (value) => {
+    const code = String(value || 'LPO-PENDING');
+    const bars = code.split('').flatMap((char, index) => {
+      const charCode = char.charCodeAt(0) + index;
+      return [
+        { width: (charCode % 3) + 1, height: 28 + (charCode % 18) },
+        { width: 1, height: 34 },
+      ];
+    });
+
+    return (
+      <div className="flex h-12 items-end gap-[2px] overflow-hidden" aria-label={`Barcode ${code}`}>
+        {bars.map((bar, index) => (
+          <span
+            key={`${code}-${index}`}
+            className="block bg-slate-900 dark:bg-white"
+            style={{ width: `${bar.width}px`, height: `${bar.height}px` }}
+          />
+        ))}
+      </div>
+    );
+  };
 
   useEffect(() => {
     const savedRegion = localStorage.getItem('erpTaxRegion') || 'United Arab Emirates';
@@ -147,11 +246,22 @@ export default function AdminOrders() {
     orderService.list()
       .then(({ data }) => {
         if (Array.isArray(data) && data.length) {
-          setOrdersList(data);
+          setOrdersList(normalizeOrders(data));
         }
       })
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem(ORDERS_STORAGE_KEY, JSON.stringify(ordersList));
+  }, [ordersList]);
+
+  useEffect(() => {
+    if (location.state?.openCreateOrder) {
+      setIsCreateModalOpen(true);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const getStatusColor = (status) => {
     switch(status) {
@@ -178,6 +288,86 @@ export default function AdminOrders() {
   const handleOpenDetails = (order) => {
     setSelectedOrder(order);
     setIsDrawerOpen(true);
+  };
+
+  const resetOrderForm = () => {
+    setOrderForm({
+      companyName: '',
+      customerName: '',
+      phone: '',
+      email: '',
+      address: '',
+      itemName: '',
+      qty: '1',
+      price: '',
+      discount: '0',
+      paymentMethod: 'Cash on Delivery (COD)',
+      status: 'Pending',
+    });
+    setFormError('');
+  };
+
+  const handleOpenCreateOrder = () => {
+    resetOrderForm();
+    setIsCreateModalOpen(true);
+  };
+
+  const handleCreateOrder = async () => {
+    const companyName = orderForm.companyName.trim();
+    const customerName = orderForm.customerName.trim();
+    const phone = orderForm.phone.trim();
+    const itemName = orderForm.itemName.trim();
+    const qty = Math.max(1, Number.parseInt(orderForm.qty, 10) || 1);
+    const price = toNumber(orderForm.price);
+    const discount = toNumber(orderForm.discount);
+
+    if (!companyName || !customerName || !phone || !itemName || price <= 0) {
+      setFormError('Company, customer name, phone, item, and item price are required.');
+      return;
+    }
+
+    const orderId = getNextOrderId(ordersList);
+    const companyId = getNextCompanyId(ordersList);
+    const lpoNumber = getNextLpoNumber(ordersList);
+    const barcodeValue = `${companyId}-${lpoNumber}-${orderId}`;
+    const lineTotal = qty * price;
+    const subtotal = lineTotal;
+    const vat = Number((subtotal * (toNumber(taxRate) / 100)).toFixed(2));
+    const total = Number(Math.max(0, subtotal + vat - discount).toFixed(2));
+    const newOrder = {
+      id: orderId,
+      companyName,
+      companyId,
+      lpoNumber,
+      barcodeValue,
+      customerName,
+      phone,
+      email: orderForm.email.trim() || 'not-provided@amstermedcare.local',
+      address: orderForm.address.trim() || 'Address pending confirmation',
+      date: new Date().toISOString().slice(0, 10),
+      subtotal,
+      vat,
+      discount,
+      total,
+      status: orderForm.status,
+      paymentMethod: orderForm.paymentMethod,
+      paymentStatus: orderForm.paymentMethod.includes('COD') ? 'Pending' : 'Paid',
+      items: [{ name: itemName, qty, price, total: lineTotal }],
+      rxReference: null,
+      deliveryAgent: 'Unassigned',
+    };
+
+    try {
+      const { data: savedOrder } = await orderService.create(newOrder);
+      setOrdersList((currentOrders) => [savedOrder, ...currentOrders]);
+    } catch {
+      setOrdersList((currentOrders) => [newOrder, ...currentOrders]);
+    }
+
+    setSearchTerm('');
+    setSelectedStatus('all');
+    setIsCreateModalOpen(false);
+    resetOrderForm();
   };
 
   const handleUpdateStatus = async (orderId, newStatus) => {
@@ -232,9 +422,87 @@ export default function AdminOrders() {
     window.print();
   };
 
+  const handlePrintBarcode = (order) => {
+    const barcodeValue = order.barcodeValue || `${order.companyId || 'CMP-0000'}-${order.lpoNumber || order.id}-${order.id}`;
+    const printWindow = window.open('', '_blank', 'width=520,height=420');
+    if (!printWindow) return;
+
+    const bars = barcodeValue.split('').flatMap((char, index) => {
+      const charCode = char.charCodeAt(0) + index;
+      return [
+        `<span style="display:block;width:${(charCode % 3) + 1}px;height:${32 + (charCode % 26)}px;background:#111"></span>`,
+        '<span style="display:block;width:1px;height:40px;background:#fff"></span>',
+      ];
+    }).join('');
+
+    printWindow.document.write(`
+      <html>
+        <head>
+          <title>${order.lpoNumber || order.id} Barcode</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 24px; color: #111; }
+            .label { border: 2px solid #111; padding: 18px; width: 360px; }
+            .title { font-size: 18px; font-weight: 800; margin-bottom: 6px; }
+            .meta { font-size: 12px; font-weight: 700; margin: 3px 0; }
+            .barcode { display: flex; align-items: end; gap: 2px; height: 70px; margin: 16px 0 8px; overflow: hidden; }
+            .code { font-family: monospace; font-size: 12px; font-weight: 800; letter-spacing: 1px; word-break: break-all; }
+            @media print { button { display: none; } body { margin: 0; } }
+          </style>
+        </head>
+        <body>
+          <div class="label">
+            <div class="title">LPO Barcode Label</div>
+            <div class="meta">Company: ${order.companyName || order.customerName || 'Company not set'}</div>
+            <div class="meta">Company ID: ${order.companyId || 'CMP-0000'}</div>
+            <div class="meta">LPO: ${order.lpoNumber || order.id}</div>
+            <div class="meta">Order: ${order.id}</div>
+            <div class="barcode">${bars}</div>
+            <div class="code">${barcodeValue}</div>
+          </div>
+          <button onclick="window.print()" style="margin-top:16px;padding:10px 14px;font-weight:800">Print Barcode</button>
+        </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+  };
+
+  const handleExportOrders = () => {
+    const rows = [
+      ['Order ID', 'LPO', 'Company ID', 'Company', 'Customer', 'Phone', 'Date', 'Status', 'Payment Status', 'Payment Method', 'Barcode', 'Total'],
+      ...filteredOrders.map((order) => [
+        order.id,
+        order.lpoNumber || '',
+        order.companyId || '',
+        order.companyName || '',
+        order.customerName,
+        order.phone,
+        order.date,
+        order.status,
+        order.paymentStatus,
+        order.paymentMethod,
+        order.barcodeValue || '',
+        `${currency} ${toNumber(order.total).toFixed(2)}`,
+      ]),
+    ];
+    const csvContent = rows.map((row) => row.map((cell = '') => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `amster-orders-${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const filteredOrders = ordersList.filter(order => {
     const matchesSearch = 
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.lpoNumber || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.companyName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (order.companyId || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.phone.includes(searchTerm);
     const matchesStatus = selectedStatus === 'all' || order.status.toLowerCase() === selectedStatus.toLowerCase();
@@ -250,7 +518,13 @@ export default function AdminOrders() {
           <p className="text-slate-500 dark:text-gray-400 mt-1 font-bold">Track customer order dispatch stages and UAE Tax compliant invoices.</p>
         </div>
         <div className="flex items-center gap-3">
-          <button className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+          <button
+            onClick={handleOpenCreateOrder}
+            className="px-4 py-2 bg-white dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-700 dark:text-white font-bold rounded-xl transition-all flex items-center gap-2"
+          >
+            <Plus size={18} /> Create Order
+          </button>
+          <button onClick={handleExportOrders} className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-bold rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
             <Download size={18} /> Export Orders CSV
           </button>
         </div>
@@ -294,6 +568,7 @@ export default function AdminOrders() {
             <thead>
               <tr className="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
                 <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Order ID</th>
+                <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">LPO / Company</th>
                 <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Patient / Customer</th>
                 <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Date</th>
                 <th className="p-4 text-xs font-black text-slate-500 uppercase tracking-widest">Total Amount</th>
@@ -307,11 +582,15 @@ export default function AdminOrders() {
                 <tr key={order.id} className="hover:bg-slate-50/50 dark:hover:bg-white/5 transition-colors group">
                   <td className="p-4 font-black text-primary">{order.id}</td>
                   <td className="p-4">
+                    <p className="font-black text-slate-900 dark:text-white leading-tight">{order.lpoNumber || `LPO-${order.id.replace(/\D/g, '')}`}</p>
+                    <p className="text-xs text-slate-500">{order.companyId || 'CMP-0000'} · {order.companyName || 'Company not set'}</p>
+                  </td>
+                  <td className="p-4">
                     <p className="font-bold text-slate-900 dark:text-white leading-tight">{order.customerName}</p>
                     <p className="text-xs text-slate-400">{order.phone}</p>
                   </td>
                   <td className="p-4 text-sm text-slate-600 dark:text-gray-400 font-bold">{order.date}</td>
-                  <td className="p-4 font-black text-slate-900 dark:text-white">{currency} {order.total.toFixed(2)}</td>
+                  <td className="p-4 font-black text-slate-900 dark:text-white">{currency} {toNumber(order.total).toFixed(2)}</td>
                   <td className="p-4">
                     <span className={`text-xs font-black uppercase tracking-wider ${
                       order.paymentStatus === 'Paid' ? 'text-emerald-500' :
@@ -337,10 +616,131 @@ export default function AdminOrders() {
                   </td>
                 </tr>
               ))}
+              {filteredOrders.length === 0 && (
+                <tr>
+                  <td colSpan={8} className="p-8 text-center text-sm font-bold text-slate-500">
+                    No orders match the current search or status filter.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
       </div>
+
+      {/* Create Order Modal */}
+      <AnimatePresence>
+        {isCreateModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsCreateModalOpen(false)}
+              className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-40"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="fixed top-4 bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-2xl bg-white dark:bg-dark-card rounded-[32px] shadow-2xl z-50 border border-slate-100 dark:border-white/5 overflow-hidden flex flex-col"
+            >
+              <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between shrink-0">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900 dark:text-white">Create Order</h3>
+                  <p className="text-xs text-slate-500 font-bold uppercase mt-1 tracking-widest">Order workflow entry</p>
+                </div>
+                <button
+                  onClick={() => setIsCreateModalOpen(false)}
+                  className="p-2 text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors bg-slate-100 dark:bg-white/5 rounded-full"
+                >
+                  <XCircle size={24} />
+                </button>
+              </div>
+
+              <div className="p-6 overflow-y-auto overscroll-contain flex-1 min-h-0 space-y-5">
+                {formError && (
+                  <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-500/10 border border-rose-200 dark:border-rose-500/20 text-rose-600 dark:text-rose-400 text-sm font-bold">
+                    {formError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Company / Supplier *</label>
+                    <input value={orderForm.companyName} onChange={(e) => setOrderForm({ ...orderForm, companyName: e.target.value })} placeholder="e.g. Gulf Drug LLC" className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Customer Name *</label>
+                    <input value={orderForm.customerName} onChange={(e) => setOrderForm({ ...orderForm, customerName: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Phone *</label>
+                    <input value={orderForm.phone} onChange={(e) => setOrderForm({ ...orderForm, phone: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Email</label>
+                    <input type="email" value={orderForm.email} onChange={(e) => setOrderForm({ ...orderForm, email: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Payment Method</label>
+                    <select value={orderForm.paymentMethod} onChange={(e) => setOrderForm({ ...orderForm, paymentMethod: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold">
+                      <option>Cash on Delivery (COD)</option>
+                      <option>Online Visa Card</option>
+                      <option>Online MasterCard</option>
+                      <option>Apple Pay</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Delivery Address</label>
+                  <textarea value={orderForm.address} onChange={(e) => setOrderForm({ ...orderForm, address: e.target.value })} rows={3} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white resize-none" />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                  <div className="sm:col-span-2 space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Item Name *</label>
+                    <input value={orderForm.itemName} onChange={(e) => setOrderForm({ ...orderForm, itemName: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Qty</label>
+                    <input type="number" min="1" value={orderForm.qty} onChange={(e) => setOrderForm({ ...orderForm, qty: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Price *</label>
+                    <input type="number" min="0" step="0.01" value={orderForm.price} onChange={(e) => setOrderForm({ ...orderForm, price: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Discount ({currency})</label>
+                    <input type="number" min="0" step="0.01" value={orderForm.discount} onChange={(e) => setOrderForm({ ...orderForm, discount: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-xs font-black text-slate-700 dark:text-gray-300 uppercase tracking-wider">Starting Stage</label>
+                    <select value={orderForm.status} onChange={(e) => setOrderForm({ ...orderForm, status: e.target.value })} className="w-full px-4 py-3 bg-slate-50 dark:bg-dark border border-slate-200 dark:border-white/10 rounded-xl outline-none focus:border-primary text-slate-900 dark:text-white font-bold">
+                      <option>Pending</option>
+                      <option>Processing</option>
+                      <option>Out for Delivery</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-slate-50 dark:bg-white/5 flex items-center justify-between gap-3 shrink-0">
+                <button onClick={() => setIsCreateModalOpen(false)} className="px-5 py-3 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 font-bold rounded-xl transition-all">
+                  Cancel
+                </button>
+                <button onClick={handleCreateOrder} className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2">
+                  <CheckCircle2 size={18} /> Save Order
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Slide-out Drawer Panel for Invoice Details & Order Actions */}
       <AnimatePresence>
@@ -406,7 +806,32 @@ export default function AdminOrders() {
                   </div>
                 </div>
 
-                {/* 2. Regional tax compliant invoice sheet */}
+                {/* 2. LPO barcode and company identity */}
+                <div className="bg-white dark:bg-white/5 rounded-2xl p-4 border border-slate-100 dark:border-white/5 space-y-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Local Purchase Order</p>
+                      <h4 className="text-lg font-black text-slate-900 dark:text-white mt-1">{selectedOrder.lpoNumber || `LPO-${selectedOrder.id.replace(/\D/g, '')}`}</h4>
+                      <p className="text-xs text-slate-500 font-bold mt-1">
+                        {selectedOrder.companyId || 'CMP-0000'} · {selectedOrder.companyName || 'Company not set'}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handlePrintBarcode(selectedOrder)}
+                      className="px-3 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl text-xs font-black flex items-center gap-2 shrink-0"
+                    >
+                      <Barcode size={14} /> Print Label
+                    </button>
+                  </div>
+                  <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-950 p-4">
+                    {renderBarcode(selectedOrder.barcodeValue || `${selectedOrder.companyId || 'CMP-0000'}-${selectedOrder.lpoNumber || selectedOrder.id}-${selectedOrder.id}`)}
+                    <p className="mt-2 text-[10px] font-mono font-black tracking-widest text-slate-500 break-all">
+                      {selectedOrder.barcodeValue || `${selectedOrder.companyId || 'CMP-0000'}-${selectedOrder.lpoNumber || selectedOrder.id}-${selectedOrder.id}`}
+                    </p>
+                  </div>
+                </div>
+
+                {/* 3. Regional tax compliant invoice sheet */}
                 <div id="invoice-sheet" className="p-6 border border-slate-200 dark:border-white/10 rounded-[24px] bg-white dark:bg-slate-900 text-slate-900 dark:text-white space-y-6 relative shadow-lg">
                   {/* Decorative Watermark */}
                   <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-slate-100 dark:text-white/5 font-black text-6xl tracking-widest select-none pointer-events-none uppercase -rotate-12">
@@ -441,6 +866,9 @@ export default function AdminOrders() {
                       <p className="font-bold text-slate-900 dark:text-white">{selectedOrder.customerName}</p>
                       <p className="text-slate-500 flex items-center gap-1 mt-0.5"><Phone size={10} /> {selectedOrder.phone}</p>
                       <p className="text-slate-500 mt-0.5">{selectedOrder.email}</p>
+                      <p className="text-slate-500 flex items-center gap-1 mt-1">
+                        <Building2 size={10} /> {selectedOrder.companyName || 'Company not set'} ({selectedOrder.companyId || 'CMP-0000'})
+                      </p>
                     </div>
                     <div>
                       <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mb-1">SHIPPING LOCATION</p>
@@ -448,6 +876,7 @@ export default function AdminOrders() {
                         <MapPin size={10} className="inline text-rose-500 mr-0.5" />
                         {selectedOrder.address}
                       </p>
+                      <p className="text-slate-500 font-mono font-black mt-2">LPO: {selectedOrder.lpoNumber || `LPO-${selectedOrder.id.replace(/\D/g, '')}`}</p>
                     </div>
                   </div>
 
@@ -464,12 +893,12 @@ export default function AdminOrders() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100 dark:divide-white/5 font-bold">
-                        {selectedOrder.items.map((item, idx) => (
+                        {(selectedOrder.items || []).map((item, idx) => (
                           <tr key={idx}>
                             <td className="py-2 text-slate-900 dark:text-white">{item.name}</td>
                             <td className="py-2 text-center text-slate-600 dark:text-gray-400">{item.qty}</td>
-                            <td className="py-2 text-right text-slate-600 dark:text-gray-400">{item.price.toFixed(2)}</td>
-                            <td className="py-2 text-right text-slate-900 dark:text-white">{(item.qty * item.price).toFixed(2)}</td>
+                            <td className="py-2 text-right text-slate-600 dark:text-gray-400">{toNumber(item.price).toFixed(2)}</td>
+                            <td className="py-2 text-right text-slate-900 dark:text-white">{(toNumber(item.qty) * toNumber(item.price)).toFixed(2)}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -481,17 +910,17 @@ export default function AdminOrders() {
                     <div className="w-64 space-y-2 text-slate-600 dark:text-gray-300 font-bold">
                       <div className="flex justify-between">
                         <span>Subtotal Excl. {taxName}:</span>
-                        <span className="text-slate-900 dark:text-white">{currency} {selectedOrder.subtotal.toFixed(2)}</span>
+                        <span className="text-slate-900 dark:text-white">{currency} {toNumber(selectedOrder.subtotal).toFixed(2)}</span>
                       </div>
-                      {selectedOrder.discount > 0 && (
+                      {toNumber(selectedOrder.discount) > 0 && (
                         <div className="flex justify-between text-rose-500">
                           <span>Discount Deduction:</span>
-                          <span>- {currency} {selectedOrder.discount.toFixed(2)}</span>
+                          <span>- {currency} {toNumber(selectedOrder.discount).toFixed(2)}</span>
                         </div>
                       )}
                       <div className="flex justify-between">
                         <span>{activeTaxProfile.country} {taxName} Collected ({taxRate}%):</span>
-                        <span className="text-slate-900 dark:text-white">{currency} {selectedOrder.vat.toFixed(2)}</span>
+                        <span className="text-slate-900 dark:text-white">{currency} {toNumber(selectedOrder.vat).toFixed(2)}</span>
                       </div>
                       {activeTaxProfile.splitTax?.enabled && (
                         <div className="flex justify-between text-slate-500">
@@ -501,7 +930,7 @@ export default function AdminOrders() {
                       )}
                       <div className="flex justify-between border-t border-slate-200 dark:border-white/10 pt-2 font-black text-sm text-slate-900 dark:text-white">
                         <span>Total Invoice (Net):</span>
-                        <span className="text-primary">{currency} {selectedOrder.total.toFixed(2)}</span>
+                        <span className="text-primary">{currency} {toNumber(selectedOrder.total).toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -515,7 +944,7 @@ export default function AdminOrders() {
               </div>
 
               {/* Drawer Footer Actions */}
-              <div className="p-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 flex items-center justify-between shrink-0">
+              <div className="p-6 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 flex items-center justify-between gap-3 shrink-0">
                 <button 
                   onClick={() => {
                     alert('Simulated: Tax Invoice saved as PDF.');
@@ -524,12 +953,20 @@ export default function AdminOrders() {
                 >
                   <Download size={16} /> Save PDF
                 </button>
-                <button 
-                  onClick={handlePrint}
-                  className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
-                >
-                  <Printer size={16} /> Print Tax Invoice
-                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => handlePrintBarcode(selectedOrder)}
+                    className="px-5 py-3 border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 font-bold rounded-xl transition-all flex items-center gap-2"
+                  >
+                    <Barcode size={16} /> Print Barcode
+                  </button>
+                  <button 
+                    onClick={handlePrint}
+                    className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-black rounded-xl shadow-lg shadow-primary/20 transition-all flex items-center gap-2"
+                  >
+                    <Printer size={16} /> Print Tax Invoice
+                  </button>
+                </div>
               </div>
             </motion.div>
           </>
