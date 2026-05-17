@@ -100,46 +100,6 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
         console.error('Error connecting to database:', err.message);
     } else {
         console.log('Connected to the SQLite database.');
-        
-        // Create tables
-        db.run(`CREATE TABLE IF NOT EXISTS contacts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT,
-            email TEXT,
-            phone TEXT,
-            service TEXT,
-            message TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
-
-        db.run(`CREATE TABLE IF NOT EXISTS prescriptions (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            patient_name TEXT,
-            mobile TEXT,
-            notes TEXT,
-            file_path TEXT,
-            status TEXT DEFAULT 'Pending',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
-
-        db.run(`CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            customer_name TEXT,
-            phone TEXT,
-            total_amount REAL,
-            items TEXT,
-            status TEXT DEFAULT 'Pending',
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )`);
-
-        db.run(`CREATE TABLE IF NOT EXISTS resource_items (
-            resource TEXT NOT NULL,
-            item_id TEXT NOT NULL,
-            data TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            PRIMARY KEY (resource, item_id)
-        )`, seedResources);
     }
 });
 
@@ -216,6 +176,72 @@ const buildCreatedItem = (resource, payload) => {
 
     return item;
 };
+
+const databaseReady = new Promise((resolve) => {
+    db.serialize(() => {
+        db.run(`CREATE TABLE IF NOT EXISTS contacts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            email TEXT,
+            phone TEXT,
+            service TEXT,
+            message TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS prescriptions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            patient_name TEXT,
+            mobile TEXT,
+            notes TEXT,
+            file_path TEXT,
+            status TEXT DEFAULT 'Pending',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS orders (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT,
+            phone TEXT,
+            total_amount REAL,
+            items TEXT,
+            status TEXT DEFAULT 'Pending',
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`);
+
+        db.run(`CREATE TABLE IF NOT EXISTS resource_items (
+            resource TEXT NOT NULL,
+            item_id TEXT NOT NULL,
+            data TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (resource, item_id)
+        )`, async (err) => {
+            if (err) {
+                console.error('Error creating resource table:', err.message);
+                resolve();
+                return;
+            }
+
+            await seedResources();
+            resolve();
+        });
+    });
+});
+
+const waitForDatabase = async (req, res, next) => {
+    await databaseReady;
+    next();
+};
+
+app.use('/api/:resource', (req, res, next) => {
+    if (isSupportedResource(req.params.resource)) {
+        waitForDatabase(req, res, next);
+        return;
+    }
+
+    next();
+});
 
 // Routes
 

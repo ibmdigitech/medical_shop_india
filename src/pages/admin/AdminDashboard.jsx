@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Coins, ShoppingCart, Users, Package, 
@@ -90,6 +91,7 @@ const StatCard = ({ title, value, icon: Icon, trend, trendValue, color }) => (
 );
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [currencySymbol, setCurrencySymbol] = useState('AED');
@@ -165,6 +167,25 @@ export default function AdminDashboard() {
       setIsExportModalOpen(false);
     }, 2000);
   };
+
+  const quickActions = [
+    {
+      label: 'Add Product',
+      onClick: () => navigate('/admin/products', { state: { openAddProduct: true } }),
+    },
+    {
+      label: 'Create Order',
+      onClick: () => navigate('/admin/orders'),
+    },
+    {
+      label: 'Upload Stock',
+      onClick: () => navigate('/admin/stock-audit', { state: { openNewAudit: true } }),
+    },
+    {
+      label: 'Generate Report',
+      onClick: () => setIsExportModalOpen(true),
+    },
+  ];
 
   return (
     <div className="space-y-8">
@@ -360,9 +381,13 @@ export default function AdminDashboard() {
         >
           <h3 className="font-black text-lg mb-6">Quick Actions</h3>
           <div className="grid grid-cols-2 gap-3">
-            {['Add Product', 'Create Order', 'Upload Stock', 'Generate Report'].map((action) => (
-              <button key={action} className="px-4 py-4 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl text-sm font-black transition-all text-left">
-                {action}
+            {quickActions.map((action) => (
+              <button
+                key={action.label}
+                onClick={action.onClick}
+                className="px-4 py-4 bg-white/10 hover:bg-white/15 border border-white/10 rounded-2xl text-sm font-black transition-all text-left"
+              >
+                {action.label}
               </button>
             ))}
           </div>
@@ -380,7 +405,7 @@ export default function AdminDashboard() {
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-black text-lg text-slate-900 dark:text-white">Recent Orders</h3>
-            <button className="text-primary font-bold text-sm hover:underline">View All</button>
+            <button onClick={() => navigate('/admin/orders')} className="text-primary font-bold text-sm hover:underline">View All</button>
           </div>
           <div className="space-y-4">
             {recentOrders.map((order) => (
@@ -409,7 +434,7 @@ export default function AdminDashboard() {
         <div className="bg-white dark:bg-dark-card p-6 rounded-3xl border border-slate-100 dark:border-white/5 shadow-sm">
           <div className="flex items-center justify-between mb-6">
             <h3 className="font-black text-lg text-slate-900 dark:text-white">Low Stock Alerts</h3>
-            <button className="text-primary font-bold text-sm hover:underline">Manage Inventory</button>
+            <button onClick={() => navigate('/admin/products')} className="text-primary font-bold text-sm hover:underline">Manage Inventory</button>
           </div>
           <div className="space-y-4">
             {lowStockItems.map((item) => (

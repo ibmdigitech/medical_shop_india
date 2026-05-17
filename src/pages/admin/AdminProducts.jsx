@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Plus, Search, Filter, MoreVertical, Edit, Trash2, Copy,
@@ -231,6 +232,8 @@ const toImportedProduct = (row, index, currentVatRate) => {
 };
 
 export default function AdminProducts() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [productsList, setProductsList] = useState(initialProducts);
   const [currencySymbol, setCurrencySymbol] = useState('AED');
   const [vatRate, setVatRate] = useState(5);
@@ -391,6 +394,13 @@ export default function AdminProducts() {
     setModalActiveTab('general');
     setIsModalOpen(true);
   };
+
+  useEffect(() => {
+    if (location.state?.openAddProduct) {
+      handleAdd();
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, location.pathname, navigate]);
 
   const handleDuplicate = (product) => {
     const duplicated = {
@@ -828,7 +838,7 @@ export default function AdminProducts() {
               </div>
 
               {/* Modal Scrollable Contents */}
-              <div className="p-6 overflow-y-auto space-y-4 flex-1">
+              <div className="p-6 overflow-y-auto overscroll-contain space-y-4 flex-1 min-h-0">
                 {/* 1. General Info & Regulatory */}
                 {modalActiveTab === 'general' && (
                   <div className="space-y-4 animate-fadeIn">
@@ -1200,9 +1210,9 @@ export default function AdminProducts() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white dark:bg-dark-card rounded-[32px] p-8 shadow-2xl z-50 border border-slate-100 dark:border-white/5"
+              className="fixed top-4 bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-lg bg-white dark:bg-dark-card rounded-[32px] shadow-2xl z-50 border border-slate-100 dark:border-white/5 overflow-hidden flex flex-col"
             >
-              <div className="flex items-center justify-between mb-6">
+              <div className="p-6 border-b border-slate-100 dark:border-white/5 flex items-center justify-between shrink-0">
                 <h3 className="text-2xl font-black text-slate-900 dark:text-white">Bulk Excel Upload</h3>
                 <button
                   onClick={() => {
@@ -1215,15 +1225,15 @@ export default function AdminProducts() {
                 </button>
               </div>
 
-              <div className="space-y-4">
-                <div className="border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-8 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer relative overflow-hidden group">
+              <div className="p-6 space-y-4 overflow-y-auto overscroll-contain flex-1 min-h-0">
+                <div className="border-2 border-dashed border-slate-200 dark:border-white/10 rounded-2xl p-6 flex flex-col items-center justify-center text-center bg-slate-50/50 dark:bg-white/5 hover:bg-slate-50 dark:hover:bg-white/10 transition-colors cursor-pointer relative overflow-hidden group">
                   <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <Upload size={32} />
                   </div>
-                  <h4 className="font-bold text-slate-900 dark:text-white mb-1">Click to select catalog spreadsheet</h4>
+                  <h4 className="font-bold text-slate-900 dark:text-white mb-1 leading-tight">Click to select catalog spreadsheet</h4>
                   <p className="text-xs text-slate-500">CSV imports are parsed locally. XLS/XLSX is staged for backend import.</p>
                   {importFileName && (
-                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-black mt-3">Selected: {importFileName}</p>
+                    <p className="text-xs text-emerald-600 dark:text-emerald-400 font-black mt-3 break-all">Selected: {importFileName}</p>
                   )}
                   <input
                     type="file"
@@ -1249,29 +1259,38 @@ export default function AdminProducts() {
 
                 {importPreview.length > 0 && (
                   <div className="border border-slate-100 dark:border-white/5 rounded-2xl overflow-hidden">
-                    <div className="px-4 py-3 bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5">
+                    <div className="px-4 py-3 bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5 flex items-center justify-between gap-3">
                       <p className="text-xs font-black uppercase tracking-widest text-slate-500">Import Preview</p>
+                      <p className="text-[10px] font-black text-slate-400 uppercase">{importPreview.length} rows</p>
                     </div>
-                    <div className="max-h-44 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
-                      {importPreview.slice(0, 5).map((product) => (
-                        <div key={product.sku} className="px-4 py-3 flex items-center justify-between gap-3">
-                          <div>
-                            <p className="text-sm font-black text-slate-900 dark:text-white">{product.name}</p>
-                            <p className="text-xs text-slate-500">{product.sku} - {product.supplier}</p>
+                    <div className="max-h-52 overflow-y-auto divide-y divide-slate-100 dark:divide-white/5">
+                      {importPreview.slice(0, 8).map((product) => (
+                        <div key={product.sku} className="px-4 py-2.5 flex items-center justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="text-sm font-black text-slate-900 dark:text-white truncate">{product.name}</p>
+                            <p className="text-xs text-slate-500 truncate">{product.sku} - {product.supplier}</p>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right shrink-0">
                             <p className="text-xs font-black text-primary">{currencySymbol} {product.sellingPrice.toFixed(2)}</p>
                             <p className="text-[10px] text-slate-500 font-bold">{product.stock} units</p>
                           </div>
                         </div>
                       ))}
+                      {importPreview.length > 8 && (
+                        <div className="px-4 py-3 text-center text-[10px] font-black uppercase tracking-widest text-slate-400">
+                          Plus {importPreview.length - 8} more rows
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
+              </div>
 
-                <button 
+              <div className="p-6 border-t border-slate-100 dark:border-white/5 bg-white dark:bg-dark-card shrink-0">
+                <button
                   onClick={handleProcessImport}
-                  className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
+                  disabled={!importPreview.length}
+                  className="w-full py-4 bg-emerald-500 hover:bg-emerald-600 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed text-white font-black rounded-xl shadow-lg shadow-emerald-500/20 transition-all flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 size={20} /> Process Catalog Import
                 </button>
